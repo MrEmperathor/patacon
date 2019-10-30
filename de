@@ -1,64 +1,63 @@
 #!/bin/bash
-BLANCOF='\033[47m'; RED='\033[0;31m'; REDCLARO='\033[1;31m'; AZUL='\033[0;34m'; AZULCLARO='\033[1;34m'; VERDE='\033[0;32m'; VERDECLARO='\033[1;32m'; CYAN='\033[0;36m'; CYANCLARO='\033[1;36m'; PURPURA='\033[0;35m'; PURPURAC='\033[1;35m'; CAFE='\033[1;37m'; AMARILLO='\033[1;33m'; NC='\033[0m'; CONTRAMEG=$(cat /usr/local/contramega); RFembed="/var/www/html/panel/inc/include/fembed.php"; RNetu="/var/www/html/panel/inc/include/netu1.php"; SFembed="/var/www/html/panel/inc/include/./fembed.php"; SNetu="/var/www/html/panel/inc/include/./netu1.php"; Rvery="/var/www/html/panel/inc/include/./very.php"; CONFIG="/usr/local/bin/config.ini"
+BLANCOF='\033[47m'; RED='\033[0;31m'; REDCLARO='\033[1;31m'; AZUL='\033[0;34m'; AZULCLARO='\033[1;34m'; VERDE='\033[0;32m'; VERDECLARO='\033[1;32m'; CYAN='\033[0;36m'; CYANCLARO='\033[1;36m'; PURPURA='\033[0;35m'; PURPURAC='\033[1;35m'; CAFE='\033[1;37m'; AMARILLO='\033[1;33m'; NC='\033[0m'; CONTRAMEG=$(cat /usr/local/contramega); RFembed="/var/www/html/panel/inc/include/fembed.php"; RNetu="/var/www/html/panel/inc/include/netu1.php"; SFembed="/var/www/html/panel/inc/include/./fembed.php"; SNetu="/var/www/html/panel/inc/include/./netu1.php"; Rvery="/var/www/html/panel/inc/include/./very.php"; CONFIG="/usr/local/bin/config.ini"; CONFIGGLOBAL="/var/www/html/panel/inc/config.php"
 
 source $CONFIG
 PSW6=$PASSRAR
 function validar_cuenta(){
 
-    raya="-------------------------"
-    if [[ $1 != "-netu" && $1 != "-fembed" ]]; then
-    read -p "USUARIO: " USER_OPEN
-    read -p "CONTRASEÑA: " PASS_OPEN
-    fi
-
-case $1 in
-    -openload)
-        # rm /var/local/KeyOpenload.txt 2>/dev/null
-        IKEY=/var/local/KeyOpenload.txt
-        if [[ ! -f $IKEY ]];then
-            echo "" >> $IKEY
-            sed -i "1i $USER_OPEN" $IKEY
-            sed -i "2i $PASS_OPEN" $IKEY
-        else
-            sed -i "1i $USER_OPEN" $IKEY
-            sed -i "2i $PASS_OPEN" $IKEY
+    function postmenu()
+    {
+        raya="-------------------------"
+        if [[ $1 != "-netu" && $1 != "-fembed" ]]; then
+        read -p "USUARIO: " USER_OPEN
+        read -p "CONTRASEÑA: " PASS_OPEN
         fi
-        USROpenload=(`cat $IKEY | sed -n 1p $IKEY`)
-        PSWOpenload=(`cat $IKEY | sed -n 2p $IKEY`)
-        # echo $USROpenload; echo $PSWOpenload;
-        ;;
-    -verystream)
-        # rm /var/local/Key_Verystream.txt 2>/dev/null
-        IKEY=/var/local/Key_Verystream.txt
-        if [[ ! -f $IKEY ]];then
-            echo "" >> $IKEY
-            sed -i "1i $USER_OPEN" $IKEY
-            sed -i "2i $PASS_OPEN" $IKEY
-        else
-            sed -i "1i $USER_OPEN" $IKEY
-            sed -i "2i $PASS_OPEN" $IKEY
-        fi
-        USRVery=(`cat $IKEY | sed -n 1p $IKEY`)
-        PSWVery=(`cat $IKEY | sed -n 2p $IKEY`)
-        ;;
-    -netu)
-        read -p "ID API: " API_NETU
-        AT="\$user_token = \"$API_NETU\";";
-        sed -i "32c $AT" $RNetu | cut -d" " -f3 | cut -d'"' -f2
-        ;;
-    -fembed)
-        read -p "CLIENTE ID: " CLIEN_ID
-        read -p "CLIENTE SECRET: " CLIENT_SECRET
-        USER="\$ID_CLIENT = \"$CLIEN_ID\";"
-        PASS="\$SECRET_CLIENT = \"$CLIENT_SECRET\";"
-        sed -i "9c $USER" $RFembed
-        sed -i "10c $PASS" $RFembed
-        ;;
-    -Gooledrive)
-        read -p "USER ID: " USER_ID
+    }
+    case $1 in
+        -openload)
+            postmenu
+            if [[ $USER_OPEN ]];then
+                VALORUSEROPEN=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"OpenloadUser\"\]" | cut -d "=" -f2 | cut -d "\"" -f2)
+                sed -i "s/${VALORUSEROPEN}/${USER_OPEN}/g" $CONFIGGLOBAL
+            fi
+            if [[ $PASS_OPEN ]];then
+                VALORPASSOPEN=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"OpenloadPass\"\]" | cut -d "=" -f2 | cut -d "\"" -f2)
+                sed -i "s/${VALORPASSOPEN}/${PASS_OPEN}/g" $CONFIGGLOBAL
+            fi            
+            ;;
+        -verystream)
+            postmenu
+            if [[ $USER_OPEN ]];then
+                VALORUSEROPEN=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"VerystreamUser\"\]" | cut -d "=" -f2 | cut -d "\"" -f2)
+                sed -i "s/${VALORUSEROPEN}/${USER_OPEN}/g" $CONFIGGLOBAL
+            fi
+            if [[ $PASS_OPEN ]];then
+                VALORPASSOPEN=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"VerystreamPass\"\]" | cut -d "=" -f2 | cut -d "\"" -f2)
+                sed -i "s/${VALORPASSOPEN}/${PASS_OPEN}/g" $CONFIGGLOBAL
+            fi
+            ;;
+        -netu)
+            IDAPINETU=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"NetuApi\"\]" | cut -d "=" -f2 | cut -d "\"" -f2)
+            read -p "ID API: " API_NETU
+            sed -i "s/${IDAPINETU}/${API_NETU}/g" $CONFIGGLOBAL
+            ;;
+        -fembed)
+            read -p "CLIENTE ID: " CLIEN_ID
+            read -p "CLIENTE SECRET: " CLIENT_SECRET
+            if [[ $CLIEN_ID ]];then
+                VALORUSEROPEN=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"ClientIde\"\]" | cut -d "=" -f2 | cut -d "\"" -f2)
+                sed -i "s/${VALORUSEROPEN}/${CLIEN_ID}/g" $CONFIGGLOBAL
+            fi
+            if [[ $CLIENT_SECRET ]];then
+                VALORPASSOPEN=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"ClientSecret\"\]" | cut -d "=" -f2 | cut -d "\"" -f2)
+                sed -i "s/${VALORPASSOPEN}/${CLIENT_SECRET}/g" $CONFIGGLOBAL
+            fi
+        -Gooledrive)
+            read -p "USER ID: " USER_ID
+            ;;
 
-esac
-echo $raya; echo "Datos actualizados."
+    esac
+    echo $raya; echo "Datos actualizados."
 
 }
 
@@ -1998,23 +1997,24 @@ function DriveRClone()
         
     function drive33() 
     {
-        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mDRIVE-2\033[0m"
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mDRIVE FREE\033[0m"
         rclone copy $ruta_drive/$MiPeli -P ${DRIVE3}:/
         errorG=$?
         LINK_DRIVE3=".linkgd"
         ProgressBar
         msg -ama "Obteniendo enlaces DRIVE..."
-        rclone link ${DRIVE3}:/$MiPeli > $LINK_DRIVE3
+        rclone link ${DRIVE3}:/"${MiPeli}" > $LINK_DRIVE3
         ERRLINK=$?
         if [[ $ERRLINK != 0 ]]; then
             until [[ $ERRLINK = 0 ]]; do
-                rclone link ${DRIVE3}:/$MiPeli > $LINK_DRIVE3
+                msg -verd "Volviendo a intentar"
+                rclone link ${DRIVE3}:/"${MiPeli}" > $LINK_DRIVE3
                 ERRLINK=$?
                 sleep 3
             done
         fi
         kill $PIDI1
-        CGD1="DRIVE-2" ; DatosGD "DRIVE FREE" $LINK_DRIVE3 $errorG
+        DatosGD "DRIVE FREE" $LINK_DRIVE3 $errorG
     }   
     drive33 
     sleep 5s
@@ -2621,7 +2621,6 @@ if [[ $AUDIO = 1 ]]; then
         fi
 
     fi
-
 }
 
 function mp()
