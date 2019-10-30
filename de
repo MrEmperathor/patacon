@@ -1,5 +1,5 @@
 #!/bin/bash
-BLANCOF='\033[47m'; RED='\033[0;31m'; REDCLARO='\033[1;31m'; AZUL='\033[0;34m'; AZULCLARO='\033[1;34m'; VERDE='\033[0;32m'; VERDECLARO='\033[1;32m'; CYAN='\033[0;36m'; CYANCLARO='\033[1;36m'; PURPURA='\033[0;35m'; PURPURAC='\033[1;35m'; CAFE='\033[1;37m'; AMARILLO='\033[1;33m'; NC='\033[0m'; CONTRAMEG=$(cat /usr/local/contramega); RFembed="/var/www/html/panel/inc/include/fembed.php"; RNetu="/var/www/html/panel/inc/include/netu1.php"; SFembed="/var/www/html/panel/inc/include/./fembed.php"; SNetu="/var/www/html/panel/inc/include/./netu1.php"; CONFIG="/usr/local/bin/config.ini"
+BLANCOF='\033[47m'; RED='\033[0;31m'; REDCLARO='\033[1;31m'; AZUL='\033[0;34m'; AZULCLARO='\033[1;34m'; VERDE='\033[0;32m'; VERDECLARO='\033[1;32m'; CYAN='\033[0;36m'; CYANCLARO='\033[1;36m'; PURPURA='\033[0;35m'; PURPURAC='\033[1;35m'; CAFE='\033[1;37m'; AMARILLO='\033[1;33m'; NC='\033[0m'; CONTRAMEG=$(cat /usr/local/contramega); RFembed="/var/www/html/panel/inc/include/fembed.php"; RNetu="/var/www/html/panel/inc/include/netu1.php"; SFembed="/var/www/html/panel/inc/include/./fembed.php"; SNetu="/var/www/html/panel/inc/include/./netu1.php"; Rvery="/var/www/html/panel/inc/include/./very.php"; CONFIG="/usr/local/bin/config.ini"
 
 source $CONFIG
 PSW6=$PASSRAR
@@ -2081,7 +2081,7 @@ function MostarEnlaces()
 
 function subi1()
 {
-    vvery=$(/var/www/html/panell/inc/include/./very.php $MiPeli) 
+    vvery=$($Rvery $MiPeli) 
     errorVery=$?
     echo $vvery > $fifo
 
@@ -2151,486 +2151,485 @@ function subida_o_s_s()
                 ################################################################################
                 ##############################################
 
-                function LimiteM() {
+function LimiteM() 
+{
+    sleep 2s
+    PROXILIST="/var/www/html/proxies.txt"
+    proxii=($(<$PROXILIST))
 
-                    sleep 2s
-                    PROXILIST="/var/www/html/proxies.txt"
-                    proxii=($(<$PROXILIST))
+    if [[ $Errorm -eq 1 ]]; then
+        until [[ $Errorm -eq 0 ]]; do
+            echo "USANDO PROXY"
+            echo -e "\n "
+            for (( i = 0; i < "${#proxii[@]}"; i++ )); do
+                echo "usando prooxy ${proxii[$i]}"
+                echo
+                megadl $K --proxy="${proxii[$i]}"
+                Errorm=$?
+                if [[ $Errorm -eq 0 ]]; then
+                    break
+                fi
+            done
+            Errorm=$?
+        done
+    fi
+}
 
-                    if [[ $Errorm -eq 1 ]]; then
-                        until [[ $Errorm -eq 0 ]]; do
-                            echo "USANDO PROXY"
-                            echo -e "\n "
-                            for (( i = 0; i < "${#proxii[@]}"; i++ )); do
-                                echo "usando prooxy ${proxii[$i]}"
-                                echo
-                                megadl $K --proxy="${proxii[$i]}"
-                                Errorm=$?
-                                if [[ $Errorm -eq 0 ]]; then
-                                    break
-                                fi
-                            done
-                            Errorm=$?
-                        done
+
+
+
+function drive3() 
+{
+echo "[1]-Drive"
+echo "[2]-Mega"
+echo "[3]-Openload"
+echo "[4]-Torrent"
+read -p "Descargar con el servidor: " SER
+
+CARP
+msg -ama "---------------------------"
+COLOREPI=$(msg -azu "RENOMBRAR DESDE EL EPISODIO #: "); read -p "$COLOREPI" EPI
+msg -ama "---------------------------"
+echo -e "\033[1;31m---------------------------\033[0m"
+read -p "ID SERIE: " IDSERIE
+echo -e "\033[1;31m---------------------------\033[0m"
+
+echo "1-[720]"
+echo "2-[1080]"
+echo "3-[SD]"
+read -p "CALIDAD: " CALIDA1
+res=$(repetir $CALIDA1)
+echo -e "\033[1;31m---------------------------\033[0m"
+if [[ $res ]]; then
+    CALIDA1=${res}
+fi
+if [[ $CALIDA1 = 1 ]]; then
+        CALIDA1="720"
+    elif [[ $CALIDA1 = 2 ]]; then
+        CALIDA1="1080"
+    elif [[ $CALIDA1 = 3 ]]; then
+        CALIDA1="SD"
+fi
+echo -e "\033[1;31m---------------------------\033[0m"
+echo "1-[Latino]"
+echo "2-[Espanol]"
+echo "3-[Subtitulada]"
+read -p "IDIOMA: " IDIOMA1
+res=$(repetir $IDIOMA1)
+echo -e "\033[1;31m---------------------------\033[0m"
+
+if [[ $res ]]; then
+    IDIOMA1=${res}
+fi
+if [[ $IDIOMA1 = 1 ]]; then
+        IDIOMA1="LATINO"
+        ElimAudio=1
+        AUD
+    elif [[ $IDIOMA1 = 2 ]]; then
+        IDIOMA1="CASTELLANO"
+        ElimAudio=2
+        AUD
+    elif [[ $IDIOMA1 = 3 ]]; then
+        IDIOMA1="SUBTITULADA"
+        ElimAudio=3
+        AUD
+fi
+
+echo -e "\033[1;31m---------------------------\033[0m"
+read -p "EXTRAER SUB: " EXTRASUB
+echo
+
+echo -e "\033[1;31m---------------------------\033[0m"
+CANTIDADTEM=$(msg -ama "CANTIDAD DE TEMPORADAS: "); read -p "$CANTIDADTEM" cant
+echo -e "\033[1;31m---------------------------\033[0m"
+
+declare -a array[cant]
+
+function pros() {
+
+echo -e "\033[1;31m---------------------------\033[0m"
+colorazuul=$(msg -azu "CANTIDAD DE LINKS"); read -p "${colorazuul}: " temp
+# validate_number=^-?[0-9]+([.][0-9]+)?$;
+# if ![[ $temp =~ $validate_number ]]; then
+# msg -ne "Numero no valido, Reintentar: "; read temp
+# fi
+# case "$temp" in 
+#     *[0-9]*) 
+#     echo "$valor es un número entero" 
+#     ;; 
+#     *) 
+#     echo "$valor no es numerico"; read temp
+#     ;; 
+#     esac 
+until [[ $temp =~ [0-9] ]]; do
+    msg -ama "entrando "; read temp
+done
+echo -e "\033[1;31m---------------------------\033[0m"
+
+# echo "SE COMPROBARAN LOS ESTADOS DE LOS ENLACES..."
+# sleep 1
+declare -a link[temp]
+
+for (( i=1; i<=temp; i++ ))
+do 
+    printf "ARCHIVO #"; printf $i ; printf " : "; read link[$i]
+
+    FARRAY[$i]="$(echo ${link[$i]} | sed -n 's#.*\https\:\/\/drive\.google\.com/file/d/\([^.]*\)\/view.*#\1#;p')";
+    FILENAME[$i]=$(wget -q --show-progress -O - "https://drive.google.com/file/d/${FARRAY[$i]}/view" | sed -n -e 's!.*<title>\(.*\)\ \-\ Dysk\ Google</title>.*!\1!p') 
+    FILENAME1[$i]=$(echo "${FILENAME[$i]}")
+
+    wget -q --show-progress --save-cookies /tmp/cookies.txt --no-check-certificate "https://docs.google.com/uc?export=download&id=${FARRAY[$i]}" -O ${FILENAME[$i]} 2>/dev/null
+
+    FILENAME[$i]=$(echo "${FILENAME[$i]}" | awk '{print $1}')
+
+
+    if grep -q "Quota exceeded" "${FILENAME[$i]}"; then
+        rm ${FILENAME[$i]} && \
+        echo -e "\033[1;31mEnlace descargado demaciadas veces (Quota Exceeded)\033[0m" && \
+        echo -e "\033[1;33mFile \033[1;31m${FILENAME1[$i]}\033[0m NO se puede DESCARGAR\033[0m"
+        echo "https://drive.google.com/file/d/${FARRAY[$i]}/view"
+    else
+
+    echo -e "\n"
+    echo -e "\033[1;33mFile \033[1;36m${FILENAME1[$i]}\033[0m \033[1;33mONLINE\033[0m"
+    sleep 1
+    rm ${FILENAME[$i]} && \
+    ONLINE[$i]=$(echo "${FILENAME[$i]}")
+    ENLACESVIVOS[$i]=$(echo "${FILEID[$i]}")
+fi
+done
+sleep 1
+echo -e "\033[0;35m=====================================\033[0m"
+RESUL=$(echo ${link[@]})
+
+SS[$A]=${RESUL}
+B=1
+}
+
+for (( ii=1; ii<=cant; ii++ ))
+do 
+let A=$A+1
+printf "Enlaces de la Temporada # "; printf $ii ; echo
+pros
+temp2[$A]=${temp}
+echo "${temp2[$A]}"
+let B=$B+1
+done
+
+ruta=$(pwd)
+RUTA4="/var/www/html/de/.enlaces2"
+DD2=${DD}
+
+function LiimiteGD() {
+
+
+if [[ $Err1 -eq 1 ]]; then
+echo -e "\033[0;36mENTRANDO AL BUCLE\033[0m"
+until [[ $Err1 -ne 1 ]]; do
+    dess download --recursive $K --force
+    #googledd $K
+    Err1=$?
+    sleep 4
+done
+fi
+}
+
+#2>&1 | tee $ruta/.Dlog
+for (( iii=1; iii<=cant; iii++ ))
+do 
+let C=$C+1
+
+for K in ${SS[$iii]} ; do
+
+    if [[ $SER = 1 ]]; then
+        # dess download --recursive $K
+
+        googledd $K
+        Err1=$?
+        if [[ $K != "1" ]]; then
+            echo $Err1
+            LiimiteGD
+        fi
+        echo
+        echo
+        sleep 2
+        let E=$E+1
+    elif [[ $SER = 2 ]]; then
+        megadl $K
+        Errorm=$?
+        LimiteM
+        let E=$E+1
+    elif [[ $SER = 4 ]]; then
+        aria2c $K
+        let E=$E+1
+    fi
+
+
+    printf "TEMPORADA #"; printf "$iii"; echo 
+
+    function MoverArchivos() {
+
+
+
+        for f in * ; do mv "$f" "${f// /_}" ; done > /dev/null 2>> /root/log.txt
+
+        for fiche in `ls *.mp4 *.avi *.mkv *.mpg` ; do
+            echo $fiche
+            mkdir $ruta/$DD
+            mkdir $ruta/$DD/Temp$iii.$DD
+            mv $fiche $ruta/$DD/Temp$iii.$DD
+        done > /dev/null 2>> /root/log.txt
+
+    } 
+    echo $DD
+    #dess upload -r --parent 1s271CnpfstYXhEZO2odKrZt9617lYA9r $ruta/Temporada$iii
+    #CONTE=$(ls $ruta/$DD/Temp$iii.$DD | wc -l)
+    #CONTE1=$(ls $ruta | wc -l)
+    #echo "Contenido $CONTE"
+    echo -e "\033[0;36m${temp2[$C]}\033[0m" 
+    #echo "${temp2[$C]}"
+    echo $E
+    echo -e "\033[0;36m$E\033[0m" 
+    echo
+    if [[ $E = ${temp2[$C]} ]]; then
+        sleep 2
+        E=0
+        echo -e "\033[0;36mTEMPORADA $NT DESCARGADA CORRECTAMENTE!!\033[0m" 
+        #for z in `ls *.mp4 *.mkv *.avi *.mpg *.rar *.zip`; do
+            #echo $z
+
+            PutoPunto
+            echo $DD
+            descompri
+            EscogerAudio
+            PegarSubtitulos
+            TArchivo
+            renom
+            #MoverArchivos
+            echo "Subiendo temporada $C"
+            echo 
+            echo $ruta
+            #echo $ruta_open_todos
+            subida_o_s_s_T
+            subida_drive_T2
+
+
+            t=$(jobs -l)
+            v=""
+            CYANCLARO='\033[1;36m' 
+            until [[ $v = $t ]]; do
+                echo $t ; sleep 10
+                echo -e "\033[0;35mTERMINANDO DE SUBIR TEMPORADA $NT\033[0m"
+                jobs -l
+                t=$(jobs -l)
+            done
+            echo "TEMPORADA $NT SUBIDA CORRECTAMENTE!!"
+            echo "NOMBRE DE LA SERIE $DD2"
+            echo "$RUTA4/SERI.$DD2.Temp.$iii.php"
+            cd $ruta
+            # plantilla2 > "$RUTA4/SERI.$DD2.Temp.$NT.php"
+            plantilla2 
+            sleep 5
+            rm -rf *
+            #done
+        fi
+
+        
+
+
+        done
+        let NT=$NT+1
+    done
+
+}
+function mostrar() {
+
+    echo ------------------------------------
+    echo "Tipo de archivo: $f "
+    echo ------------------------------------
+
+    echo ------------------------------------
+    echo "Nombre de archivo: $FICHERO1"
+    echo ------------------------------------
+
+    echo ------------------------------------
+    echo "Cantidad de archivos: $canti"
+    echo ------------------------------------
+
+}
+
+function comprobar() {
+
+
+    if [ $error == 0 ]; then
+        echo
+        echo -e "\e[32mArchivos renombrados con éxito :)"
+        echo -e "\e[39m"
+        echo
+    elif [ -z "$nombre" ]; then
+        echo Debes escribir un nombre de archivo, para mostrar la ayuda escriba
+        exit
+
+    elif ! [ -e "$FICHERO" ]; then
+        echo El archivo $FICHERO no existe, para mostrar la ayuda escriba
+        exit
+    else
+        echo
+        echo -e "\e[31mError al renombrar los archivos :("
+        echo -e "\e[39m"
+        echo
+    fi     
+
+
+}
+
+function comprobar1() {
+
+
+    if [ $error == 0 ]; then
+        echo
+        echo -e "\e[32mArchivos extraidos con éxito :)"
+        echo -e "\e[39m"
+        echo
+    elif [[ $error = 10 ]]; then
+        echo
+        msg -ama "No se encontraron ficheros, o esta dañado"
+
+        if [[ $menu_principall = 2 ]]; then
+            msg -azu "Reitentando descargar el archivo"
+            googledd $K
+            descompri
+        fi
+        
+
+    elif [ -z "$nombre" ]; then
+        echo Debes escribir un nombre de archivo, para mostrar la ayuda escriba "ud --help"
+        exit
+
+    elif ! [ -e "$FICHERO" ]; then
+        echo El archivo $RAR no existe, para mostrar la ayuda escriba "ud --help"
+        exit
+    else
+        echo
+        echo -e "\e[31mError al renombrar los archivos :("
+        echo -e "\e[39m"
+        echo
+    fi
+
+
+}
+
+function descompri() {
+
+    IKEY6=/var/local/Key6.txt
+    PSW6=$(cat $IKEY6)
+    for FILE in *.rar ; do NEWFILE=`echo $FILE | sed 's/ /_/g'` ; mv "$FILE" $NEWFILE ; done > /dev/null 2>> /root/log.txt
+    for FILE in *.zip ; do NEWFILE=`echo $FILE | sed 's/ /_/g'` ; mv "$FILE" $NEWFILE ; done > /dev/null 2>> /root/log.txt
+    for RAR in `ls *.rar *.zip`
+    do
+        echo $RAR
+    done > /dev/null 2>> /root/log.txt
+
+
+    echo
+
+
+    descomprimir=${RAR##*.}
+    case $descomprimir in
+
+        *rar)
+        unrar x -p$PSW6 $RAR -y 
+        error=$?
+        comprobar1
+        printf "${CYANCLARO}";
+        echo "FICHEROS RAR DESCOMPRIMIDOS CON EXITO!!";;
+        *zip)
+        unzip $RAR -y
+        error=$?
+        comprobar1
+        printf "${CYANCLARO}";
+        echo "FICHEROS ZIP DESCOMPRIMIDOS CON EXITO!!";;
+    esac         
+    for f in * ; do mv "$f" "${f// /_}" ; done > /dev/null 2>> /root/log.txt
+    find . ! -name credentials.json ! -name drivedb -type f -exec mv {} . 2>/dev/null \;
+    find . ! -name .gd -type d -exec rm -rf {} 2>/dev/null \;
+
+    if [[ $SUBRAR ]]; then
+    find . ! -name "*.mkv" ! -name "*.mp4" ! -name "*.avi" ! -name "*.mpg" ! -name "*.srt" ! -name "*.ass" -type f -exec rm -rf {} 2>/dev/null \;
+    else
+    find . ! -name "*.mkv" ! -name "*.mp4" ! -name "*.avi" ! -name "*.mpg" -type f -exec rm -rf {} 2>/dev/null \;
+    fi
+    
+
+#   until [[ -f $FINBUCLE ]]; do
+
+#     for FINBUCLE in `ls *.mkv *.mp4 *.avi *.mpg`; do
+#         echo $FINBUCLE
+#     done > /dev/null 2>> /root/log.txt
+#     for x in `ls`; do
+#         if [ -d $x ]; then
+#             FILED=`echo $x`
+#             echo $FILED
+#             cd $FILED
+#             for f in * ; do mv "$f" "${f// /_}" ; done > /dev/null 2>> /root/log.txt
+#             for FINBUCLE in `ls *.mkv *.mp4 *.avi *.mpg`; do
+#                 echo $FINBUCLE
+#             done > /dev/null 2>> /root/log.txt
+#         fi
+#     done 2>/dev/null
+# done
+Fmkv=$(ls *.mkv 2>/dev/null)
+if [[ $AUDIO = 1 ]]; then
+    #if [[ -n $Fmkv ]]; then
+        valor=1
+        mkdir Latino
+        for c in `ls *.mkv *.mp4 *.avi *.mpg` ; do 
+            cc=$(mkvinfo $c | awk '/Track type: audio/,/Track type: subtitles/'| grep Language | awk '{print $4}')
+            if [[ $cc = "lat" ]]; then
+                echo -e "\n "
+                echo -e "\033[01;36m..:el idioma es latino:..\033[0m"
+                mkvmerge -o $c.LAT.mkv -a "lat" $c
+            elif [[ $cc = "spa" ]]; then
+                echo -e "\n "
+                echo -e "\033[01;36m..:el idioma es español:..\033[0m"
+                mkvmerge -o $c.LAT.mkv -a "spa" $c
+            else
+                echo -e "\033[01;36m..:No hay subtitulos:..\033[0m"
+                mv $c Latino
+            fi
+            mv $c.LAT.mkv Latino
+        done 2>/dev/null
+        rm *
+        cd Latino
+        #fi
+        if [[ $menu_principall = 1 ]]; then
+            if [[ $CONVERPELI != 1 ]]; then
+
+                for i in * ; do mv -- "${i}" "${i//['][!”#$%&’()*+,/:;<=>?@\^`{\|}~-']/_}" ; done 2>/dev/null
+                for y in `ls *.mkv *.mp4 *.avi *.mpg`; do
+                    ACC_AUDIO=$(mkvmerge -i $y | grep ": audio" | awk '{print $5}')
+                    if [[ $ACC_AUDIO != "(AAC)" ]]; then
+                        ffmpeg -i $y -c:v copy -c:a aac -strict -2 A.$y
+                        #rm $y
+                        mv A.$y $y
                     fi
-
-                }
-
-
-
-
-                function drive3() {
-                    echo "[1]-Drive"
-                    echo "[2]-Mega"
-                    echo "[3]-Openload"
-                    echo "[4]-Torrent"
-                    read -p "Descargar con el servidor: " SER
-
-                    CARP
-                    msg -ama "---------------------------"
-                    COLOREPI=$(msg -azu "RENOMBRAR DESDE EL EPISODIO #: "); read -p "$COLOREPI" EPI
-                    msg -ama "---------------------------"
-                    echo -e "\033[1;31m---------------------------\033[0m"
-                    read -p "ID SERIE: " IDSERIE
-                    echo -e "\033[1;31m---------------------------\033[0m"
-
-                    echo "1-[720]"
-                    echo "2-[1080]"
-                    echo "3-[SD]"
-                    read -p "CALIDAD: " CALIDA1
-                        res=$(repetir $CALIDA1)
-                    echo -e "\033[1;31m---------------------------\033[0m"
-                        if [[ $res ]]; then
-                            CALIDA1=${res}
-                        fi
-                        if [[ $CALIDA1 = 1 ]]; then
-                                CALIDA1="720"
-                            elif [[ $CALIDA1 = 2 ]]; then
-                                CALIDA1="1080"
-                            elif [[ $CALIDA1 = 3 ]]; then
-                                CALIDA1="SD"
-                        fi
-                    echo -e "\033[1;31m---------------------------\033[0m"
-                    echo "1-[Latino]"
-                    echo "2-[Espanol]"
-                    echo "3-[Subtitulada]"
-                    read -p "IDIOMA: " IDIOMA1
-                    res=$(repetir $IDIOMA1)
-                    echo -e "\033[1;31m---------------------------\033[0m"
-
-                        if [[ $res ]]; then
-                            IDIOMA1=${res}
-                        fi
-                        if [[ $IDIOMA1 = 1 ]]; then
-                                IDIOMA1="LATINO"
-                                ElimAudio=1
-                                AUD
-                            elif [[ $IDIOMA1 = 2 ]]; then
-                                IDIOMA1="CASTELLANO"
-                                ElimAudio=2
-                                AUD
-                            elif [[ $IDIOMA1 = 3 ]]; then
-                                IDIOMA1="SUBTITULADA"
-                                ElimAudio=3
-                                AUD
-                        fi
-
-                    echo -e "\033[1;31m---------------------------\033[0m"
-                    read -p "EXTRAER SUB: " EXTRASUB
-                    echo
-                    
-                    echo -e "\033[1;31m---------------------------\033[0m"
-                    CANTIDADTEM=$(msg -ama "CANTIDAD DE TEMPORADAS: "); read -p "$CANTIDADTEM" cant
-                    echo -e "\033[1;31m---------------------------\033[0m"
-
-                    declare -a array[cant]
-
-                    function pros() {
-
-                        echo -e "\033[1;31m---------------------------\033[0m"
-                        colorazuul=$(msg -azu "CANTIDAD DE LINKS"); read -p "${colorazuul}: " temp
-                        # validate_number=^-?[0-9]+([.][0-9]+)?$;
-                        # if ![[ $temp =~ $validate_number ]]; then
-                        # msg -ne "Numero no valido, Reintentar: "; read temp
-                        # fi
-                        # case "$temp" in 
-                        #     *[0-9]*) 
-                        #     echo "$valor es un número entero" 
-                        #     ;; 
-                        #     *) 
-                        #     echo "$valor no es numerico"; read temp
-                        #     ;; 
-                        #     esac 
-                        until [[ $temp =~ [0-9] ]]; do
-                            msg -ama "entrando "; read temp
-                        done
-                        echo -e "\033[1;31m---------------------------\033[0m"
-
-                        # echo "SE COMPROBARAN LOS ESTADOS DE LOS ENLACES..."
-                        # sleep 1
-                        declare -a link[temp]
-
-                        for (( i=1; i<=temp; i++ ))
-                        do 
-                            printf "ARCHIVO #"; printf $i ; printf " : "; read link[$i]
-
-                            FARRAY[$i]="$(echo ${link[$i]} | sed -n 's#.*\https\:\/\/drive\.google\.com/file/d/\([^.]*\)\/view.*#\1#;p')";
-                            FILENAME[$i]=$(wget -q --show-progress -O - "https://drive.google.com/file/d/${FARRAY[$i]}/view" | sed -n -e 's!.*<title>\(.*\)\ \-\ Dysk\ Google</title>.*!\1!p') 
-                            FILENAME1[$i]=$(echo "${FILENAME[$i]}")
-
-                            wget -q --show-progress --save-cookies /tmp/cookies.txt --no-check-certificate "https://docs.google.com/uc?export=download&id=${FARRAY[$i]}" -O ${FILENAME[$i]} 2>/dev/null
-
-                            FILENAME[$i]=$(echo "${FILENAME[$i]}" | awk '{print $1}')
-
-
-                            if grep -q "Quota exceeded" "${FILENAME[$i]}"; then
-                               rm ${FILENAME[$i]} && \
-                               echo -e "\033[1;31mEnlace descargado demaciadas veces (Quota Exceeded)\033[0m" && \
-                               echo -e "\033[1;33mFile \033[1;31m${FILENAME1[$i]}\033[0m NO se puede DESCARGAR\033[0m"
-                               echo "https://drive.google.com/file/d/${FARRAY[$i]}/view"
-                           else
-
-                            echo -e "\n"
-                            echo -e "\033[1;33mFile \033[1;36m${FILENAME1[$i]}\033[0m \033[1;33mONLINE\033[0m"
-                            sleep 1
-                            rm ${FILENAME[$i]} && \
-                            ONLINE[$i]=$(echo "${FILENAME[$i]}")
-                            ENLACESVIVOS[$i]=$(echo "${FILEID[$i]}")
-                        fi
-                    done
-                    sleep 1
-                    echo -e "\033[0;35m=====================================\033[0m"
-                    RESUL=$(echo ${link[@]})
-
-                    SS[$A]=${RESUL}
-                    B=1
-                }
-
-                for (( ii=1; ii<=cant; ii++ ))
-                do 
-                    let A=$A+1
-                    printf "Enlaces de la Temporada # "; printf $ii ; echo
-                    pros
-                    temp2[$A]=${temp}
-                    echo "${temp2[$A]}"
-                    let B=$B+1
-                done
-
-                ruta=$(pwd)
-                RUTA4="/var/www/html/de/.enlaces2"
-                DD2=${DD}
-
-                function LiimiteGD() {
-
-
-                    if [[ $Err1 -eq 1 ]]; then
-                        echo -e "\033[0;36mENTRANDO AL BUCLE\033[0m"
-                        until [[ $Err1 -ne 1 ]]; do
-                            dess download --recursive $K --force
-                            #googledd $K
-                            Err1=$?
-                            sleep 4
-                        done
-                    fi
-                }
-
-                #2>&1 | tee $ruta/.Dlog
-                    for (( iii=1; iii<=cant; iii++ ))
-                    do 
-                        let C=$C+1
-
-                        for K in ${SS[$iii]} ; do
-
-                            if [[ $SER = 1 ]]; then
-                                # dess download --recursive $K
-
-                                googledd $K
-                                Err1=$?
-                                if [[ $K != "1" ]]; then
-                                    echo $Err1
-                                    LiimiteGD
-                                fi
-                                echo
-                                echo
-                                sleep 2
-                                let E=$E+1
-                            elif [[ $SER = 2 ]]; then
-                                megadl $K
-                                Errorm=$?
-                                LimiteM
-                                let E=$E+1
-                            elif [[ $SER = 4 ]]; then
-                                aria2c $K
-                                let E=$E+1
-                            fi
-
-
-                            printf "TEMPORADA #"; printf "$iii"; echo 
-
-                            function MoverArchivos() {
-
-
-
-                                for f in * ; do mv "$f" "${f// /_}" ; done > /dev/null 2>> /root/log.txt
-
-                                for fiche in `ls *.mp4 *.avi *.mkv *.mpg` ; do
-                                    echo $fiche
-                                    mkdir $ruta/$DD
-                                    mkdir $ruta/$DD/Temp$iii.$DD
-                                    mv $fiche $ruta/$DD/Temp$iii.$DD
-                                done > /dev/null 2>> /root/log.txt
-
-                            } 
-                            echo $DD
-                            #dess upload -r --parent 1s271CnpfstYXhEZO2odKrZt9617lYA9r $ruta/Temporada$iii
-                            #CONTE=$(ls $ruta/$DD/Temp$iii.$DD | wc -l)
-                            #CONTE1=$(ls $ruta | wc -l)
-                            #echo "Contenido $CONTE"
-                            echo -e "\033[0;36m${temp2[$C]}\033[0m" 
-                            #echo "${temp2[$C]}"
-                            echo $E
-                            echo -e "\033[0;36m$E\033[0m" 
-                            echo
-                            if [[ $E = ${temp2[$C]} ]]; then
-                                sleep 2
-                                E=0
-                                echo -e "\033[0;36mTEMPORADA $NT DESCARGADA CORRECTAMENTE!!\033[0m" 
-                                #for z in `ls *.mp4 *.mkv *.avi *.mpg *.rar *.zip`; do
-                                    #echo $z
-
-                                    PutoPunto
-                                    echo $DD
-                                    descompri
-                                    EscogerAudio
-                                    PegarSubtitulos
-                                    TArchivo
-                                    renom
-                                    #MoverArchivos
-                                    echo "Subiendo temporada $C"
-                                    echo 
-                                    echo $ruta
-                                    #echo $ruta_open_todos
-                                    subida_o_s_s_T
-                                    subida_drive_T2
-
-
-                                    t=$(jobs -l)
-                                    v=""
-                                    CYANCLARO='\033[1;36m' 
-                                    until [[ $v = $t ]]; do
-                                        echo $t ; sleep 10
-                                        echo -e "\033[0;35mTERMINANDO DE SUBIR TEMPORADA $NT\033[0m"
-                                        jobs -l
-                                        t=$(jobs -l)
-                                    done
-                                    echo "TEMPORADA $NT SUBIDA CORRECTAMENTE!!"
-                                    echo "NOMBRE DE LA SERIE $DD2"
-                                    echo "$RUTA4/SERI.$DD2.Temp.$iii.php"
-                                    cd $ruta
-                                    # plantilla2 > "$RUTA4/SERI.$DD2.Temp.$NT.php"
-                                   plantilla2 
-                                    sleep 5
-                                    rm -rf *
-                                    #done
-                                fi
-
-                                
-
-
-                                done
-                                let NT=$NT+1
-                            done
-
-                        }
-                        function mostrar() {
-
-                            echo ------------------------------------
-                            echo "Tipo de archivo: $f "
-                            echo ------------------------------------
-
-                            echo ------------------------------------
-                            echo "Nombre de archivo: $FICHERO1"
-                            echo ------------------------------------
-
-                            echo ------------------------------------
-                            echo "Cantidad de archivos: $canti"
-                            echo ------------------------------------
-
-                        }
-
-                        function comprobar() {
-
-
-                            if [ $error == 0 ]; then
-                                echo
-                                echo -e "\e[32mArchivos renombrados con éxito :)"
-                                echo -e "\e[39m"
-                                echo
-                            elif [ -z "$nombre" ]; then
-                                echo Debes escribir un nombre de archivo, para mostrar la ayuda escriba
-                                exit
-
-                            elif ! [ -e "$FICHERO" ]; then
-                                echo El archivo $FICHERO no existe, para mostrar la ayuda escriba
-                                exit
-                            else
-                                echo
-                                echo -e "\e[31mError al renombrar los archivos :("
-                                echo -e "\e[39m"
-                                echo
-                            fi     
-
-
-                        }
-
-                        function comprobar1() {
-
-
-                            if [ $error == 0 ]; then
-                                echo
-                                echo -e "\e[32mArchivos extraidos con éxito :)"
-                                echo -e "\e[39m"
-                                echo
-                            elif [[ $error = 10 ]]; then
-                                echo
-                                msg -ama "No se encontraron ficheros, o esta dañado"
-
-                                if [[ $menu_principall = 2 ]]; then
-                                    msg -azu "Reitentando descargar el archivo"
-                                    googledd $K
-                                    descompri
-                                fi
-                                
-
-                            elif [ -z "$nombre" ]; then
-                                echo Debes escribir un nombre de archivo, para mostrar la ayuda escriba "ud --help"
-                                exit
-
-                            elif ! [ -e "$FICHERO" ]; then
-                                echo El archivo $RAR no existe, para mostrar la ayuda escriba "ud --help"
-                                exit
-                            else
-                                echo
-                                echo -e "\e[31mError al renombrar los archivos :("
-                                echo -e "\e[39m"
-                                echo
-                            fi
-
-
-                        }
-
-                        function descompri() {
-
-                            IKEY6=/var/local/Key6.txt
-                            PSW6=$(cat $IKEY6)
-                            for FILE in *.rar ; do NEWFILE=`echo $FILE | sed 's/ /_/g'` ; mv "$FILE" $NEWFILE ; done > /dev/null 2>> /root/log.txt
-                            for FILE in *.zip ; do NEWFILE=`echo $FILE | sed 's/ /_/g'` ; mv "$FILE" $NEWFILE ; done > /dev/null 2>> /root/log.txt
-                            for RAR in `ls *.rar *.zip`
-                            do
-                                echo $RAR
-                            done > /dev/null 2>> /root/log.txt
-
-
-                            echo
-
-
-                            descomprimir=${RAR##*.}
-                            case $descomprimir in
-
-                              *rar)
-                              unrar x -p$PSW6 $RAR -y 
-                              error=$?
-                              comprobar1
-                              printf "${CYANCLARO}";
-                              echo "FICHEROS RAR DESCOMPRIMIDOS CON EXITO!!";;
-                              *zip)
-                              unzip $RAR -y
-                              error=$?
-                              comprobar1
-                              printf "${CYANCLARO}";
-                              echo "FICHEROS ZIP DESCOMPRIMIDOS CON EXITO!!";;
-                          esac         
-                          for f in * ; do mv "$f" "${f// /_}" ; done > /dev/null 2>> /root/log.txt
-                          find . ! -name credentials.json ! -name drivedb -type f -exec mv {} . 2>/dev/null \;
-                          find . ! -name .gd -type d -exec rm -rf {} 2>/dev/null \;
-
-                          if [[ $SUBRAR ]]; then
-                          	find . ! -name "*.mkv" ! -name "*.mp4" ! -name "*.avi" ! -name "*.mpg" ! -name "*.srt" ! -name "*.ass" -type f -exec rm -rf {} 2>/dev/null \;
-                          else
-                          	find . ! -name "*.mkv" ! -name "*.mp4" ! -name "*.avi" ! -name "*.mpg" -type f -exec rm -rf {} 2>/dev/null \;
-                          fi
-                          
-
-                        #   until [[ -f $FINBUCLE ]]; do
-
-                        #     for FINBUCLE in `ls *.mkv *.mp4 *.avi *.mpg`; do
-                        #         echo $FINBUCLE
-                        #     done > /dev/null 2>> /root/log.txt
-                        #     for x in `ls`; do
-                        #         if [ -d $x ]; then
-                        #             FILED=`echo $x`
-                        #             echo $FILED
-                        #             cd $FILED
-                        #             for f in * ; do mv "$f" "${f// /_}" ; done > /dev/null 2>> /root/log.txt
-                        #             for FINBUCLE in `ls *.mkv *.mp4 *.avi *.mpg`; do
-                        #                 echo $FINBUCLE
-                        #             done > /dev/null 2>> /root/log.txt
-                        #         fi
-                        #     done 2>/dev/null
-                        # done
-                        Fmkv=$(ls *.mkv 2>/dev/null)
-                        if [[ $AUDIO = 1 ]]; then
-                            #if [[ -n $Fmkv ]]; then
-                                valor=1
-                                mkdir Latino
-                                for c in `ls *.mkv *.mp4 *.avi *.mpg` ; do 
-                                    cc=$(mkvinfo $c | awk '/Track type: audio/,/Track type: subtitles/'| grep Language | awk '{print $4}')
-                                    if [[ $cc = "lat" ]]; then
-                                        echo -e "\n "
-                                        echo -e "\033[01;36m..:el idioma es latino:..\033[0m"
-                                        mkvmerge -o $c.LAT.mkv -a "lat" $c
-                                    elif [[ $cc = "spa" ]]; then
-                                        echo -e "\n "
-                                        echo -e "\033[01;36m..:el idioma es español:..\033[0m"
-                                        mkvmerge -o $c.LAT.mkv -a "spa" $c
-                                    else
-                                        echo -e "\033[01;36m..:No hay subtitulos:..\033[0m"
-                                        mv $c Latino
-                                    fi
-                                    mv $c.LAT.mkv Latino
-                                done 2>/dev/null
-                                rm *
-                                cd Latino
-                                #fi
-                                if [[ $menu_principall = 1 ]]; then
-                                    if [[ $CONVERPELI != 1 ]]; then
-
-                                        for i in * ; do mv -- "${i}" "${i//['][!”#$%&’()*+,/:;<=>?@\^`{\|}~-']/_}" ; done 2>/dev/null
-                                        for y in `ls *.mkv *.mp4 *.avi *.mpg`; do
-                                            ACC_AUDIO=$(mkvmerge -i $y | grep ": audio" | awk '{print $5}')
-                                            if [[ $ACC_AUDIO != "(AAC)" ]]; then
-                                                ffmpeg -i $y -c:v copy -c:a aac -strict -2 A.$y
-                                                #rm $y
-                                                mv A.$y $y
-                                            fi
-                                        done 2>/dev/null
-                                    else
-                                     echo "NO HAY NECESIDAD"
-
-                                 fi
-                             fi
-
-                         fi
-
-                     }
-
-                     function mp(){
-                        rename 's/.mp4//' *.mp4 -v -n > /dev/null 2>> /root/log.txt
-                        rename 's/.mkv//' *.mkv -v -n > /dev/null 2>> /root/log.txt
-                        rename 's/.avi//' *.avi -v -n > /dev/null 2>> /root/log.txt
-
-
-                }
+                done 2>/dev/null
+            else
+                echo "NO HAY NECESIDAD"
+
+            fi
+        fi
+
+    fi
+
+}
+
+function mp()
+{
+rename 's/.mp4//' *.mp4 -v -n > /dev/null 2>> /root/log.txt
+rename 's/.mkv//' *.mkv -v -n > /dev/null 2>> /root/log.txt
+rename 's/.avi//' *.avi -v -n > /dev/null 2>> /root/log.txt
+}
 
                 function renom() {
                     RD=$(pwd)
@@ -3125,8 +3124,8 @@ function subida_o_s_s()
 
                    # BASE DE DATOS TEST
 
-                MEGALPHP1=$(/var/www/html/panel/inc/include/./ouo.php $MEGALPHP)
-                LGDPHP1=$(/var/www/html/panel/inc/include/./short.php $LGDPHP)
+                MEGALPHP1=$(/var/www/html/panel/inc/include/./short.php $MEGALPHP)
+                LGDPHP1=$(/var/www/html/panel/inc/include/./ouo.php $LGDPHP)
 
             
                 pastepelis=$(/var/www/html/panel/inc/include/./pastepelis.php 0 "$nombresinespacio $CALIDA2 $IDIOMA2" "$IDIOMA3 | $CALIDA2" $MEGALPHP1 $LGDPHP1 $UrlVerystream "$TPE1" "$TPE2")
