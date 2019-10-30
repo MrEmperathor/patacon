@@ -1,0 +1,123 @@
+#!/bin/bash
+                
+function EnlacsFree(){
+    lfree=$(echo "--------------------------------
+    Peso: $TPE3
+
+    [b]ENLACES DE DESCARGA[/b]
+
+    [color=red][b]Mega[/b][/color]
+    $MEGALPHP1
+
+    [color=green]Google Drive[/color]
+    $LGDPHP1
+
+    -------------------
+    Peso: $TPE2
+    [color=blue][b]Verystream[/b][/color]
+    $UrlOpenload
+
+
+    [b]CONTRASEÑA PARA DESCOMPRIMIR:[/b] [color=black][b]pelishd24.com[/b][/color]
+
+    ---------------------------------")
+} 
+function EnlacsVip(){
+
+FTPLOG2=".ftplogfileOpen"
+LINKOPENPHP=$(cat $FTPLOG2 | awk -F "URL: " '{printf $2}')
+TodosLosEnlaces
+
+    lvip=$(echo "--------------------------------
+    Peso: 
+    $TPE3
+
+    [b]ENLACES DE DESCARGA[/b]
+
+    [color=red][b]Mega[/b][/color]
+    $linkmega7201
+
+    [color=green]Google Drive[/color]
+    $linkdrive720
+
+
+    [color=blue][b]Verystream[/b][/color]
+    $UrlOpenload
+
+
+    [b]CONTRASEÑA PARA DESCOMPRIMIR:[/b] [color=black][b]pelishd24.com[/b][/color]
+
+    ---------------------------------")
+}
+function Calidad720(){
+    r720='/var/www/html/de/.enlaces'
+    rr7=$(pwd)
+    linkmega720='.linkmega720.txt'
+    for i7_Original in `ls *.mp4 *.mkv *.avi *.mpg`; do
+    echo $i7_Original
+    done 2>/dev/null
+
+
+    if [[ $i7_Original ]]; then
+        mkdir 720p
+        cp $i7_Original 720p
+        cd 720p
+        for i in * ; do mv "${i}" "${i//['][!”#$%&’*+,/:;<=>? @\^_`{\|}~-']/_}" ; done 2>/dev/null
+        echo 
+        for tt in `ls *.mp4 *.mkv *.avi *.mpg`; do
+            echo $tt
+            echo
+        done 2>/dev/null
+        ii7=${tt%.*}
+        
+        ffmpeg -i $tt -b:v 2500k -strict -2 $tt.720.mp4
+        err=$?
+
+
+        if [[ $err = 0 ]]; then
+            rm -rf $tt
+        fi
+             #------------------NOMBRE CON EL ID
+            # for tt in `ls *.mp4 *.mkv *.avi *.mpg`; do
+            #     echo $tt
+            # done 2>/dev/null
+            # ii7=${tt%.*}
+            for i7 in `ls *.mp4 *.mkv *.avi *.mpg`; do echo $i7; done 2>/dev/null
+            i8=${i7%.*}
+
+        for f in * ; do mv "$f" "${f//"$i8"/"${IDPELI}_720p_${IDIOMA2}"}" ; done 2>/dev/null
+
+        for i7 in `ls *.mp4 *.mkv *.avi *.mpg`; do echo $i7; done 2>/dev/null
+
+        subida_mega $linkmega720
+        rclone copy $i7 -P drive4:/Maira
+        linkdrive720=$(rclone link drive4:/Maira/$i7)
+        linkmega7201=$(cat $linkmega720 | awk '{print $1}')
+        for TPE in `ls -alh $i7 | awk -F " " '{print $5}'` ; do TPE3=`echo $TPE | sed 's/G/ Gigas/g' | sed 's/M/ Megas/g'` ; mv "$TPE" $TPE3 ; done 2>/dev/null
+
+            
+            MEGALPHP1=$(/var/www/html/panel/inc/include/./acortador.php $linkmega7201)
+            LGDPHP1=$(/var/www/html/panel/inc/include/./acortador.php $linkdrive720)
+
+
+
+            EnlacsVip
+            EnlacsFree
+            # ComprobarVariable
+                # array=($UrlOpenload $netuTV $drive1 $drive2 $drive3)
+                # arraydescarga=($UrlOpenload $linkmega7201 $linkdrive720 $MEGALPHP1 $LGDPHP1)
+
+                # enlaces_pre=$(/var/www/html/panel/inc/include/./file.php "${array[@]}")
+                # descarga=$(/var/www/html/panel/inc/include/./file.php "${arraydescarga[@]}")
+
+                /var/www/html/panel/inc/xion/./editar.php "$lvip" "$lfree" $bid
+                echo ".::720 agregado::."
+                
+            
+
+    else
+        echo "No existe ninguna pelicula!!"
+    fi
+
+
+}

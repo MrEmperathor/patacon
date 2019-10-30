@@ -1,0 +1,3294 @@
+#!/bin/bash
+BLANCOF='\033[47m'; RED='\033[0;31m'; REDCLARO='\033[1;31m'; AZUL='\033[0;34m'; AZULCLARO='\033[1;34m'; VERDE='\033[0;32m'; VERDECLARO='\033[1;32m'; CYAN='\033[0;36m'; CYANCLARO='\033[1;36m'; PURPURA='\033[0;35m'; PURPURAC='\033[1;35m'; CAFE='\033[1;37m'; AMARILLO='\033[1;33m'; NC='\033[0m'; CONTRAMEG=$(cat /usr/local/contramega); RFembed="/var/www/html/panel/inc/include/fembed.php"; RNetu="/var/www/html/panel/inc/include/netu1.php"; SFembed="/var/www/html/panel/inc/include/./fembed.php"; SNetu="/var/www/html/panel/inc/include/./netu1.php"; CONFIG="/usr/local/bin/.cc/config.ini"
+
+source $CONFIG
+PSW6=$PASSRAR
+function validar_cuenta(){
+
+    raya="-------------------------"
+    if [[ $1 != "-netu" && $1 != "-fembed" ]]; then
+    read -p "USUARIO: " USER_OPEN
+    read -p "CONTRASEÑA: " PASS_OPEN
+    fi
+
+case $1 in
+    -openload)
+        # rm /var/local/KeyOpenload.txt 2>/dev/null
+        IKEY=/var/local/KeyOpenload.txt
+        if [[ ! -f $IKEY ]];then
+            echo "" >> $IKEY
+            sed -i "1i $USER_OPEN" $IKEY
+            sed -i "2i $PASS_OPEN" $IKEY
+        else
+            sed -i "1i $USER_OPEN" $IKEY
+            sed -i "2i $PASS_OPEN" $IKEY
+        fi
+        USROpenload=(`cat $IKEY | sed -n 1p $IKEY`)
+        PSWOpenload=(`cat $IKEY | sed -n 2p $IKEY`)
+        # echo $USROpenload; echo $PSWOpenload;
+        ;;
+    -verystream)
+        # rm /var/local/Key_Verystream.txt 2>/dev/null
+        IKEY=/var/local/Key_Verystream.txt
+        if [[ ! -f $IKEY ]];then
+            echo "" >> $IKEY
+            sed -i "1i $USER_OPEN" $IKEY
+            sed -i "2i $PASS_OPEN" $IKEY
+        else
+            sed -i "1i $USER_OPEN" $IKEY
+            sed -i "2i $PASS_OPEN" $IKEY
+        fi
+        USRVery=(`cat $IKEY | sed -n 1p $IKEY`)
+        PSWVery=(`cat $IKEY | sed -n 2p $IKEY`)
+        ;;
+    -netu)
+        read -p "ID API: " API_NETU
+        AT="\$user_token = \"$API_NETU\";";
+        sed -i "32c $AT" $RNetu | cut -d" " -f3 | cut -d'"' -f2
+        ;;
+    -fembed)
+        read -p "CLIENTE ID: " CLIEN_ID
+        read -p "CLIENTE SECRET: " CLIENT_SECRET
+        USER="\$ID_CLIENT = \"$CLIEN_ID\";"
+        PASS="\$SECRET_CLIENT = \"$CLIENT_SECRET\";"
+        sed -i "9c $USER" $RFembed
+        sed -i "10c $PASS" $RFembed
+        ;;
+    -Gooledrive)
+        read -p "USER ID: " USER_ID
+
+esac
+echo $raya; echo "Datos actualizados."
+
+}
+
+msg () {
+BRAN='\033[1;37m' && VERMELHO='\e[31m' && VERDE='\e[32m' && AMARELO='\e[33m'
+AZUL='\e[34m' && MAGENTA='\e[35m' && MAG='\033[1;36m' && NEGRITO='\e[1m' && SEMCOR='\e[0m'
+ case $1 in
+  -ne)cor="${VERMELHO}${NEGRITO}" && echo -ne "${cor}${2}${SEMCOR}";;
+  -pur)cor="${MAGENTA}${NEGRITO}" && echo -e "${cor}${2}${SEMCOR}";;
+  -ama)cor="${AMARELO}${NEGRITO}" && echo -e "${cor}${2}${SEMCOR}";;
+  -verm)cor="${AMARELO}${NEGRITO}[!] ${VERMELHO}" && echo -e "${cor}${2}${SEMCOR}";;
+  -azu)cor="${MAG}${NEGRITO}" && echo -e "${cor}${2}${SEMCOR}";;
+  -verd)cor="${VERDE}${NEGRITO}" && echo -e "${cor}${2}${SEMCOR}";;
+  -bla)cor="${BRAN}${NEGRITO}" && echo -ne "${cor}${2}${SEMCOR}";;
+  -bar2)cor="${AZUL}${NEGRITO}======================================================" && echo -e "${cor}${SEMCOR}";;
+  -bar)cor="${AZUL}${NEGRITO}========================================" && echo -e "${cor}${SEMCOR}";;
+ esac
+}
+function ProgressBar(){
+chars="/-\|" 
+while :; do 
+    for (( i=0; i<${#chars}; i++ )); do
+    sleep 0.1
+    printf " "; echo -en "${chars:$i:1}" "\r" 
+    done 
+done & export PIDI1=$!; trap 'kill $PIDI1' SIGTERM SIGKILL
+
+}
+RAR=(ls *.rar *.zip)
+RD=$(pwd)
+function subida_mega() {
+for FICHERO_mega in `ls *.mp4 *.avi *.mkv *.mpg`
+do
+echo $FICHERO_mega
+done 2>/dev/null
+
+RUTAMEGA=$(pwd); MEGARC=/root/.megarc; MEGARC2=/root/megarc2
+listamega=/var/local/listamega
+listamega1=/var/local/listamega1
+lismega=/var/local/lismega
+SUBIDO="Uploaded $FICHERO_mega"
+CUENTALIMITE="EOVERQUOTA"
+NOLINKS=$(echo "ERROR: No files specified for upload!")
+MEGALIMIT="ERATELIMIT"
+MEGALIMIT3="File already exists"
+MEGALIMIT2="Invalid upload handle"
+ERRORCUENTA="ENOENT"
+RUTA2="/var/www/html/de/.enlaces"
+TOTAL=$(megadf -h | sed -n '1p' | awk '{printf $1}')
+A=1
+#megaput $FICHERO_mega --reload -u $USR4 -p $PSW4
+CMEGA=$(cat /root/.megarc | sed -n '2p' | awk -F " " '{printf $3}')
+PMEGA=$(cat /root/.megarc | sed -n '3p' | awk -F " " '{printf $3}')
+MEGA_Links=${1}
+function LinkMegaDOWN() {
+
+    megals -e /Root/$FICHERO_mega -u $CMEGA -p $PMEGA > $MEGA_Links ; #echo -e "\n " >> $RUTA2/GD_$MiPeli.txt
+        if [[ $MEGA_Links == ".megallin.txt" ]]; then
+            MEGALPHP=$(cat $MEGA_Links | awk -F " " '{printf $1}')
+        fi
+        if [[ $MEGA_Links == ".linkmega720.txt" ]]; then
+            MEGALPHP720=$(cat $MEGA_Links | awk -F " " '{printf $1}')
+        fi
+    
+}
+
+if [[ -f $FICHERO_mega ]]; then
+    echo -e "\033[1;31m=================================================\033[0m"
+    #megaput $FICHERO_mega 2>&1 | tee .megalog; sed '1d' .megalog > .megalog1; MEGALOG=$(cat .megalog1.txt)
+    megaput $FICHERO_mega --debug 2>&1 | tee $RUTAMEGA/.megalog
+    LinkMegaDOWN
+    ERRORM1=$?
+    MEGALOG=$(grep "EOVERQUOTA" $RUTAMEGA/.megalog)
+
+    ERRORM=$(cat .megalog | grep "Uploaded" | wc -l)
+    #errormega=$?
+
+else
+        echo -e "\033[1;31m=================================================\033[0m"
+        echo "\033[1;31mNO HAY NADA PARA MEGA :V\033[0m"
+fi
+
+
+    if fgrep "$CUENTALIMITE" $RUTAMEGA/.megalog ;then
+    #if [[ $MEGALOG = $CUENTALIMITE ]]; then
+                MEGAESP1="Free:  0 bytes"
+                MEGAESP=$(megadf --human | sed -n '3p')
+                
+                    while [[ $MEGAESP = $MEGAESP1 ]]; do
+                        
+                        MEGAESP=$(megadf --human | sed -n '3p')
+                            while read line 
+                            do
+                                
+                                echo "$line" > "$listamega$A"; CUENTAMEGA=$(cat "$listamega$A")
+                                let A++
+                                echo
+                                echo -e "\033[1;32mCUENTA LLENA...PASAREMOS A LA CUENTA $CUENTAMEGA EN UN MOMENTO!! :)\033[0m"
+                                sleep 3
+
+                                sed '2d' $MEGARC > $MEGARC2; sed -i "2i Username = $CUENTAMEGA" $MEGARC2; rm -rf $MEGARC; mv $MEGARC2 $MEGARC
+                                sleep 1
+                                UPDATECUENTA=$(cat $MEGARC | sed -n '2p' | awk -F " " '{printf $3}')
+                                MEGAESP=$(megadf --human | sed -n '3p')
+                                    if [[ $MEGAESP != $MEGAESP1 ]]; then
+                                        echo -e "\033[1;36mPERFECTO LA CUENTA \033[1;31m$UPDATECUENTA\033[0m ESTA DISPONIBLE!\033[0m"
+                                        break
+                                    fi
+
+                            done < "$listamega"
+                        #sed -n "$Ap" $listamega > $listamega1; CUENTAMEGA=$(cat "$listamega1")
+                        sleep 3
+                        CMEGA=$(cat /root/.megarc | sed -n '2p' | awk -F " " '{printf $3}')
+                        PMEGA=$(cat /root/.megarc | sed -n '3p' | awk -F " " '{printf $3}')
+                        megaput $FICHERO_mega --debug 2>&1 | tee .megalog; MEGALOG=$(grep "EOVERQUOTA" $RUTAMEGA/.megalog)
+                        LinkMegaDOWN
+                        ERRORM1=$?
+                        ERRORM=$(cat .megalog | grep "Uploaded" | wc -l)
+                        #sed '1d' $listamega > $lismega; rm -rf $listamega; mv $lismega $listamega
+                    done
+    fi
+if fgrep "$MEGALIMIT" $RUTAMEGA/.megalog ;then
+    until [[ $SUBIDO = $MEGASUB ]]; do
+        CMEGA=$(cat /root/.megarc | sed -n '2p' | awk -F " " '{printf $3}')
+        PMEGA=$(cat /root/.megarc | sed -n '3p' | awk -F " " '{printf $3}')
+         megaput $FICHERO_mega --debug 2>&1 | tee $RUTAMEGA/.megalog
+         LinkMegaDOWN
+        if fgrep "$SUBIDO" $RUTAMEGA/.megalog ;then
+                MEGASUB=${SUBIDO}
+                echo "$MEGASUB"
+                break
+        elif fgrep "$MEGALIMIT3" $RUTAMEGA/.megalog ;then
+                MEGASUB=${SUBIDO}
+                echo "$MEGASUB"
+                break
+
+        fi
+    done
+fi
+if fgrep "$MEGALIMIT2" $RUTAMEGA/.megalog ;then
+    until [[ $SUBIDO = $MEGASUB ]]; do
+        CMEGA=$(cat /root/.megarc | sed -n '2p' | awk -F " " '{printf $3}')
+        PMEGA=$(cat /root/.megarc | sed -n '3p' | awk -F " " '{printf $3}')
+         megaput $FICHERO_mega --debug 2>&1 | tee $RUTAMEGA/.megalog
+         LinkMegaDOWN
+        if fgrep "$SUBIDO" $RUTAMEGA/.megalog ;then
+                MEGASUB=${SUBIDO}
+                echo "$MEGASUB"
+                break
+        fi
+    done
+fi      
+
+if fgrep "$ERRORCUENTA"  $RUTAMEGA/.megalog ;then
+    sed -i '2d' /root/.megarc
+    while read line 
+    do
+                                
+         echo "$line" > "$listamega$A"; CUENTAMEGA=$(cat "$listamega$A")
+         let A++
+         echo
+         echo -e "\033[1;32mERROR DE CUENTA...PASAREMOS A LA CUENTA $CUENTAMEGA EN UN MOMENTO!! :)\033[0m"
+         sleep 3
+
+         #sed '2d' $MEGARC > $MEGARC2; sed -i "2i Username = $CUENTAMEGA" $MEGARC2; rm -rf $MEGARC; mv $MEGARC2 $MEGARC
+         sed -i "2i\Username = $CUENTAMEGA" /root/.megarc
+
+         sleep 1
+         #UPDATECUENTA=$(cat $MEGARC | sed -n '2p' | awk -F " " '{printf $3}')
+         MEGAESP=$(megadf --human | sed -n '1p' | awk '{print $1}')
+         echo -e "\033[1;36mPERFECTO LA CUENTA \033[1;31m$CUENTAMEGA\033[0m ESTA DISPONIBLE!\033[0m"
+             if [[ $MEGAESP = "Total:" ]]; then  
+                 while true ; do
+                    megaput $FICHERO_mega --debug 2>&1 | tee .megalog
+                    sleep 2s
+                    COMPROBAR=$(megals -e /Root/$FICHERO_mega | awk '{print $2}')
+                    if [[ $COMPROBAR = "/Root/$FICHERO_mega" ]]; then
+                        break
+                    fi
+                done
+                break
+             fi
+        sed -i '2d' /root/.megarc
+
+    done < "$listamega"
+
+fi
+
+
+if [[ $ERRORM = 1 ]]; then
+        echo -e "\n "
+        echo -e "\033[1;36mSubido correctamente a\033[0m \033[1;31mMEGA\033[0m"
+        echo -e "\033[1;31m=====================================\033[0m"
+        echo -e "\033[1;33mLINKS DE DESCARGA MEGA\033[0m"
+        # megals -e /Root/$FICHERO_mega
+        echo $MEGALPHP
+        echo -e "\033[1;36m=================================================\033[0m"
+fi
+}
+
+. /usr/local/bin/convert_720
+# . /usr/local/bin/convert_7201
+function plantilla2() {
+    
+#sed -i "s%https://%\nhttps://%g" .LinkOpenSerie.$DD.Temp.$NT
+#sed -i "s%https://%\nhttps://%g" .LinkMangoSerie.$DD.Temp.$NT
+IP=$(cat "/var/local/IP")
+DD2=${DD}
+FTPLOG2="$RD/.LogOpen.$DD.Temp.$NT"
+FTPLOG3="$RD/.logMango.$DD.Temp.$NT"
+FTPLOG1=.ftplogfileCherry
+RUTA2="/var/www/html/de/.enlaces"
+URLVIP="/var/www/html/de/.enlaces/VIP.$DD.Temp.$NT.txt"
+TodosLosEnlaces3 > /dev/null
+TodosLosEnlaces4 > /dev/null
+
+pastepelis=$(/var/www/html/panel/inc/include/./pasteserie.php 1 "$FILEE" "TEMPORADA $NT | $IDIOMA1 | $CALIDA1" "${enlaVIP[@]}" "${D_D[@]}")
+
+enlaces_pre=$(/var/www/html/panel/inc/include/./file.php "${EnlacesOpenT[@]}")
+enlaces_pre1=$(/var/www/html/panel/inc/include/./file.php "${EnlacesOpenT2[@]}")
+enlaces_pre2=$(/var/www/html/panel/inc/include/./file.php "${VIP_LINK[@]}")
+enlaces_pre3=$(/var/www/html/panel/inc/include/./file.php "${D_STREAM2[@]}")
+enlaces_pre4=$(/var/www/html/panel/inc/include/./file.php "${Vnetu[@]}")
+enlaces_pre5=$(/var/www/html/panel/inc/include/./file.php "${ouuo[@]}")
+enlaces_pre6=$(/var/www/html/panel/inc/include/./file.php "${enlaVIP[@]}")
+enlaces_pre7=$(/var/www/html/panel/inc/include/./file.php "${D_D[@]}")
+enlaces_pre8=$(/var/www/html/panel/inc/include/./file.php "$pastepelis")
+
+
+cadena_array=$(/var/www/html/panel/inc/include/./file2.php "$enlaces_pre" "$enlaces_pre1" "$enlaces_pre2" "$enlaces_pre3" "$enlaces_pre4" "$enlaces_pre5" "$enlaces_pre6" "$enlaces_pre7" "$enlaces_pre8")
+
+/var/www/html/panel/inc/xion/./insertarserie.php $IDSERIE "$FILEE" $NT $CALIDA1 $IDIOMA1 "$cadena_array"
+}
+
+for MiPeli in `ls *.mp4 *.mkv *.avi *.mpg`; do
+    echo $MiPeli
+done 2>/dev/null
+
+nom=$(ls -alh $RD/$MiPeli | awk -F " " '{print $5}')
+
+function alberth() {
+    clear
+    printf "${RED}";
+    echo "***********************************************************************************************************"
+
+    printf "${AMARILLO}"
+    echo "PARA REGRESAR AL MENU PRESIONE 0 PARA CANCELAR EL SCRIPT PRESIONE Ctrl+C "
+}
+echo
+printf "${NC}"
+
+function accion() {
+
+    alberth
+    echo -e "\033[1;34m=================================================\033[0m"
+    echo -e "\033[0;35m[1]\033[0m \033[1;31m>\033[0m DESCARGA DE OPENLOAD,VSTREAM,YOUTUBE...ETC"
+    echo -e "\033[0;35m[2]\033[0m \033[1;31m>\033[0m DESCARGA DE GDRIVE"
+    echo -e "\033[0;35m[3]\033[0m \033[1;31m>\033[0m DESCARGA DE MEGA"
+    echo -e "\033[0;35m[4]\033[0m \033[1;31m>\033[0m DESCARGA TORRENT"
+    echo -e "\033[0;35m[5]\033[0m \033[1;31m>\033[0m DESCARGAR Y SUBIR EN 720P"
+    echo -e "\033[0;35m[6]\033[0m \033[1;31m>\033[0m DESCARGAR > SUBIR A MEGA"
+    # echo -e "\033[0;35m[8]\033[0m \033[1;31m>\033[0m SOLO SUBIR A GDRIVE"
+    # echo -e "\033[0;35m[9]\033[0m \033[1;31m>\033[0m SOLO SUBIR A MEGA"
+    # echo -e "\033[0;35m[10]\033[0m \033[1;31m>\033[0m SOLO SUBIR A VIP"
+    # echo -e "\033[0;35m[11]\033[0m \033[1;31m>\033[0m SOLO SUBIR A FEMBED"
+    # echo -e "\033[0;35m[12]\033[0m \033[1;31m>\033[0m VER ESPACIO MEGA"
+    # echo -e "\033[0;35m[13]\033[0m \033[1;31m>\033[0m VER LINKS MEGA"
+    # echo -e "\033[0;35m[14]\033[0m \033[1;31m>\033[0m SUBIR 720P"
+    # echo -e "\033[0;35m[15]\033[0m \033[1;31m>\033[0m DESCARGAR DE DRIVE & SUBIR A MEGA"
+    echo -e "\033[1;34m=================================================\033[0m"
+    read -p "INTRODUCE LA OPCION A USAR: " opcion
+
+    case $opcion in 
+
+        1) drived; descompri 2>/dev/null; EscogerAudio 2>/dev/null; PegarSubtitulos 2>/dev/null; renom; TArchivo; subida_o_s_s; DriveRClone; subida_mega .megallin.txt; IFS=$SAVEIFS; sudmenu ;; #openloadd
+
+        2) drived; TArchivo; descompri; EscogerAudio; PegarSubtitulos; renom; ConvertirPeli; subida_o_s_s; DriveRClone; subida_mega .megallin.txt; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
+        # 2) drived; PegarSubtitulos; TArchivo; descompri; renom; ConvertirPeli; sudmenu ;;
+        
+        3) drived; descompri; EscogerAudio; PegarSubtitulos; renom; TArchivo; subida_o_s_s; DriveRClone; subida_mega .megallin.txt; sudmenu ;; #megad
+
+        4) drived; descompri; EscogerAudio; PegarSubtitulos; renom; ConvertirPeli; TArchivo; subida_o_s_s; DriveRClone; subida_mega .megallin.txt; sudmenu ;; #ariad
+
+        5) subir720; TArchivo; descompri; EscogerAudio; PegarSubtitulos; renom; ConvertirPeli; subida_o_s_s; DriveRClone; subida_mega .megallin.txt; sudmenu ;; #d_todos ;;
+
+        6) d_openload ;;
+
+        7) subida_o_s_s1; sudmenu ;;
+
+        8) DriveRClone; sudmenu ;;
+
+        9) subida_mega; sudmenu ;;
+
+        10) gdtxt; sudmenu ;;
+
+        11) subi14; sudmenu ;;
+
+        12) clear; megadf --human & sleep 15 ;;
+
+        13) megals -e; sudmenu ;;
+
+        14) openloadd; TArchivo; renom; gdtxt; subida_mega; sudmenu ;;
+
+        15) drived; TArchivo; renom; descompri; subida_mega; sudmenu ;;
+        *) echo "no es una opcion válida.";
+        echo "Presiona una tecla para continuar...";
+        read foo;;
+    esac
+
+}
+
+function accion1() {
+
+    alberth
+    echo "ESCOJA UNA OPCION"
+    echo
+    printf "${CYANCLARO}";
+    echo ------------------------------
+    echo "1) DESCARGA  DE OPENLOAD"
+    echo ------------------------------
+    echo "2) DESCARGAR DE GDRIVE"
+    echo ------------------------------
+    echo "3) DESCARGAR DE MEGA"
+    echo ------------------------------
+    echo "4) DESCARGAR TORRENT"
+    echo ==============================
+    echo "5) SUBIR SERIE A > OPENLOAD, STREAMANGO, STREAMCHERRY"
+    echo ------------------------------
+    echo "6) SUBIR SERIE A > STREAMCHERRY"
+    echo ------------------------------
+    echo "7) SUBIR SERIE A > STREAMANGO"
+    echo ------------------------------
+    echo "8) SUBIR SERIE A > OPENLOAD"
+    echo ------------------------------
+    echo "9) SUBIR SERIE A > GDRIVE"
+    echo ------------------------------
+    echo "10) SOLO SUBIR A MEGA"
+    echo ------------------------------
+    echo "11) ADVANCE"
+    echo ==============================
+    echo
+    printf "${VERDE}";
+    read -p "INTRODUCE LA OPCION A USAR: " opcion1
+
+    case $opcion1 in 
+
+        1) openloadd; renom; descompri; subida_o_s_s_todos; subida_drive_todos; sudmenu ;;
+
+        2) drived; descompri; renom; subida_o_s_s_todos; subida_drive_todos; sudmenu ;;
+
+        3) megad; renom; descompri; subida_o_s_s_todos; subida_drive_todos; sudmenu ;;
+
+        4) ariad; renom; descompri; subida_o_s_s_todos; subida_drive_todos; sudmenu ;;
+
+        5) CARP; subida_o_s_s_todos1; subida_o_s_s_todos2; subida_o_s_s_todos3; sudmenu ;;
+
+        6) CARP; subida_o_s_s_todos3; sudmenu ;;
+
+        7) CARP; subida_o_s_s_todos2; sudmenu ;;
+
+        8) CARP; subida_o_s_s_todos1; sudmenu ;;
+
+        9) subida_drive_todos; sudmenu ;;
+
+        10) subida_mega_todos; sudmenu ;;
+
+        11) drive3; sudmenu ;;
+
+    esac
+
+}
+LimpiarCuentasMega() {
+    listamega=/var/local/listamega
+    IP=$(ifconfig | awk '/inet addr/{print substr($2,6)}' | sed -n '1p')
+    echo "DESEA DESCARGAR UNA COPIA ANTES DE PROCEDER?"
+    echo "1-[SI]"
+    echo "2-[NO]"
+    read S
+    if [[ $S = 1 ]]; then
+        cp $listamega /var/www/html/listamega.dev
+        echo "PUEDE DESCARGAR SU COPIA DESDE EL NAVEGADOR CON EL SIGUIENTE LINK: http://$IP/listamega.dev"
+    fi
+    
+    for i in `cat $listamega` ; do
+        echo $i
+        # megadf -h -u $i -p Alberthvps2019
+        megadf -h -u $i -p $CONTRAMEG
+        SPACEM=$(megadf -h -u $i -p $CONTRAMEG | awk -F "Free:  " '{printf $2}')
+        if [[ $SPACEM = "0 bytes" ]]; then
+            sleep 3
+            echo -e "\033[1;31mGOOD BYE :(\033[0m"
+            echo -e "\n "
+            sed -i "s%$i%%g" $listamega ; sed -i "1d" $listamega
+        else 
+            echo -e "\033[1;33m$i\033[0m \033[1;36mFUNCIONAL\033[0m"
+            echo -e "\n "
+        fi
+    done
+    if [[ $S = 1 ]]; then
+        echo "PUEDE DESCARGAR SU COPIA DESDE EL NAVEGADOR CON EL SIGUIENTE LINK: http://$IP/listamega.dev"
+    fi
+    echo -e "\033[1;36mOPERACION COMPLETA\033[0m"
+    read
+}
+function tst(){
+
+
+    function vari(){
+
+        read -p "USUARIO: " USER_OPEN
+        read -p "CONTRASEÑA: " PASS_OPEN
+    }
+
+    clear
+    printf "${AZULCLARO}";
+    echo "/////////-----------------------//////////"
+    echo "CAMBIAR DATOS DE LOS SIGUIENTES SERVIDORES"
+    echo "/////////-----------------------//////////"
+    echo "   ________"
+    echo "1. OPENLOAD"
+    echo "   __________"
+    echo "2. VERYSTREAM"
+    echo "   ____________"
+    echo "3. NETU"
+    echo "   ____"
+    echo "4. MEGA"
+    echo "   ______"
+    echo "5. FEMBED"
+    echo "   ===================================="
+    echo "6. CAMBIAR CONTRASEÑA PARA DESCOMPRIMIR"
+    echo "   ===================================="
+    echo "7. CAMBIAR CUENTA DRIVE"
+    echo "   ===================================="
+    echo "8. ELIMINAR REGISTROS DE ENLACES"
+    echo "   ===================================="
+    echo "9. AGREGAR PROXIES PARA MEGA"
+
+    printf "${VERDECLARO}";
+    read -p "Seleccionar una opcion: " TST1
+
+    if [[ $TST1 = 1 ]]; then
+        validar_cuenta -openload
+
+    elif [[ $TST1 = 2 ]]; then
+        validar_cuenta -verystream
+
+    elif [[ $TST1 = 3 ]]; then
+        validar_cuenta -netu
+
+    elif [[ $TST1 = 4 ]]; then
+        echo "1] = agregar lista de cuentas mega"
+        echo "2] = Cuenta mega Individual"
+        echo "3] = Limpiar cuentas llenas"
+        echo "4] = Cambiar contraseña"
+        read lm1
+        case $lm1 in 
+            1) nano /var/local/listamega ;;
+            2) nano /root/.megarc ;;
+            3) LimpiarCuentasMega ;;
+            4) read -p "Ingresar nueva contraseña: " CONTRAMEGA && echo $CONTRAMEGA > /usr/local/contramega
+        esac
+    elif [[ $TST1 = 5 ]]; then
+        validar_cuenta -fembed
+
+    elif [[ $TST1 = 6 ]]; then
+        echo "Contraseña actual: $PASSRAR"; 
+        read -p "CONTRASEÑA: " PASS_RAR
+        sed -i "s/PASSRAR=\"${PASSRAR}\"/PASSRAR=\"${PASS_RAR}\"/g" $CONFIG
+        source $CONFIG
+        PSW6=$PASSRAR
+
+    elif [[ $TST1 = 7 ]]; then
+        CambiarToken
+
+    elif [[ $TST1 = 8 ]]; then
+        rm /var/www/html/de/.enlaces/*
+        rm /var/www/html/de/.enlaces2/*
+    elif [[ $TST1 = 9 ]]; then
+        nano /var/www/html/proxies.txt
+
+
+    fi
+}
+function AUD (){
+
+    # read -p "ELIMINAR AUDIO INGLES? [1/SI] [2/NO]: " AUDIO ACTIVARAUDIO
+    read -p "ELIMINAR LOS DEMAS AUDIOS? [1/SI]: " ACTIVARAUDIO
+
+    if [[ $ACTIVARAUDIO ]]; then
+        if [[ $ElimAudio = 1 ]]; then
+            ELEGIRAUDIO=1
+
+        elif [[ $ElimAudio = 2 ]]; then
+            ELEGIRAUDIO=2
+
+        elif [[ $ElimAudio = 3 ]]; then
+            ELEGIRAUDIO=3           
+        fi
+    fi
+}
+function CrearCuentaMega(){
+	
+    listamega=/var/local/listamega
+    CUENTARANDON=`echo $(($RANDOM))`
+    A=1
+    while true; do
+        clear
+        read -p "Correo: " i
+        MEGAREG=$(megareg --register --email $i --name "PH$CUENTARANDON $Axxcs" --password $CONTRAMEG | sed -n '3p' | sed 's/@LINK@//g')
+        echo $MEGAREG
+        read -p "Link de vavidacion: " VALIDARLINK
+        $MEGAREG $VALIDARLINK
+        megaerror=$?
+        let A=$A+1
+        if [[ $megaerror = 0 ]]; then
+        	echo $i >> $listamega
+        else
+        	msg -red "$i ¡¡NO SE PUDO AGREGAR A LA LISTA!!"
+        	sleep 3
+        fi
+        
+    done
+}
+function TArchivo(){
+    rr=$(pwd)
+    for i in * ; do mv -- "${i}" "${i//['][!”#$%&’()*+, /:;<=>?@\^`{\|}~-']/_}" ; done
+    for i in * ; do mv -- "${i}" "${i//"____"/_}" ; done
+    for i in * ; do mv -- "${i}" "${i//"___"/_}" ; done
+    for i in * ; do mv -- "${i}" "${i//"__"/_}" ; done
+    for i in * ; do mv -- "${i}" "${i//"_"/_}" ; done
+    for TArchivo1 in `ls *` ; do
+        echo -e "\033[1;36mTAMAÑO \033[1;35m$TArchivo1\033[0m \033[0m"
+        ls -alh $TArchivo1 | awk -F " " '{printf $5}' ; echo
+        echo -e "\033[1;31m=========================\033[0m"
+    done 2>/dev/null
+    #TArchivo1=$(ls *)
+    #echo -e "\033[1;36mTAMAÑO DEL ARCHIVO \033[1;35m$TArchivo1\033[0m \033[0m" 2> /dev/null
+    #ls -alh $TArchivo1 | awk -F " " '{printf $5}' 2> /dev/null
+    
+    TDA=$(ls -alh $rr/* | awk -F " " '{printf $5}' 2>/dev/null)
+    sleep 2
+    
+}
+
+function EspacioTrabajo(){
+
+    echo "PRECAUCION!! ESTO ELIMINARA TODOS LOS ESPACIOS DE TRABAJOS QUE TENGA ACTUALMENTE Y CREARA NUEVOS."
+    read -p "ENTER PARA CONTINUA..."
+    directorios=$(ls /var/www/html/de/file | wc -l)
+
+    if [[ $directorios -gt 0 ]]; then
+        for (( i = 1; i <= 30; i++ )); do mkdir /var/www/html/de/file/$i; done
+        for (( i = 1; i <= 30; i++ )); do cd /var/www/html/de/file/$i; screen -t $i; done
+
+        else
+            for (( i = 1; i <= 30; i++ )); do cd /var/www/html/de/file/$i; screen -t $i; done
+
+    fi
+    
+}
+
+function menu_principall() {
+
+
+    rutascren=$(echo $RD | awk -F "file" '{print $1}')
+    escr=$(screen -ls | grep "patacon" | awk -F "." '{print $2}' | awk '{print $1}')
+        if [[ $escr != "patacon" ]]; then
+            screen -S patacon
+
+        else
+            if [[ $rutascren != "/var/www/html/de/" ]]; then
+                screen -x -r patacon
+            fi
+            
+
+        fi
+
+    clear
+    if [[ $RD = "/root" ]]; then
+        printf "${CYANCLARO}";
+        echo "NO ESTA PERMITIDO USAR ESTA RUTA, DEME MOVERSE A UNA RUTA DE TRABAJO..."
+        sleep 2
+        echo "SERA REDIRIGIDO A UNO QUE ALLA ESTABLECIDO..."
+        sleep 2
+        echo "SI NO TIENE UNO CREADO, DEBERA CREAR UNO EN LA OPCION 6"
+        sleep 2
+        screen -x -r patacon
+        destino=$(pwd | awk -F "file" '{print $1}')
+
+            if [[ $destino != "/var/www/html/de/" ]]; then
+                echo "NO ES EL DESTINO"
+                sleep 2
+                for (( i = 1; i <= 30; i++ )); do cd /var/www/html/de/file/$i; screen -t ter$i; done
+            fi
+        exit
+    fi
+
+
+    echo "==================================="
+    echo "[1] SUBIR UN ARCHIVO"
+    echo "==================================="
+    echo "[2] SUBIR VARIOS ARCHIVOS"
+    echo "==================================="
+    echo "[3] SOLO DESCARGAR"
+    echo "==================================="
+    echo "[4] CONFIGURAR"
+    echo "==================================="
+    echo "[5] CREAR CUENTAS MEGA"
+    echo "==================================="
+    echo "[6] VENTANAS DE TRABAJO"
+    echo "==================================="
+
+    printf "${VERDECLARO}";
+    read -n 1 -p "INGRESA UN NUMERO [1-4]: " menu_principall
+
+    case $menu_principall in 
+
+        1) accion ;;
+        2) accion1 ;; 
+        3) DES_C ;;
+        4) tst ;;
+        5) CrearCuentaMega ;;
+        6) screen -X windowlist -b ;;
+    
+
+    esac
+
+}
+
+
+
+function DES_C(){
+
+    clear
+    printf "${CYANCLARO}";
+    echo "____________________________________"
+    echo "ESCOJA EL NUMERO DEL SERVIDOR A USAR"
+    echo "------------------------------------"
+    SERVIDOR="GDRIVE OPENLOAD OPENLOAD_VARIOS_ARCHIVOS MEGA WGET SALIR"
+
+    select pros in $SERVIDOR ; do
+
+        if [ $pros = GDRIVE ]; then
+            drived
+
+        elif [ $pros = OPENLOAD ]; then
+            openloadd
+
+        elif [ $pros = OPENLOAD_VARIOS_ARCHIVOS ]; then
+            CARP
+            OPLD
+
+        elif [ $pros = MEGA ]; then
+            megad
+
+        elif [ $pros = WGET ]; then
+            ariad
+
+        elif [ $pros = SALIR ]; then
+            exit
+        else 
+            echo "opcion no permitida"
+        fi
+    done
+
+}
+function c_op(){
+
+    echo "==================================="
+    read -p "NOMBRE DE LA CARPETA: " CARP1
+    echo "==================================="
+
+}
+
+function CARP(){
+    printf "${CYANCLARO}";
+    echo "==================================="
+    read -p "NOMBRE DE LA SERIES: " FILEE
+    echo "==================================="
+    echo "==================================="
+    read -p "TEMPORADA: " NT
+    echo "==================================="
+
+    DD=`echo $FILEE | sed 's/ /./g'` ; mv "$FILEE" $DD > /dev/null 2>> /root/log.txt
+    echo $DD
+}
+
+function td(){
+
+    for ruta_open_todos in `pwd` ; do echo $ruta_open_todos ; done 
+
+    for FICHERO_open in `ls *.mp4 *.avi *.mkv *.mpg` ; do echo $FICHERO_open
+    mkdir $DD 
+    mv $FICHERO_open $ruta_open_todos/$DD
+    done > /dev/null 2>> /root/log.txt
+
+}
+function repetir(){
+    if [[ ! $1 ]]; then
+            until [[ $resultado ]]; do
+                CAMPO=$(msg -azu "CAMPO OBLIGATORIO: "); read -p "$CAMPO" resultado
+            done
+        echo $resultado
+    fi
+}
+
+function EstruDes(){
+
+    ##############################
+    #         PEDIR LINK         #
+    ##############################
+    for i in *; do
+        if [[ -f $i ]]; then
+            echo
+            printf "${RED}";
+            read -p "SE AH DETECTADO RESIDUOS EN EN AREA, DESEA MANDARLOS A LA CHINGADA? :)... 1-[SI] " ORDEN
+            if [[ $ORDEN = 1 ]]; then
+                rm -rf *
+            fi
+        elif [[ -d $i ]]; then
+            echo
+            printf "${RED}";
+            read -p "SE AH DETECTADO RESIDUOS EN EN AREA, DESEA MANDARLOS A LA CHINGADA? :)... 1-[SI] " ORDEN
+            if [[ $ORDEN = 1 ]]; then
+                rm -rf *
+            fi
+        fi
+    done 
+    printf "${VERDECLARO}";
+    printf "CANTIDAD DE ARCHIVOS A DESCARGAR: "; read cant;
+
+    declare -a link[cant]
+    declare -a FILENAME[cant]
+
+
+    echo ---------------------------
+
+    for (( i=1; i<=cant; i++ ))
+    do 
+     printf "ARCHIVO #"; printf $i ; printf " : "; read link[$i]
+
+    #--------------------GOOGLE DRIVE--------------#
+    if [ $opcion -eq 2 -o $opcion -eq 5 ]; then
+
+     FARRAY[$i]="$(echo ${link[$i]} | sed -n 's#.*\https\:\/\/drive\.google\.com/file/d/\([^.]*\)\/view.*#\1#;p')";
+
+
+    elif [[ $opcion = 4 ]]; then
+      FARRAY[$i]=$(echo "${link[$i]}")
+
+    elif [[ $opcion = 3 ]]; then
+      FARRAY[$i]=$(echo "${link[$i]}")
+
+    elif [[ $opcion = 1 ]]; then
+      FARRAY[$i]=$(echo "${link[$i]}")
+
+    fi
+    done
+    # read -t15 -p "Nompre para el archivo: " FILE /var/www/html/de/conexion/include
+    read -p "Nompre para el archivo: " FILE
+      res=$(repetir $FILE)
+    if [[ $res ]]; then
+        FILE=${res}
+    fi
+    nameori=${FILE^^}
+
+    echo ---------------
+    read -p "ID PELICULA: " IDPELICULA
+    res=$(repetir $IDPELICULA)
+    if [[ $res ]]; then
+        IDPELICULA=${res}
+    fi
+
+    pelinew=$(/var/www/html/panel/inc/include/./validar.php $IDPELICULA)
+    if [[ ! $pelinew ]]; then
+        msg -pur "PELI NUEVA!!"
+    else
+        echo -e "\n"
+        msg -azu ".:SUBIDA ANTERIORMENTE:."
+        msg -pur "$pelinew"
+    fi
+
+    # echo ---------------
+    # echo "EXTENCION:"
+    # echo "1 = mkv"
+    # echo "2 = mp4"
+    # read EXT
+    # if [[ $EXT = 1 ]]; then
+    #     EXT="mkv"
+    # elif [[ $EXT = 2 ]]; then
+    #     EXT="mp4"
+    # fi
+    echo ==========
+
+    if [[ $opcion = 5 ]]; then
+        echo "1-[HD-720]"
+        echo "2-[HD-1080]"
+        echo "3-[SD]"
+        echo "4-[CAM]"
+        read -p "CALIDAD: " CALIDA1
+            res=$(repetir $CALIDA1)
+            if [[ $res ]]; then
+                CALIDA1=${res}
+            fi
+        if [[ $CALIDA1 = 1 ]]; then
+            CALIDA1="HD-720"
+        elif [[ $CALIDA1 = 2 ]]; then
+            CALIDA1="HD-1080"
+        elif [[ $CALIDA1 = 3 ]]; then
+            CALIDA1="SD"
+        elif [[ $CALIDA1 = 4 ]]; then
+            CALIDA1="CAM"
+        fi
+    else
+        echo "1-[HD]"
+        echo "2-[HD-1080]"
+        echo "3-[SD]"
+        echo "4-[CAM]"
+        read -p "CALIDAD: " CALIDA1
+            res=$(repetir $CALIDA1)
+            if [[ $res ]]; then
+                CALIDA1=${res}
+            fi
+        if [[ $CALIDA1 = 1 ]]; then
+            CALIDA1="HD"
+        elif [[ $CALIDA1 = 2 ]]; then
+            CALIDA1="HD-1080"
+        elif [[ $CALIDA1 = 3 ]]; then
+            CALIDA1="SD"
+        elif [[ $CALIDA1 = 4 ]]; then
+            CALIDA1="CAM"
+        fi
+    fi
+
+
+    echo "---------------"
+    echo
+    echo "1-[Latino]"
+    echo "2-[Espanol]"
+    echo "3-[Subtitulada]"
+    read -p "IDIOMA: " IDIOMA1
+    res=$(repetir $IDIOMA1); [[ $res ]] && IDIOMA1=${res}
+
+    if [[ $IDIOMA1 = 1 ]]; then
+        IDIOMA1="LAT"
+        ElimAudio=1
+        AUD
+    elif [[ $IDIOMA1 = 2 ]]; then
+        IDIOMA1="ESP"
+        ElimAudio=2
+        AUD
+    elif [[ $IDIOMA1 = 3 ]]; then
+        IDIOMA1="SUB"
+        ElimAudio=3
+        AUD
+        
+        # read -p "EXTRAER SOLO AUDIO INGLES? (1-si, 2-no): " ELEGIRAUDIO
+
+        read -p "PEGAR SUBTITULOS CON ENLACE EXTERNO HTTP[1-SI] [2-NO]: " CSUB
+        [[ $CSUB = 1 ]] && read -p "ENLACE HTTP DE LOS SUB: " LSUB
+        [[ $CSUB != 1 ]] && read -p "EXTRAER Y PEGAR SUB DEL MKV (1-si, 2-no): " EXTRASUB
+        [[ ! $EXTRASUB ]] && read -p "SUBTITULOS DESDE EL RAR: " SUBRAR
+    fi
+
+
+        # if [[ $IDIOMA1 != "LAT" ]]; then
+        #     echo "----------------"
+        #     echo "1-[Ingles]"
+        #     echo "2-[Castellano]"
+        #     read -p "ELEGIR AUDIO: " ELEGIRAUDIO
+        # fi
+
+        # echo -e "\033[0;35m---------------\033[0m"
+        # echo "1-[EXTRAER Y PEGAR SUB DEL MKV]"
+        # echo "2-[]"
+        # read -p "PEGAR SUBTITULOS? 1-SI, 2-NO: " SUBP
+
+        # if [[ $ELEGIRAUDIO = 1 ]]; then
+        #     read -p "EXTRAER Y PEGAR SUB DEL MKV (1-si, 2-no): " EXTRASUB
+        # # elif [[ $IDIOMA1 = "SUB" ]]; then
+        # #     read -p "EXTRAER Y PEGAR SUB: " EXTRASUB
+        # fi
+        # if [ $ELEGIRAUDIO = 1 -o $IDIOMA1 = "SUB" ]; then
+        #   read -p "EXTRAER Y PEGAR SUB: " EXTRASUB
+        # fi
+
+    echo
+
+
+
+}
+function subir720(){
+
+    echo -e "\033[1;34m==/==/==/==/=================================\033[0m"
+    echo -e "\033[0;35m[1]\033[0m \033[1;31m>\033[0m DESCARGA DE OPENLOAD,VSTREAM,YOUTUBE...ETC"
+    echo -e "\033[0;35m[2]\033[0m \033[1;31m>\033[0m DESCARGA DE GDRIVE"
+    echo -e "\033[0;35m[3]\033[0m \033[1;31m>\033[0m DESCARGA DE MEGA"
+    echo -e "\033[0;35m[4]\033[0m \033[1;31m>\033[0m DESCARGA TORRENT"
+    echo -e "\033[1;34m==/==/==/==/================================\033[0m"
+    read -p "INTRODUCE LA OPCION A USAR: " opcion2
+
+    EstruDes
+
+    if [[ $opcion2 = 2 ]]; then
+        for i in "${FARRAY[@]}" ; do
+                # ----------------------------------->DESCARGAR DE GOOGLE DRVIE <------------------------------ 
+            # dess download --recursive $i
+            googledd $i
+            Err1=$?
+            LiimiteGD
+            printf "${PURPURAC}";
+            printf "\033[1;36mARCHIVO\033[0m "; printf $i ; printf "  \033[1;36mDESCARGADO\033[0m \n";
+        done
+
+    elif [[ $opcion2 = 4 ]]; then
+            # ----------------------------------->DESCARGAR DE ARIA2 <------------------------------ 
+            for i in "${FARRAY[@]}" ; do
+                wget "$i"
+                printf "${PURPURAC}";
+                printf "ARCHIVO "; printf $i ; printf "  DESCARGADO \n";
+            done
+        elif [[ $opcion2 = 3 ]]; then
+            # ----------------------------------->DESCARGAR DE MEGA <------------------------------ 
+            for i in "${FARRAY[@]}" ; do
+                megadl $i
+                printf "${PURPURAC}";
+                printf "ARCHIVO "; printf $i ; printf "  DESCARGADO \n";
+            done
+        elif [[ $opcion2 = 1 ]]; then
+            # ----------------------------------->DESCARGAR DE VERYSTREAM, STREMANGO, YOUTUBE... ETC <------------------------------ 
+            for i in "${FARRAY[@]}" ; do
+                youtube-dl $i
+                printf "${PURPURAC}";
+                printf "ARCHIVO "; printf $i ; printf "  DESCARGADO \n";
+            done
+        else 
+            echo "Debe ingresar un enlace valido!."
+        fi
+
+        NEWFILEN=`echo $FILE | sed 's/ /_/g'` ; mv "$FILE" $NEWFILEN > /dev/null 2>> /root/log.txt
+        echo $NEWFILEN
+
+        for e in `ls *.mp4 *.mkv *.avi *.mpg` ; do
+            echo $e 
+        done 2>/dev/null
+
+        EXT=${e#*.}
+        if [[ ! $EXT ]]; then
+            EXT='mp4'
+        fi
+
+         
+
+        for min2 in * ; do 
+            echo $min2 ; mv -- $min2 ${NEWFILEN}_${CALIDA1}_$IDIOMA1.$EXT
+        done 2>/dev/null
+        for i in * ; do mv -- "${i}" "${i//['][!”#$%&’()*+,/:;<=>?@\^`{\|}~-']/_}" ; done
+        echo ${NEWFILEN}_${CALIDA1}_$IDIOMA1.$EXT
+
+
+
+       
+
+        for i in `ls *.mp4 *.mkv *.avi *.mpg`; do
+            echo $i
+        done 2>/dev/null
+
+        ii=${e%.*}
+        ffmpeg -i $i -b:v 2500k -strict -2 $ii.720.mp4
+        err=$?
+        if [[ $err = 0 ]]; then
+            rm -rf $i
+        fi
+        for nn in `ls *.mp4 *.mkv *.avi *.mpg`; do
+            echo $nn
+        done 2>/dev/null
+        
+}
+
+    function googledd1 () {
+
+        FILEID=$1
+        FILEID="$(echo $FILEID | sed -n 's#.*\https\:\/\/drive\.google\.com/file/d/\([^.]*\)\/view.*#\1#;p')";
+        FILENAME="$(wget -q --show-progress -O - "https://drive.google.com/file/d/$FILEID/view" | sed -n -e 's!.*<title>\(.*\)\ \-\ Google\ Drive</title>.*!\1!p')";
+        wget -q --show-progress --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget -q --show-progress --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate "https://docs.google.com/uc?export=download&id=$FILEID" -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=$FILEID" -c -O "$FILENAME" && rm -rf /tmp/cookies.txt;
+        echo "file $FILENAME has been downloaded"
+
+    }
+
+    function LiimiteGD() {
+
+
+        if [[ $Err1 -eq 1 ]]; then
+            echo -e "\033[0;36mENTRANDO AL BUCLE\033[0m"
+            until [[ $Err1 -ne 1 ]]; do
+                # dess download --recursive $i --force
+                googledd $i
+                Err1=$?
+                sleep 2
+            done
+        fi
+
+        if [[ $Err2 -eq 1 ]]; then
+            echo -e "\033[0;36mENTRANDO AL BUCLE\033[0m"
+            until [[ $Err2 -ne 1 ]]; do
+                dess download --recursive $LSUB --force
+                Err2=$?
+                sleep 2
+            done
+        fi
+}
+
+# ------------------------------------>DESCARGAR DE GOOGLE DRIVE<-------------------------------------------
+function drived() {
+
+    EstruDes
+    read -p "SACAR VERCION 720P [1-SI]: " V720
+    echo
+##############################
+#         DESCARGANDO        #
+##############################
+
+    if [[ $opcion = 2 ]]; then
+        for i in "${FARRAY[@]}" ; do
+                    # ----------------------------------->DESCARGAR DE GOOGLE DRVIE <------------------------------ 
+                # dess download --recursive $i
+                googledd $i
+                Err1=$?
+                # LiimiteGD
+                printf "${PURPURAC}";
+                printf "\033[1;36mARCHIVO\033[0m "; printf $i ; printf "  \033[1;36mDESCARGADO\033[0m \n";
+            done
+
+        elif [[ $opcion = 4 ]]; then
+                # ----------------------------------->DESCARGAR DE ARIA2 <------------------------------ 
+                for i in "${FARRAY[@]}" ; do
+                    # wget "$i"
+                    aria2c "$i"
+                    printf "${PURPURAC}";
+                    printf "ARCHIVO "; printf $i ; printf "  DESCARGADO \n";
+                done
+            elif [[ $opcion = 3 ]]; then
+                # ----------------------------------->DESCARGAR DE MEGA <------------------------------ 
+                for i in "${FARRAY[@]}" ; do
+                    megadl $i
+                    printf "${PURPURAC}";
+                    printf "ARCHIVO "; printf $i ; printf "  DESCARGADO \n";
+                done
+            elif [[ $opcion = 1 ]]; then
+                # ----------------------------------->DESCARGAR DE VERYSTREAM, STREMANGO, YOUTUBE... ETC <------------------------------ 
+                for i in "${FARRAY[@]}" ; do
+                    youtube-dl $i
+                    printf "${PURPURAC}";
+                    printf "ARCHIVO "; printf $i ; printf "  DESCARGADO \n";
+                done
+            else 
+                echo "Debe ingresar un enlace valido!."
+            fi
+            NEWFILEN=`echo $FILE | sed 's/ /_/g'` ; mv "$FILE" $NEWFILEN > /dev/null 2>> /root/log.txt
+            echo $NEWFILEN
+
+            for e in `ls *.mp4 *.mkv *.avi *.mpg *.rar *.zip` ; do
+               echo "$e"    
+           done 2>/dev/null
+
+           EXT=${e##*.}
+
+           if [[ ! $EXT ]]; then
+               EXT='mp4'
+           fi
+
+           if [[ "${e##*.}" = "rar" || "${e##*.}" = "zip" ]]; then
+                echo "son rar"
+            else
+                for min2 in * ; do 
+                echo $min2 ; mv -- "$min2" "${NEWFILEN}_${CALIDA1}_$IDIOMA1.$EXT"
+                done 2>/dev/null
+           fi
+           for i in * ; do mv -- "${i}" "${i//['][!”#$%&’()*+,/ :;<=>?@\^_`{\|}~-']/_}" ; done
+
+           
+}
+
+function LimiteVIP_S() {
+
+    if [[ $Err1 -eq 1 ]]; then
+        echo -e "\033[0;36mENTRANDO AL BUCLE\033[0m"
+        until [[ $Err1 -ne 1 ]]; do
+            dess share revoke "${LinkSerieVipID[$uvip]}" anyoneWithLink
+            Err1=$?
+            sleep 2
+        done
+    fi
+
+    
+}
+function subida_drive_T2 {
+
+    unset LinkSerie
+    unset LinkSerie2
+    unset array
+    unset array2
+    unset LinkSerieDown
+    unset Cdrive
+    unset COuo
+    unset D_DRIVE2
+    unset u
+    unset ui
+    unset uui
+    unset eei
+
+    esp=$(echo -e "\n ")
+    for ruta_drive_todos in `pwd` ; do
+        echo $ruta_drive_todos
+    done  > /dev/null
+
+
+    # rclone copy $ruta_drive_todos/$DD/Temp$NT.$DD -P drive2:/SERIES/$DD/Temp$NT.$DD
+    # arrayvip=($(rclone ls drive2:/SERIES/$DD/Temp$NT.$DD | awk '{print $2}'))
+
+    # ProgressBar
+    # msg -ama "Obteniendo enlaces DRIVE-VIP..."
+    # for (( uvip = 0; uvip < "${#arrayvip[@]}"; uvip++ )); do
+    #     echo $esp
+    #     LinkSerieVip[$uvip]=$(rclone link drive2:/SERIES/$DD/Temp$NT.$DD/"${arrayvip[$uvip]}")
+    #     LinkSerieVipID[$uvip]=$(echo "${LinkSerieVip[$uvip]}" | awk -F "=" '{printf $2}')
+        # dess share revoke "${LinkSerieVipID[$uvip]}" anyoneWithLink
+        # Err1=$?
+        # LimiteVIP_S
+    # done
+    # kill $PIDI1
+    # echo ---------------------------
+    # echo "${LinkSerieVip[@]}"
+    # echo ----------------------------
+    # echo $esp
+
+
+    rclone copy $ruta_drive_todos/$DD/Temp$NT.$DD -P drive4:/Maira/$DD/Temp$NT.$DD
+    array=($(rclone ls drive4:/Maira/$DD/Temp$NT.$DD | awk '{print $2}'))
+
+    for (( u = 0; u < "${#array[@]}"; u++ )); do
+        echo $esp
+        LinkSerie[$u]=$(rclone link drive4:/Maira/$DD/Temp$NT.$DD/"${array[$u]}")
+    done
+
+
+    echo ---------------------------
+    echo "${LinkSerie[@]}"
+    echo ----------------------------
+    echo $esp
+
+    ProgressBar
+    msg -ama "Obteniendo enlaces DRIVE-DOWN..."
+    for (( ui = 0; ui < "${#LinkSerie[@]}"; ui++ )); do
+        DLII=$(echo "${LinkSerie[$ui]}" | awk -F "=" '{printf $2}')
+        LinkSerieDown[$ui]=$(echo "https://drive.google.com/uc?id=$DLII&export=download")
+    done
+    kill $PIDI1
+
+    echo "${LinkSerieDown[@]}"
+    echo $esp
+
+    rclone copy $ruta_drive_todos/$DD/Temp$NT.$DD -P drive3:/$DD/Temp$NT.$DD
+    array2=($(rclone ls drive3:/$DD/Temp$NT.$DD | awk '{print $2}'))
+
+    ProgressBar
+    msg -ama "Obteniedo enalaces DRIVE..."
+    for (( uui = 0; uui < "${#array2[@]}"; uui++ )); do
+        LinkSerie2[$uui]=$(rclone link drive3:/$DD/Temp$NT.$DD/"${array2[$uui]}")
+    done
+    kill $PIDI1
+
+    echo "${LinkSerie2[@]}"
+
+
+    # ----------------------------//Netu//--------------------------------
+
+    netuarray=(`ls $ruta_drive_todos/$DD/Temp$NT.$DD`)
+    echo $esp
+
+
+    for i in "${netuarray[@]}"; do echo $i; done
+    # echo "${netuarray[@]}"
+
+i=1
+function mul(){
+
+    b=$(expr $i + 5)
+
+}
+mul
+    ProgressBar
+    msg -ama "Subiendo a Netu..."
+    for (( i = 0; i < "${#netuarray[@]}"; i++ )); do
+        netuTV[$i]=$(/var/www/html/panel/inc/include/./netu1.php $ruta_drive_todos/$DD/Temp$NT.$DD/"${netuarray[$i]}")
+        sleep 3
+        if [[ $i = $b ]]; then
+            sleep 10
+            mul
+        fi
+    done
+    kill $PIDI1
+    echo $esp
+    for i in "${netuTV[@]}"; do echo $i; done
+    echo $esp
+    # echo "${netuTV[@]}"
+
+#-------------REPRODUCTOR GOOGLE DIRECTO-----------------#
+
+    # for (( i = 0; i < "${#array[@]}"; i++ )); do
+    #     estenxion=${array[$i]##*.}
+    # if [[ $estenxion = mkv ]]; then
+    #     arrayStream2_D[$i]=$(echo "${array[$i]/\.mkv/\.txt}")
+    # elif [[ $estenxion = mp4 ]]; then
+    #     arrayStream2_D[$i]=$(echo "${array[$i]/\.mp4/\.txt}")
+    # elif [[ $estenxion = avi ]]; then
+    #     arrayStream2_D[$i]=$(echo "${array[$i]/\.avi/\.txt}")
+    # fi
+    #     rclone copyto "${array[$i]}" stream2_D:/SERIES/$DD/Temp$NT.$DD/"${arrayStream2_D[$i]}" -P
+    # done
+
+    # for (( i = 0; i < "${#arrayStream2_D[@]}"; i++ )); do
+    #     linkStream_D[$i]=$(rclone link stream2_D:/SERIES/$DD/$Temp.$DD/"${arrayStream2_D[$i]}")
+    # done
+
+
+#----------------------------------------///------------------------------------------
+
+# for (( rvip = 0; rvip < "${#LinkSerieVip[@]}"; rvip++ )); do
+#     ReproVip[$rvip]=$(curl --request GET "http://93.104.209.122/panel/inc/include/linkdrivevip.php?id=${LinkSerieVip[$rvip]}" 2>/dev/null)
+# done
+for (( rvip = 0; rvip < "${#LinkSerieVip[@]}"; rvip++ )); do
+    ReproVip[$rvip]=$(/var/www/html/panel/inc/include/./linkdrivevip.php "${LinkSerieVip[$rvip]}" 2>/dev/null)
+done
+
+# for (( eei = 0; eei < "${#LinkSerie2[@]}"; eei++ )); do
+#     Cdrive[$eei]=$(curl --request GET "http://93.104.209.122/panel/inc/include/linkdrive2s.php?id=${LinkSerie2[$eei]}" 2>/dev/null)
+# done
+
+for (( eei = 0; eei < "${#LinkSerie2[@]}"; eei++ )); do
+    Cdrive[$eei]=$(/var/www/html/panel/inc/include/./linkdrive2s.php "${LinkSerie2[$eei]}" 2>/dev/null)
+done
+
+
+
+    # for (( eei = 0; eei2 < "${#LinkSerie2[@]}"; eei2++ )); do
+    #     GDirecto[$eei2]=$(curl --request GET "http://93.104.209.122/de/.linkdrive2.php?id=${linkStream_D[$eei2]}" 2>/dev/null)
+    # done
+
+    VIP_LINK=$(for linkviip in "${ReproVip[@]}"; do echo $linkviip; done)
+    D_DRIVE2=$(for D2i in "${LinkSerie2[@]}"; do echo $D2i; done)
+    D_STREAM2=$(for D_i in "${Cdrive[@]}"; do echo $D_i; done)
+    Vnetu=$(for i in "${netuTV[@]}"; do echo $i; done)
+# D_STREAM2_D=$(for D_i_D in "${GDirecto[@]}"; do echo $D_i_D; echo $esp; done)
+
+
+
+ProgressBar
+msg -ama "Obteniendo enlaces de OUO..."
+for (( COuoii = 0; COuoii < "${#LinkSerieDown[@]}"; COuoii++ )); do
+    COuo[$COuoii]=$(/var/www/html/panel/inc/include/./acortador.php ${LinkSerieDown[$COuoii]})
+    sleep 2
+done
+kill $PIDI1
+D_D=$(for D_Di in "${LinkSerieDown[@]}"; do echo $D_Di; done)
+ouuo=$(for iou in "${COuo[@]}"; do echo $iou; done)
+
+
+
+
+}
+
+function LoginFTPOpen(){
+
+    echo "machine ftp.verystream.com
+    login a8d6ba68c8191e7fc67e
+    password UhmiYYnb3VJ" > /root/.netrc ; chmod 0600 /root/.netrc
+}
+
+function LoginFTPMango(){
+
+    echo "machine ftp.openload.co
+    login 258f98f45d121000
+    password iA562xEu" > /root/.netrc ; chmod 0600 /root/.netrc
+}
+
+function LoginFTPCherry(){
+
+    echo "machine ftp.streamango.com
+    login jTdTs7ZLmD
+    password f8Udlo2F" > /root/.netrc ; chmod 0600 /root/.netrc
+
+}
+
+urlencode() {
+    local LANG=C i c e=''
+    for ((i=0;i<${#1};i++)); do
+        c=${1:$i:1}
+        [[ "$c" =~ [a-zA-Z0-9\.\~\_\-"https://"] ]] || printf -v c '%%%02X' "'$c"
+        e+="$c"
+    done
+    echo "$e"
+}
+
+urldecode() {
+    # urldecode <string>
+
+    local url_encoded="${1//+/ }"
+    printf '%b' "${url_encoded//%/\\x}"
+}
+
+function SaltoLine() {
+
+    for esp in `cat $1` ; do
+        echo "https://redir.pelishd24.com/red.php?ul=$esp" >> $1_SaltLine
+        echo >> $1_SaltLine
+    done
+    cat $1_SaltLine
+    
+
+}
+function SaltoLine1() {
+
+    for esp in `cat $1` ; do
+        echo $esp >> $1_SaltLine
+        echo >> $1_SaltLine
+    done
+    cat $1_SaltLine
+
+}
+function SaltoEmbed(){
+
+    for esp1 in `cat $1` ; do
+        echo $esp1 >> $1_Embed
+        echo >> $1_Embed
+    done
+    sed -i "s%/f/%/embed/%g" "$1_Embed"
+    cat $1_Embed
+}
+
+function TodosLosEnlaces(){
+
+    PP=1
+    for UrlOpen in `cat $FTPLOG2 | awk -F "URL: " '{printf $2}'`; do
+       UOPENLOAD[$PP]=${UrlOpen}
+       let PP=$PP+1
+   done
+    # for Url1 in `cat $FTPLOG2 | awk -F "URL: " '{printf $2}'`; do
+    #         Url11=`echo $Url1 | sed 's/\/stream\//\/e\//g'` ; mv "$Url1" $Url11
+    #         UOPENLOAD[$PP]=${Url11}
+    #         let PP=$PP+1
+    #    done
+    
+    UrlOpenload=$(for UOL in "${UOPENLOAD[@]}"; do echo $UOL ; done)
+    UrlOpenload1=$(cat $fifo)
+
+}
+
+function TodosLosEnlaces1() {
+
+    for Url1 in `cat $FTPLOG | awk -F "URL: " '{printf $2}'`; do
+       UOSTREAM[$PP]=${Url1}
+       let PP=$PP+1
+   done
+
+   UrlMango=$(for UAL in "${UOSTREAM[@]}"; do echo $UAL ; done)
+
+}
+
+function TodosLosEnlaces2() {
+
+    for Url2 in `cat $FTPLOG1 | awk -F "URL: " '{printf $2}'`; do
+       #      Url22=`echo $Url2 | sed 's/\/embed\//\/f\//g' | sed 's/streamango/streamcherry/g'` ; mv "$Url2" $Url22
+       #      UOCHERRY[$PP]=${Url22}
+       UOCHERRY[$PP]=${Url2}
+       let PP=$PP+1
+   done
+
+
+
+
+
+
+   UrlCherry=$(for UCL in "${UOCHERRY[@]}"; do echo $UCL ; done)
+   for TPE in `ls -alh $MiPeli | awk -F " " '{print $5}'` ; do TPE1=`echo $TPE | sed 's/G/ Gigas/g' | sed 's/M/ Megas/g'` ; mv "$TPE" $TPE1 ; done 2>/dev/null
+}
+
+function TodosLosEnlaces3(){
+
+    espp=$(echo -e "\n ")
+    FTP_SUCCESS_MSG="226 Transfer complete"
+    if fgrep "$FTP_SUCCESS_MSG" $FTPLOG2 ;then
+        echo -e "\n "
+        arrayOpen=($(cat $FTPLOG2 | awk -F "URL: " '{printf $2}'))
+
+        for i in "${arrayOpen[@]}"; do
+            echo $i >> $RD/ooo
+            sed -i "s%https://%\nhttps://%g" $RD/ooo
+        done
+        arrayOpen2=($(<$RD/ooo))
+        rm $RD/ooo
+        EnlacesOpenT=$(for i in "${arrayOpen2[@]}"; do
+            echo "${i//\/stream\//\/e\/}"
+            # echo $espp
+        done)
+
+        echo "$EnlacesOpenT"    
+        echo "           ------------------        "
+
+
+        EnlacesOpenT2=$(for i in "${arrayOpen2[@]}"; do
+            echo "https://redir.pelishd24.com/red.php?ul=$i";
+        done)
+
+        enlaVIP=$(for viip in "${arrayOpen2[@]}"; do
+            echo $viip
+        done)
+
+        echo $enlaVIP
+        echo $EnlacesOpenT2
+        
+    fi
+}
+function TodosLosEnlaces4() {
+
+    espp=$(echo -e "\n ")
+    FTP_SUCCESS_MSG="226 Transfer complete"
+    if fgrep "$FTP_SUCCESS_MSG" $FTPLOG3 ;then
+        echo -e "\n "
+        arrayMango=($(cat $FTPLOG3 | awk -F "URL: " '{printf $2}'))
+
+
+        for i in "${arrayMango[@]}"; do
+            #echo "${i//\/f\//\/embed\/}"
+            echo $i >> $RD/ttt
+            sed -i "s%https://%\nhttps://%g" $RD/ttt
+            #sed -i "s%https://%\nhttps://%g" ttt
+        done
+        arrayMango2=($(<$RD/ttt))
+        rm $RD/ttt
+        EnlacesMangoT=$(for i in "${arrayMango2[@]}"; do
+            echo "${i//\/f\//\/embed\/}"
+            # echo $espp
+        done)
+
+        echo "$EnlacesMangoT"    
+        echo "           ------------------        "
+    fi
+
+}
+
+function ConvertirPeli() {
+
+# ffmpeg -i cobra.mkv -ss 00:15:03 -t 00:00:30 -c:v copy -c:a copy nuerte60.mp4
+if [[ $CONVERPELI = 1 ]]; then
+    #ffmpeg -i $MiPeli -preset veryslow -strict -2 $MiPeli.mp4
+    # ffmpeg -i $MiPeli -i /var/www/html/de/agua13.png -filter_complex \ "[0:v][1:v]overlay=main_w-overlay_w-1:1:enable=between(t\,59\,20)" -metadata title=PelisHD24.com -codec:a copy -strict -2 $MiPeli.mp4
+    ffmpeg -i $MiPeli -metadata title=PelisHD24.com -codec:a copy -strict -2 $MiPeli.mp4
+
+    # ffmpeg -i $MiPeli -acodec copy -vf "movie=/var/www/html/de/w.mov [logo]; [in][logo] overlay=10:main_h-overlay_h-10 [out]" -strict -2 $MiPeli.mp4
+    # ffmpeg -i $MiPeli -acodec copy -vf "movie=/var/www/html/de/w.mov [logo]; [in][logo] overlay=10:main_h-overlay_h-10 [out]" -preset veryslow -crf 0 -strict -2 $MiPeli.mp4
+    mkdir PeliMP4
+    mv $MiPeli.mp4 PeliMP4
+    rm *
+    cd PeliMP4
+fi
+
+for MiPeli in `ls *.mp4 *.avi *.mkv *.mpg` ; do
+    echo $MiPeli
+done 2>/dev/null
+
+for TPE in `ls -alh $MiPeli | awk -F " " '{print $5}'` ; do TPE1=`echo $TPE | sed 's/G/ Gigas/g' | sed 's/M/ Megas/g'` ; mv "$TPE" $TPE1 ; done 2>/dev/null
+
+DEFINIR_TPE1=$(echo $TPE1 | awk '{print $2}')
+if [[ $DEFINIR_TPE1 = Gigas ]]; then
+    TPE2="1 GB"
+elif [[ $DEFINIR_TPE1 = Megas ]]; then
+    TPE2="Menos de 1 GB"
+fi
+}
+function ComprobarExtAudio(){
+
+    if [[ $err = 0 ]]; then
+        rm -rf $1
+    fi
+}
+
+function EscogerAudio(){
+
+    if [[ $ACTIVARAUDIO ]]; then
+        
+        for i in * ; do mv -- "${i}" "${i//['][!”#$%&’()*+,/ :;<=>?@\^`{\|}~-']/_}" ; done 2>/dev/null
+
+        if [[ $ELEGIRAUDIO = 1 ]]; then
+            carpet="LATINO"
+        elif [[ $ELEGIRAUDIO = 2 ]]; then
+            carpet="ESPANOL"
+        elif [[ $ELEGIRAUDIO = 3 ]]; then
+            carpet="INGLES"
+        fi
+
+        mkdir -p "$carpet"
+        for c in `ls *.mkv *.mp4 *.avi *.mpg`; do
+        
+
+            cc=$(ffmpeg -i $c 2>&1 | awk '/Audio/,/title/')
+            if [[ $ELEGIRAUDIO = 1 ]]; then
+                
+                array_lat=("Latino" "Latin" "Mexico")
+                for (( i = 0; i < "${#array_lat[@]}"; i++ )); do
+                    AUDIOT=$(ffprobe $c 2>&1 | awk '/Audio/,/title/' | grep -B 2 "${array_lat[$i]}" | awk -F ":" '{print $2}')
+                    if [[ $AUDIOT ]]; then
+                        break
+                    fi
+                done
+
+                if [[ $AUDIOT ]]; then
+                    msg -azu ".:el idioma es latino:.."
+                    mkvmerge -o $c.LAT.mkv -a "${AUDIOT::1}" "$c"
+                    err=$?
+                    ComprobarExtAudio "$c"
+                    mv "$c.LAT.mkv" "$c"; mv "$c" "$carpet"
+
+                else
+                    array_lat2=("lat" "spa" "default" "eng" "und")
+                    for (( i = 0; i < "${#array_lat2[@]}"; i++ )); do
+                        NFLUJO=$(echo "$cc" | grep -i "Audio" | grep -i "${array_lat2[$i]}")
+                        if [[ $NFLUJO =~ "eng" ]]; then
+
+                            NFLUJON=$(echo "$cc" | awk "! /eng/ { print $1 $2}" | grep -i "Stream" | awk -F ":" '{print $2}')
+                            break
+                        elif [[ $NFLUJO =~ "und" ]]; then
+                                NFLUJON=$(echo "$cc" | awk "! /und/ { print $1 $2}" | grep -i "Stream" | awk -F ":" '{print $2}')
+
+
+                        else
+                            if [[ $NFLUJO ]]; then
+                                NFLUJO2=$(echo "$cc" | grep -i "Audio" | grep -i "${array_lat2[$i]}" | awk -F ":" '{print $2}'| awk -F "(" '{print $1}')
+                                break
+                            fi
+                        fi
+                    done
+
+                        if [[ $NFLUJO2 ]]; then
+                            msg -azu ".:el idioma es latino:.."
+                            mkvmerge -o $c.LAT.mkv -a "${NFLUJO2::1}" "$c"
+                            err=$?
+                            ComprobarExtAudio "$c"
+                            mv "$c.LAT.mkv" "$c"; mv "$c" "$carpet"
+
+                        elif [[ $NFLUJON ]]; then
+                            msg -azu ".:el idioma es latino:..INVERSO"
+                            # NFLUJON=$(echo "$cc" | awk '/Audio/,/title/' | awk "! /eng/ { print $1 $2}" | grep -i "Stream" | awk -F ":" '{print $2}')
+                            NFLUJON=$(echo "$cc" | awk '/Audio/,/title/' | grep -v "${array_lat2[$i]}" | grep -i "Stream" | awk -F ":" '{print $2}')
+                            mkvmerge -o $c.LAT.mkv -a "${NFLUJON::1}" "$c"
+                            err=$?
+                            ComprobarExtAudio "$c"
+                            mv "$c.LAT.mkv" "$c"; mv "$c" "$carpet"
+                        fi
+                fi
+
+
+
+                #Audio español
+                elif [[ $ELEGIRAUDIO = 2 ]]; then
+                    array_esp=("España" "Español" "Espanol" "Castellano")
+                    for (( i = 0; i < "${#array_esp[@]}"; i++ )); do
+                        AUDIOT_ESP=$(ffprobe $c 2>&1 | awk '/Audio/,/title/' | grep -B 2 "${array_esp[$i]}" | awk -F ":" '{print $2}')
+                        if [[ $AUDIOT_ESP ]]; then
+                            break
+                        fi
+                    done
+
+                    if [[ $AUDIOT_ESP ]]; then
+                        msg -azu ".:el idioma es Castellano:.."
+                        mkvmerge -o $c.ESP.mkv -a "${AUDIOT_ESP::1}" "$c"
+                        err=$?
+                        ComprobarExtAudio "$c"
+                        mv "$c.ESP.mkv" "$c"; mv "$c" "$carpet"
+
+
+                        else
+                            array_esp2=("spa")
+                            for (( i = 0; i < "${#array_esp2[@]}"; i++ )); do
+                                NFLUJO=$(echo "$cc" | grep -i "${array_esp2[$i]}" | awk -F ":" '{print $2}'| awk -F "(" '{print $1}')
+                                if [[ $NFLUJO ]]; then
+                                    break
+                                fi
+                            done
+                            if [[ $NFLUJO ]]; then
+                            	msg -azu ".:el idioma es Castellano:.."
+                                mkvmerge -o $c.ESP.mkv -a "${NFLUJO::1}" "$c"
+                                err=$?
+                                ComprobarExtAudio "$c"
+                                mv "$c.ESP.mkv" "$c"; mv "$c" "$carpet"
+                            fi
+                    fi
+
+
+
+                    #audio ingles
+            elif [[ $ELEGIRAUDIO = 3 ]]; then
+                array_ing=("Ingles" "english")
+                for (( i = 0; i < "${#array_ing[@]}"; i++ )); do
+                    AUDIOT_ING=$(ffprobe $c 2>&1 | awk '/Audio/,/title/' | grep -B 2 "${array_ing[$i]}" | awk -F ":" '{print $2}')
+                    if [[ $AUDIOT_ING ]]; then
+                        break
+                    fi
+                done
+                    
+                    if [[ $AUDIOT_ING ]]; then
+                        msg -azu ".:el idioma es Ingles:.."
+                        mkvmerge -o $c.SUB.mkv -a "${AUDIOT_ING::1}" "$c"
+                        err=$?
+                        ComprobarExtAudio "$c"
+                        mv "$c.SUB.mkv" "$c"; mv "$c" "$carpet"
+                        else
+
+                            array_ing2=("eng" "und")
+                            for (( i = 0; i < "${#array_ing2[@]}"; i++ )); do
+                                NFLUJO=$(echo "$cc" | grep -i "${array_ing2[$i]}" | awk -F ":" '{print $2}'| awk -F "(" '{print $1}')
+                                if [[ $NFLUJO ]]; then
+                                    break
+                                fi
+                            done
+
+                            if [[ $NFLUJO ]]; then
+                                msg -pur ".:el idioma es Ingles:.."
+                                mkvmerge -o $c.SUB.mkv -a "${NFLUJO::1}" "$c"
+                                err=$?
+                                ComprobarExtAudio "$c"
+                                mv "$c.SUB.mkv" "$c"; mv "$c" "$carpet"
+                            fi
+                    fi
+            fi
+
+ done 2>/dev/null
+            cd $carpet
+            msg -ama "audio extraido"
+    fi
+    
+}
+
+function PegarSubtitulos(){
+
+    
+# ffmpeg -i cobra.mkv -ss 00:15:03 -t 00:00:30 -c:v copy -c:a copy nuerte60.mp4
+if [[ $EXTRASUB ]]; then
+	echo "EXTRALLENDO SUBS"
+	for f in * ; do mv "$f" "${f// /_}" ; done 2>/dev/null
+	for g in * ; do mv "$g" "${g/"Copia de "/}" ; done 2>/dev/null
+	for i in * ; do mv -- "${i}" "${i//['][!”#$%&’ ()*+,/:;<=>?@\^`{\|}~-']/_}" ; done 2>/dev/null
+	mkdir SubPega
+
+	for MiPelii in `ls *.mp4 *.mkv *.avi *.mpg`; do
+		echo $MiPelii
+		NFLUJO0=$(ffmpeg -i $MiPelii 2>&1 | grep -i Subtitle | wc -l)
+
+		if [[ $NFLUJO0 = 1 ]]; then
+			NFLUJO=$(ffmpeg -i $MiPelii 2>&1 | grep -i Subtitle | awk -F ":" '{print $2}'| awk -F "(" '{print $1}')
+			ass=$(ffmpeg -i $MiPelii 2>&1 | grep -i Subtitle | grep -i ass | awk '{print $4}')
+			if [[ $ass ]]; then
+			    ffmpeg -i $MiPelii -map 0:$NFLUJO -codec:s ass subtitulos.ass -y
+			    subt="subtitulos.ass"
+			else
+			    ffmpeg -i $MiPelii -map 0:$NFLUJO -codec:s srt subtitulos.srt -y
+			    subt="subtitulos.srt"
+			fi
+		elif [[ $NFLUJO0 = 2 ]]; then
+		    NFLUJO=$(ffmpeg -i $MiPelii 2>&1 | grep -i Subtitle | grep -i spa | grep -i subrip | awk -F ":" '{print $2}'| awk -F "(" '{print $1}')
+		    NC=$(echo $NFLUJO | wc -w)
+			if [[ $NC = 1 ]]; then
+		        ass=$(ffmpeg -i $MiPelii 2>&1 | grep -i Subtitle | grep -i ass | awk '{print $4}')
+		        if [[ $ass ]]; then
+		            ffmpeg -i $MiPelii -map 0:$NFLUJO -codec:s ass subtitulos.ass -y
+		            subt="subtitulos.ass"
+		        else
+		            ffmpeg -i $MiPelii -map 0:$NFLUJO -codec:s srt subtitulos.srt -y
+		            subt="subtitulos.srt"
+		        fi
+			fi
+			if [[ ! $NFLUJO ]]; then
+				echo "no hay flujo"
+				NFLUJO=$(ffmpeg -i $MiPelii 2>&1 | grep -i Subtitle | grep -v eng | grep -i subrip | awk -F ":" '{print $2}' | awk -F "(" '{print $1}')
+				NC=$(echo $NFLUJO | wc -w)
+				if [[ $NC = 1 ]]; then
+				    ass=$(ffmpeg -i $MiPelii 2>&1 | grep -i Subtitle | grep -i ass | awk '{print $4}')
+				    if [[ $ass ]]; then
+				        ffmpeg -i $MiPelii -map 0:$NFLUJO -codec:s ass subtitulos.ass -y
+				        subt="subtitulos.ass"
+				    else
+				        ffmpeg -i $MiPelii -map 0:$NFLUJO -codec:s srt subtitulos.srt -y
+				        subt="subtitulos.srt"
+				    fi
+				fi
+				if [[ $NC = 2 ]]; then
+				    echo "NC 2"
+				    NFLUJO=$(ffmpeg -i $MiPelii 2>&1 | grep -i Subtitle | grep -v und | grep -i subrip | awk -F ":" '{print $2}' | awk -F "(" '{print $1}')
+				    NC=$(echo $NFLUJO | wc -w)
+				    if [[ $NC = 1 ]]; then
+				    	ass=$(ffmpeg -i $MiPelii 2>&1 | grep -i Subtitle | grep -i ass | awk '{print $4}')
+				        if [[ $ass ]]; then
+				            ffmpeg -i $MiPelii -map 0:$NFLUJO -codec:s ass subtitulos.ass -y
+				            subt="subtitulos.ass"
+				        else
+				            ffmpeg -i $MiPelii -map 0:$NFLUJO -codec:s srt subtitulos.srt -y
+				            subt="subtitulos.srt"
+				        fi
+			    	else
+				        NFLUJO=$(ffmpeg -i $MiPelii 2>&1 | grep -i Subtitle | grep -v "(forced)" | awk -F ":" '{print $2}' | awk -F "(" '{print $1}')
+				        NC=$(echo $NFLUJO | wc -w)
+				        echo $NC
+				        if [[ $NC = 1 ]]; then
+				            ass=$(ffmpeg -i $MiPelii 2>&1 | grep -i Subtitle | grep -i ass | awk '{print $4}')
+				            if [[ $ass ]]; then
+				                ffmpeg -i $MiPelii -map 0:$NFLUJO -codec:s ass subtitulos.ass -y
+				                subt="subtitulos.ass"
+				            else
+				                ffmpeg -i $MiPelii -map 0:$NFLUJO -codec:s srt subtitulos.srt -y
+				                subt="subtitulos.srt"
+				            fi
+				        fi
+			    	fi
+				fi
+			fi
+else
+	echo "no hay sub español"
+fi
+    # ffmpeg -i $MiPelii -i /var/www/html/de/agua13.png -filter_complex \ "[0:v][1:v]overlay=main_w-overlay_w-1:1:enable=between(t\,30\,50),subtitles=subtitulos.srt:force_style='Fontsize=22,PrimaryColour=&H00ffff&'" -metadata title=PelisHD24.com -codec:a copy S.$MiPelii.mp4
+    esubt=${subt##*.}
+    if [[ $esubt = "ass" ]]; then
+        ffmpeg -threads 4 -i $MiPelii -vf "ass=$subt" -c:v libx264 -crf 20 -strict -2 S.$MiPelii.mp4
+        er=$?
+        mv -- "S.$MiPelii.mp4" "SubPega"
+        if [[ $er = 0 ]]; then
+            rm $MiPelii
+            rm $subt
+        fi
+    else
+        # ffmpeg -threads 4 -i $MiPelii -i /var/www/html/de/agua13.png -filter_complex \
+        # "subtitles=$subt:force_style='Fontsize=22,PrimaryColour=&H00ffff&'" -codec:a copy S.$MiPelii.mp4
+        ffmpeg -i $MiPelii -filter_complex \
+         "subtitles=$subt:force_style='Fontsize=22,PrimaryColour=&H00ffff&'" -s hd720 -c:v libx264 -crf 22 -strict -2 S.$MiPelii.mp4
+        er=$?
+        mv "S.$MiPelii.mp4" SubPega
+        if [[ $er = 0 ]]; then
+            rm $MiPelii
+            rm $subt
+        fi
+
+    fi
+                
+done
+    cd SubPega
+fi
+
+
+if [[ $CSUB = 1 ]]; then
+# dess download $LSUB
+    EXTSUB=${LSUB##*.}
+    if [[ $EXTSUB = "srt" || $EXTSUB = "vtt" ]]; then
+        wget $LSUB
+        echo "ETROOOOOOOO"
+    elif [[ $EXTSUB = "sbv" || $EXTSUB = "ass" ]]; then
+        wget $LSUB
+    else
+        p1=$(echo $LSUB | awk -F "~" '{print $1}')
+        p2=$(echo $p1 | sed 's/\/stream\//\/embed\//g')
+        mkdir subopenn && cd subopenn
+        #descarga del index
+        wget $p2
+        Err2=$?
+        if [[ $LSUB != "" ]]; then
+            LiimiteGD
+        fi
+
+        for i in * ; do
+            echo $i
+        done
+
+        if fgrep "openload.co" $i ; then
+            echo "se encuentra"
+            subopen=$(grep -i "subtitle" $i | awk -F "\"" '{print $2}')
+            echo $subopen
+            cd ../
+            rm -rf subopenn
+
+            #descargar del sud del index
+            wget $subopen
+        else
+            mv $i ../
+            cd ../
+            rm -rf subopenn
+
+        fi
+	fi
+fi
+
+if [[ `ls *.srt *.ass 2>/dev/null` ]]; then
+for i in * ; do mv -- "${i}" "${i//['][!”#$%&’()*+,/:;<=>?@\^`{\|}~-']/_}" ; done 2>/dev/null
+sleep 2
+for f in * ; do mv "$f" "${f// /_}" ; done > /dev/null 2>> /root/log.txt
+for g in * ; do mv "$g" "${g/"Copia de "/}" ; done > /dev/null 2>> /root/log.txt
+
+
+for MiPelii in `ls *.mp4 *.mkv *.avi *.mpg`; do
+    echo $MiPelii
+done 2>/dev/null
+
+    # for Subt in `ls *.ass`; do
+    #     echo "Subtitulo"
+    #     echo "$Subt"
+    #     mv "$Subt" SubtPegados.ass
+    # done 2>/dev/null
+    for Subt in `ls *.srt *.vtt *.sbv`; do
+        echo "Subtitulo"
+        echo "$Subt"
+        mv "$Subt" SubtPegados.srt
+    done 2>/dev/null
+
+    for Subt in `ls *.ssa *.ass`; do
+        echo "Subtitulo"
+        echo "$Subt"
+    done 2>/dev/null
+    sleep 2
+
+
+    if [[ "${Subt##*.}" = "ass" || "${Subt##*.}" = "ssa" ]]; then
+    	mv "$Subt" SubtPegados.ass
+    	ffmpeg -i $MiPelii -vf "ass=SubtPegados.ass" -c:v libx264 -crf 20 -strict -2 S.$MiPelii
+    else
+    	ffmpeg -i $MiPelii -i /var/www/html/de/agua13.png -filter_complex \ "subtitles=SubtPegados.srt:force_style='Fontsize=22,PrimaryColour=&H00ffff&'" -codec:a copy S.$MiPelii.mp4
+    fi
+
+    
+# ffmpeg -i $MiPelii -vf "subtitles=SubtPegados.srt:force_style='Fontsize=22,PrimaryColour=&H00ffff&'" -c:a copy S.$MiPelii
+#ffmpeg -i $MiPelii -vf "ass=SubtPegados.ass" -s hd720 -c:v libx264 -crf 22 -strict -2 S.$MiPelii    
+#ffmpeg -i $MiPelii -vf "ass=SubtPegados.ass" -c:v libx264 -crf 20 -strict -2 S.$MiPelii    
+#ffmpeg -i $MiPelii -vf "ass=SubtPegados.ass" -preset veryslow -strict -2 s.$MiPelii
+Err3=$?
+if [[ $Err3 = 0 ]]; then
+    echo "Archivos Eliminados"
+    rm $MiPelii
+    rm SubtPegados.srt
+fi
+fi
+}
+
+
+function PutoPunto() {
+    for fiche1 in `ls .*.mp4 .*.avi .*.mkv .*.mpg`; do
+        echo $fiche1
+        mv "$fiche1" "${fiche1:1}"
+    done 2>/dev/null
+}
+
+
+function LimiteVIP() {
+
+    if [[ $Err1 -eq 1 ]]; then
+        echo -e "\033[0;36mENTRANDO AL BUCLE\033[0m"
+        until [[ $Err1 -ne 1 ]]; do
+            dess share revoke $LGDDVIP anyoneWithLink
+            Err1=$?
+            sleep 2
+        done
+    fi
+
+    
+}
+
+function DriveRClone()
+{
+    RUTA2="/var/www/html/de/.enlaces"
+    ruta_drive=$(pwd)
+    for MiPeli in `ls *.mp4 *.avi *.mkv *.mpg` ; do
+        echo $MiPeli
+    done 2>/dev/null
+    function DatosGD 
+    {
+        CGD2=$1; LINKT=$2; errorG=$3
+        if [[ $errorG = 0 ]]; then
+            echo -e "\n "
+            echo -e "\033[1;36mSubido correctamente a\033[0m \033[1;33m$CGD2\033[0m"
+            echo -e "\033[1;33mLINK\033[0m"
+            LGDD=$(cat $LINKT | awk -F "=" '{printf $2}')
+            cat $LINKT
+            # LGDD=$(cat $LINKT | awk -F "=" '{printf $2}') ; echo "https://drive.google.com/uc?id=$LGDD&export=download"
+            echo -e "\033[1;31m=====================================\033[0m"
+        else 
+            echo -e "\033[1;36mVIDA TRISTE OCURRIO UN ERROR\033[0m \033[1;33m$CGD2\033[0m :("
+        fi
+        # if fgrep "DRIVE-DOWNLOAD" $RUTA2/GD_$MiPeli.txt ;then
+        #     LGDPHP=$(echo "https://drive.google.com/uc?id=$LGDD&export=download")
+        #     LGDPHPID=${LGDD}
+        # fi
+
+        # if fgrep "DRIVE-2" $RUTA2/GD_$MiPeli.txt ;then
+        #     cp .linkgd .linkgd-2
+        #     LGDDRIVE2PHP=$(cat .linkgd-2)
+        #     LINK_STREAM2_DIRECTO=$(cat .linkgd-2)
+        # fi
+
+        [[ $CGD2 = "DRIVE FREE" ]] && LGDPHP=$(cat $LINKT); LINK_STREAM2_DIRECTO=$(cat $LINKT)
+
+        if [[ $CGD2 == "GD-VIP" ]];then
+            LGDVIPPHP=$(cat $LINKT)
+            volerXd=$(pwd)
+            cd $RCOPY2 && drive pub -id "$LGDD"; drive unpub -id "$LGDD"; cd $volerXd
+
+
+            if [[ $COPIAGD2 == true ]];then
+                cd $RCOPY2 && drive copy -id "$LGDD" "$NAMEBINDERCOPY"; sleep 2s
+                drive pub ${NAMEBINDERCOPY}/"${MiPeli}"
+                newlink=$(rclone link newdrive:/"$MiPeli")
+                # newlink=$(drive pub FilesBackups/"$MiPeli" | awk  -F "published on" '{print $2}')
+                export IDBACKUUP=$(echo $newlink | awk -F "=" '{print $2}')
+                drive pub VIP/"$MiPeli"
+                drive unpub -id "$LGDD"
+                cd $volerXd
+            fi
+        fi
+    }
+    
+    function drive22()
+    {
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD-VIP\033[0m" 
+        rclone copy $ruta_drive/$MiPeli -P "${DRIVE2}":/
+        errorG=$?
+        LINK_DRIVE2=".linkgdVIP"
+        ProgressBar
+        msg -ama "Obteniendo enlaces VIP"
+        rclone link ${DRIVE2}:/$MiPeli > $LINK_DRIVE2
+        ERRLINK=$?
+        if [[ $ERRLINK != 0 ]]; then
+            until [[ $ERRLINK = 0 ]]; do
+                rclone link ${DRIVE2}:/$MiPeli > $LINK_DRIVE2
+                ERRLINK=$?
+                sleep 3
+            done
+        fi
+        kill $PIDI1
+        CGD1="GD-VIP"; DatosGD "GD-VIP" $LINK_DRIVE2 $errorG
+    }
+    drive22 
+    sleep 3s
+        
+    function drive33() 
+    {
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mDRIVE-2\033[0m"
+        rclone copy $ruta_drive/$MiPeli -P ${DRIVE3}:/
+        errorG=$?
+        LINK_DRIVE3=".linkgd"
+        ProgressBar
+        msg -ama "Obteniendo enlaces DRIVE..."
+        rclone link ${DRIVE3}:/$MiPeli > $LINK_DRIVE3
+        ERRLINK=$?
+        if [[ $ERRLINK != 0 ]]; then
+            until [[ $ERRLINK = 0 ]]; do
+                rclone link ${DRIVE3}:/$MiPeli > $LINK_DRIVE3
+                ERRLINK=$?
+                sleep 3
+            done
+        fi
+        kill $PIDI1
+        CGD1="DRIVE-2" ; DatosGD "DRIVE FREE" $LINK_DRIVE3 $errorG
+    }   
+    drive33 
+    sleep 5s
+    function drive_2_directo() 
+    {
+
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mDRIVE DIRECTO\033[0m"
+        estenxion=${MiPeli##*.}
+        if [[ $estenxion = mkv ]]; then
+            Mi_Peli_TXT=$(echo "${MiPeli/\.mkv/\.txt}")
+        elif [[ $estenxion = mp4 ]]; then
+            Mi_Peli_TXT=$(echo "${MiPeli/\.mp4/\.txt}")
+        elif [[ $estenxion = avi ]]; then
+            Mi_Peli_TXT=$(echo "${MiPeli/\.avi/\.txt}")
+        fi
+        echo $Mi_Peli_TXT
+        rclone copyto $ruta_drive/$MiPeli stream2_D:/PELICULAS/$Mi_Peli_TXT -P
+        errorG=$?
+        LINK_STREAM2_DIRECTO=$(rclone link stream2_D:/PELICULAS/$Mi_Peli_TXT)
+        CGD1="DRIVE-DIRECTO" ; DatosGD
+
+    }
+
+        
+    #     echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mDRIVE-DOWNLOAD\033[0m" ; sleep 2s
+    #     rclone copy $ruta_drive/$MiPeli -P drive4:/Maira
+    #     errorG=$?
+    #     ProgressBar
+    #     msg -ama "Obteniendo enlaces DRIVE-DOWN..."
+    #     rclone link drive4:/Maira/$MiPeli > .linkgd
+    #     ERRLINK=$?
+    #     if [[ $ERRLINK != 0 ]]; then
+    #        until [[ $ERRLINK = 0 ]]; do
+    #           rclone link drive3:/$MiPeli > .linkgdVIP
+    #           ERRLINK=$?
+    #           sleep 3
+    #       done
+    #   fi
+    #   kill $PIDI1
+    #   CGD1="DRIVE-DOWNLOAD" ; DatosGD
+
+# drive_2_directo 
+}
+
+###########################
+# SUBIR ARCHIVOS A O,S,S  #
+###########################
+
+function MostarEnlaces()
+{
+    SERVIDOR=$1; LINKS=$2; ERRORS=$3
+
+    if [[ $ERRORS -eq 0 ]]; then
+        echo -e "\n "
+        echo -e "\033[1;36mSubido correctamente a\033[0m \033[1;34m$SERVIDOR\033[0m"
+        echo -e "$LINKS"
+        echo -e "\033[1;31m=====================================\033[0m"
+    else
+        echo -e "\n "
+        echo -e "\033[1;36mVIDA TRISTE NO SE SUBIO\033[0m \033[1;34m$SERVIDOR\033[0m :("
+
+    fi
+}
+
+function subi1()
+{
+    vvery=$(/var/www/html/panell/inc/include/./very.php $MiPeli) 
+    errorVery=$?
+    echo $vvery > $fifo
+
+    MostarEnlaces "Verystream" $vvery $errorVery
+}
+
+function fembed()
+{
+   for MiPeli in `ls *.mp4 *.mkv *.avi *.mpg` ; do echo $MiPeli; done 2>/dev/null
+   for im in `ls *.mp4 *.mkv *.avi *.mpg`; do echo $im ; done 2>/dev/null
+   ruu=$(pwd)
+   script_F=$($SFembed $ruu $im)
+   errorFembed=$?
+#    Fembed_Link=$(echo $script_F | awk -F "\) \) " '{print $2}')
+   echo $script_F > $fifo1
+
+   MostarEnlaces "Fembed" $script_F $errorFembed
+}
+
+function netu()
+{
+    for MiPeli in `ls *.mp4 *.mkv *.avi *.mpg` ; do echo $MiPeli; done 2>/dev/null
+    for im in `ls *.mp4 *.mkv *.avi *.mpg`; do echo $im ; done 2>/dev/null
+    netuTV=$($SNetu "$im" 2>/dev/null)
+        errornetu=$?
+       echo $netuTV > $fifo2
+
+    MostarEnlaces "Netu" $netuTV $errornetu
+}
+
+function EnlacesMostar()
+{
+    UrlVerystream=$(< $fifo)
+    echo $UrlVerystream
+    UrlFembed=$(< $fifo1)
+    echo $UrlFembed
+    UrlNetu=$(< $fifo2)
+    echo $UrlNetu
+}
+function subida_o_s_s() 
+{
+    puesto=$(pwd | cut -d "/" -f7)
+    fifo="/tmp/fifo${puesto}very"
+    [[ -e $fifo ]] && rm $fifo
+    fifo1="/tmp/fifo${puesto}fembed"
+    [[ -e $fifo1 ]] && rm $fifo1
+    fifo2="/tmp/fifo${puesto}netu"
+    [[ -e $fifo2 ]] && rm $fifo2
+
+    PP=1
+
+    echo -e "     ---> \033[1;34mSUBIENDO A VERYSTREAM\033[0m     <--- "
+    subi1 &
+    sleep 2
+
+    # echo -e "     ---> \033[0;34mSUBIENDO A FEMBED\033[0m <--- "
+    # fembed &
+    # sleep 2
+
+    echo -e "     ---> \033[0;35mSUBIENDO A NETU\033[0m <--- "
+    netu &
+    sleep 2
+}
+
+
+                ####################################################################################################################################
+                ################################################################################
+                ##############################################
+
+                function LimiteM() {
+
+                    sleep 2s
+                    PROXILIST="/var/www/html/proxies.txt"
+                    proxii=($(<$PROXILIST))
+
+                    if [[ $Errorm -eq 1 ]]; then
+                        until [[ $Errorm -eq 0 ]]; do
+                            echo "USANDO PROXY"
+                            echo -e "\n "
+                            for (( i = 0; i < "${#proxii[@]}"; i++ )); do
+                                echo "usando prooxy ${proxii[$i]}"
+                                echo
+                                megadl $K --proxy="${proxii[$i]}"
+                                Errorm=$?
+                                if [[ $Errorm -eq 0 ]]; then
+                                    break
+                                fi
+                            done
+                            Errorm=$?
+                        done
+                    fi
+
+                }
+
+
+
+
+                function drive3() {
+                    echo "[1]-Drive"
+                    echo "[2]-Mega"
+                    echo "[3]-Openload"
+                    echo "[4]-Torrent"
+                    read -p "Descargar con el servidor: " SER
+
+                    CARP
+                    msg -ama "---------------------------"
+                    COLOREPI=$(msg -azu "RENOMBRAR DESDE EL EPISODIO #: "); read -p "$COLOREPI" EPI
+                    msg -ama "---------------------------"
+                    echo -e "\033[1;31m---------------------------\033[0m"
+                    read -p "ID SERIE: " IDSERIE
+                    echo -e "\033[1;31m---------------------------\033[0m"
+
+                    echo "1-[720]"
+                    echo "2-[1080]"
+                    echo "3-[SD]"
+                    read -p "CALIDAD: " CALIDA1
+                        res=$(repetir $CALIDA1)
+                    echo -e "\033[1;31m---------------------------\033[0m"
+                        if [[ $res ]]; then
+                            CALIDA1=${res}
+                        fi
+                        if [[ $CALIDA1 = 1 ]]; then
+                                CALIDA1="720"
+                            elif [[ $CALIDA1 = 2 ]]; then
+                                CALIDA1="1080"
+                            elif [[ $CALIDA1 = 3 ]]; then
+                                CALIDA1="SD"
+                        fi
+                    echo -e "\033[1;31m---------------------------\033[0m"
+                    echo "1-[Latino]"
+                    echo "2-[Espanol]"
+                    echo "3-[Subtitulada]"
+                    read -p "IDIOMA: " IDIOMA1
+                    res=$(repetir $IDIOMA1)
+                    echo -e "\033[1;31m---------------------------\033[0m"
+
+                        if [[ $res ]]; then
+                            IDIOMA1=${res}
+                        fi
+                        if [[ $IDIOMA1 = 1 ]]; then
+                                IDIOMA1="LATINO"
+                                ElimAudio=1
+                                AUD
+                            elif [[ $IDIOMA1 = 2 ]]; then
+                                IDIOMA1="CASTELLANO"
+                                ElimAudio=2
+                                AUD
+                            elif [[ $IDIOMA1 = 3 ]]; then
+                                IDIOMA1="SUBTITULADA"
+                                ElimAudio=3
+                                AUD
+                        fi
+
+                    echo -e "\033[1;31m---------------------------\033[0m"
+                    read -p "EXTRAER SUB: " EXTRASUB
+                    echo
+                    
+                    echo -e "\033[1;31m---------------------------\033[0m"
+                    CANTIDADTEM=$(msg -ama "CANTIDAD DE TEMPORADAS: "); read -p "$CANTIDADTEM" cant
+                    echo -e "\033[1;31m---------------------------\033[0m"
+
+                    declare -a array[cant]
+
+                    function pros() {
+
+                        echo -e "\033[1;31m---------------------------\033[0m"
+                        colorazuul=$(msg -azu "CANTIDAD DE LINKS"); read -p "${colorazuul}: " temp
+                        # validate_number=^-?[0-9]+([.][0-9]+)?$;
+                        # if ![[ $temp =~ $validate_number ]]; then
+                        # msg -ne "Numero no valido, Reintentar: "; read temp
+                        # fi
+                        # case "$temp" in 
+                        #     *[0-9]*) 
+                        #     echo "$valor es un número entero" 
+                        #     ;; 
+                        #     *) 
+                        #     echo "$valor no es numerico"; read temp
+                        #     ;; 
+                        #     esac 
+                        until [[ $temp =~ [0-9] ]]; do
+                            msg -ama "entrando "; read temp
+                        done
+                        echo -e "\033[1;31m---------------------------\033[0m"
+
+                        # echo "SE COMPROBARAN LOS ESTADOS DE LOS ENLACES..."
+                        # sleep 1
+                        declare -a link[temp]
+
+                        for (( i=1; i<=temp; i++ ))
+                        do 
+                            printf "ARCHIVO #"; printf $i ; printf " : "; read link[$i]
+
+                            FARRAY[$i]="$(echo ${link[$i]} | sed -n 's#.*\https\:\/\/drive\.google\.com/file/d/\([^.]*\)\/view.*#\1#;p')";
+                            FILENAME[$i]=$(wget -q --show-progress -O - "https://drive.google.com/file/d/${FARRAY[$i]}/view" | sed -n -e 's!.*<title>\(.*\)\ \-\ Dysk\ Google</title>.*!\1!p') 
+                            FILENAME1[$i]=$(echo "${FILENAME[$i]}")
+
+                            wget -q --show-progress --save-cookies /tmp/cookies.txt --no-check-certificate "https://docs.google.com/uc?export=download&id=${FARRAY[$i]}" -O ${FILENAME[$i]} 2>/dev/null
+
+                            FILENAME[$i]=$(echo "${FILENAME[$i]}" | awk '{print $1}')
+
+
+                            if grep -q "Quota exceeded" "${FILENAME[$i]}"; then
+                               rm ${FILENAME[$i]} && \
+                               echo -e "\033[1;31mEnlace descargado demaciadas veces (Quota Exceeded)\033[0m" && \
+                               echo -e "\033[1;33mFile \033[1;31m${FILENAME1[$i]}\033[0m NO se puede DESCARGAR\033[0m"
+                               echo "https://drive.google.com/file/d/${FARRAY[$i]}/view"
+                           else
+
+                            echo -e "\n"
+                            echo -e "\033[1;33mFile \033[1;36m${FILENAME1[$i]}\033[0m \033[1;33mONLINE\033[0m"
+                            sleep 1
+                            rm ${FILENAME[$i]} && \
+                            ONLINE[$i]=$(echo "${FILENAME[$i]}")
+                            ENLACESVIVOS[$i]=$(echo "${FILEID[$i]}")
+                        fi
+                    done
+                    sleep 1
+                    echo -e "\033[0;35m=====================================\033[0m"
+                    RESUL=$(echo ${link[@]})
+
+                    SS[$A]=${RESUL}
+                    B=1
+                }
+
+                for (( ii=1; ii<=cant; ii++ ))
+                do 
+                    let A=$A+1
+                    printf "Enlaces de la Temporada # "; printf $ii ; echo
+                    pros
+                    temp2[$A]=${temp}
+                    echo "${temp2[$A]}"
+                    let B=$B+1
+                done
+
+                ruta=$(pwd)
+                RUTA4="/var/www/html/de/.enlaces2"
+                DD2=${DD}
+
+                function LiimiteGD() {
+
+
+                    if [[ $Err1 -eq 1 ]]; then
+                        echo -e "\033[0;36mENTRANDO AL BUCLE\033[0m"
+                        until [[ $Err1 -ne 1 ]]; do
+                            dess download --recursive $K --force
+                            #googledd $K
+                            Err1=$?
+                            sleep 4
+                        done
+                    fi
+                }
+
+                #2>&1 | tee $ruta/.Dlog
+                    for (( iii=1; iii<=cant; iii++ ))
+                    do 
+                        let C=$C+1
+
+                        for K in ${SS[$iii]} ; do
+
+                            if [[ $SER = 1 ]]; then
+                                # dess download --recursive $K
+
+                                googledd $K
+                                Err1=$?
+                                if [[ $K != "1" ]]; then
+                                    echo $Err1
+                                    LiimiteGD
+                                fi
+                                echo
+                                echo
+                                sleep 2
+                                let E=$E+1
+                            elif [[ $SER = 2 ]]; then
+                                megadl $K
+                                Errorm=$?
+                                LimiteM
+                                let E=$E+1
+                            elif [[ $SER = 4 ]]; then
+                                aria2c $K
+                                let E=$E+1
+                            fi
+
+
+                            printf "TEMPORADA #"; printf "$iii"; echo 
+
+                            function MoverArchivos() {
+
+
+
+                                for f in * ; do mv "$f" "${f// /_}" ; done > /dev/null 2>> /root/log.txt
+
+                                for fiche in `ls *.mp4 *.avi *.mkv *.mpg` ; do
+                                    echo $fiche
+                                    mkdir $ruta/$DD
+                                    mkdir $ruta/$DD/Temp$iii.$DD
+                                    mv $fiche $ruta/$DD/Temp$iii.$DD
+                                done > /dev/null 2>> /root/log.txt
+
+                            } 
+                            echo $DD
+                            #dess upload -r --parent 1s271CnpfstYXhEZO2odKrZt9617lYA9r $ruta/Temporada$iii
+                            #CONTE=$(ls $ruta/$DD/Temp$iii.$DD | wc -l)
+                            #CONTE1=$(ls $ruta | wc -l)
+                            #echo "Contenido $CONTE"
+                            echo -e "\033[0;36m${temp2[$C]}\033[0m" 
+                            #echo "${temp2[$C]}"
+                            echo $E
+                            echo -e "\033[0;36m$E\033[0m" 
+                            echo
+                            if [[ $E = ${temp2[$C]} ]]; then
+                                sleep 2
+                                E=0
+                                echo -e "\033[0;36mTEMPORADA $NT DESCARGADA CORRECTAMENTE!!\033[0m" 
+                                #for z in `ls *.mp4 *.mkv *.avi *.mpg *.rar *.zip`; do
+                                    #echo $z
+
+                                    PutoPunto
+                                    echo $DD
+                                    descompri
+                                    EscogerAudio
+                                    PegarSubtitulos
+                                    TArchivo
+                                    renom
+                                    #MoverArchivos
+                                    echo "Subiendo temporada $C"
+                                    echo 
+                                    echo $ruta
+                                    #echo $ruta_open_todos
+                                    subida_o_s_s_T
+                                    subida_drive_T2
+
+
+                                    t=$(jobs -l)
+                                    v=""
+                                    CYANCLARO='\033[1;36m' 
+                                    until [[ $v = $t ]]; do
+                                        echo $t ; sleep 10
+                                        echo -e "\033[0;35mTERMINANDO DE SUBIR TEMPORADA $NT\033[0m"
+                                        jobs -l
+                                        t=$(jobs -l)
+                                    done
+                                    echo "TEMPORADA $NT SUBIDA CORRECTAMENTE!!"
+                                    echo "NOMBRE DE LA SERIE $DD2"
+                                    echo "$RUTA4/SERI.$DD2.Temp.$iii.php"
+                                    cd $ruta
+                                    # plantilla2 > "$RUTA4/SERI.$DD2.Temp.$NT.php"
+                                   plantilla2 
+                                    sleep 5
+                                    rm -rf *
+                                    #done
+                                fi
+
+                                
+
+
+                                done
+                                let NT=$NT+1
+                            done
+
+                        }
+                        function mostrar() {
+
+                            echo ------------------------------------
+                            echo "Tipo de archivo: $f "
+                            echo ------------------------------------
+
+                            echo ------------------------------------
+                            echo "Nombre de archivo: $FICHERO1"
+                            echo ------------------------------------
+
+                            echo ------------------------------------
+                            echo "Cantidad de archivos: $canti"
+                            echo ------------------------------------
+
+                        }
+
+                        function comprobar() {
+
+
+                            if [ $error == 0 ]; then
+                                echo
+                                echo -e "\e[32mArchivos renombrados con éxito :)"
+                                echo -e "\e[39m"
+                                echo
+                            elif [ -z "$nombre" ]; then
+                                echo Debes escribir un nombre de archivo, para mostrar la ayuda escriba
+                                exit
+
+                            elif ! [ -e "$FICHERO" ]; then
+                                echo El archivo $FICHERO no existe, para mostrar la ayuda escriba
+                                exit
+                            else
+                                echo
+                                echo -e "\e[31mError al renombrar los archivos :("
+                                echo -e "\e[39m"
+                                echo
+                            fi     
+
+
+                        }
+
+                        function comprobar1() {
+
+
+                            if [ $error == 0 ]; then
+                                echo
+                                echo -e "\e[32mArchivos extraidos con éxito :)"
+                                echo -e "\e[39m"
+                                echo
+                            elif [[ $error = 10 ]]; then
+                                echo
+                                msg -ama "No se encontraron ficheros, o esta dañado"
+
+                                if [[ $menu_principall = 2 ]]; then
+                                    msg -azu "Reitentando descargar el archivo"
+                                    googledd $K
+                                    descompri
+                                fi
+                                
+
+                            elif [ -z "$nombre" ]; then
+                                echo Debes escribir un nombre de archivo, para mostrar la ayuda escriba "ud --help"
+                                exit
+
+                            elif ! [ -e "$FICHERO" ]; then
+                                echo El archivo $RAR no existe, para mostrar la ayuda escriba "ud --help"
+                                exit
+                            else
+                                echo
+                                echo -e "\e[31mError al renombrar los archivos :("
+                                echo -e "\e[39m"
+                                echo
+                            fi
+
+
+                        }
+
+                        function descompri() {
+
+                            IKEY6=/var/local/Key6.txt
+                            PSW6=$(cat $IKEY6)
+                            for FILE in *.rar ; do NEWFILE=`echo $FILE | sed 's/ /_/g'` ; mv "$FILE" $NEWFILE ; done > /dev/null 2>> /root/log.txt
+                            for FILE in *.zip ; do NEWFILE=`echo $FILE | sed 's/ /_/g'` ; mv "$FILE" $NEWFILE ; done > /dev/null 2>> /root/log.txt
+                            for RAR in `ls *.rar *.zip`
+                            do
+                                echo $RAR
+                            done > /dev/null 2>> /root/log.txt
+
+
+                            echo
+
+
+                            descomprimir=${RAR##*.}
+                            case $descomprimir in
+
+                              *rar)
+                              unrar x -p$PSW6 $RAR -y 
+                              error=$?
+                              comprobar1
+                              printf "${CYANCLARO}";
+                              echo "FICHEROS RAR DESCOMPRIMIDOS CON EXITO!!";;
+                              *zip)
+                              unzip $RAR -y
+                              error=$?
+                              comprobar1
+                              printf "${CYANCLARO}";
+                              echo "FICHEROS ZIP DESCOMPRIMIDOS CON EXITO!!";;
+                          esac         
+                          for f in * ; do mv "$f" "${f// /_}" ; done > /dev/null 2>> /root/log.txt
+                          find . ! -name credentials.json ! -name drivedb -type f -exec mv {} . 2>/dev/null \;
+                          find . ! -name .gd -type d -exec rm -rf {} 2>/dev/null \;
+
+                          if [[ $SUBRAR ]]; then
+                          	find . ! -name "*.mkv" ! -name "*.mp4" ! -name "*.avi" ! -name "*.mpg" ! -name "*.srt" ! -name "*.ass" -type f -exec rm -rf {} 2>/dev/null \;
+                          else
+                          	find . ! -name "*.mkv" ! -name "*.mp4" ! -name "*.avi" ! -name "*.mpg" -type f -exec rm -rf {} 2>/dev/null \;
+                          fi
+                          
+
+                        #   until [[ -f $FINBUCLE ]]; do
+
+                        #     for FINBUCLE in `ls *.mkv *.mp4 *.avi *.mpg`; do
+                        #         echo $FINBUCLE
+                        #     done > /dev/null 2>> /root/log.txt
+                        #     for x in `ls`; do
+                        #         if [ -d $x ]; then
+                        #             FILED=`echo $x`
+                        #             echo $FILED
+                        #             cd $FILED
+                        #             for f in * ; do mv "$f" "${f// /_}" ; done > /dev/null 2>> /root/log.txt
+                        #             for FINBUCLE in `ls *.mkv *.mp4 *.avi *.mpg`; do
+                        #                 echo $FINBUCLE
+                        #             done > /dev/null 2>> /root/log.txt
+                        #         fi
+                        #     done 2>/dev/null
+                        # done
+                        Fmkv=$(ls *.mkv 2>/dev/null)
+                        if [[ $AUDIO = 1 ]]; then
+                            #if [[ -n $Fmkv ]]; then
+                                valor=1
+                                mkdir Latino
+                                for c in `ls *.mkv *.mp4 *.avi *.mpg` ; do 
+                                    cc=$(mkvinfo $c | awk '/Track type: audio/,/Track type: subtitles/'| grep Language | awk '{print $4}')
+                                    if [[ $cc = "lat" ]]; then
+                                        echo -e "\n "
+                                        echo -e "\033[01;36m..:el idioma es latino:..\033[0m"
+                                        mkvmerge -o $c.LAT.mkv -a "lat" $c
+                                    elif [[ $cc = "spa" ]]; then
+                                        echo -e "\n "
+                                        echo -e "\033[01;36m..:el idioma es español:..\033[0m"
+                                        mkvmerge -o $c.LAT.mkv -a "spa" $c
+                                    else
+                                        echo -e "\033[01;36m..:No hay subtitulos:..\033[0m"
+                                        mv $c Latino
+                                    fi
+                                    mv $c.LAT.mkv Latino
+                                done 2>/dev/null
+                                rm *
+                                cd Latino
+                                #fi
+                                if [[ $menu_principall = 1 ]]; then
+                                    if [[ $CONVERPELI != 1 ]]; then
+
+                                        for i in * ; do mv -- "${i}" "${i//['][!”#$%&’()*+,/:;<=>?@\^`{\|}~-']/_}" ; done 2>/dev/null
+                                        for y in `ls *.mkv *.mp4 *.avi *.mpg`; do
+                                            ACC_AUDIO=$(mkvmerge -i $y | grep ": audio" | awk '{print $5}')
+                                            if [[ $ACC_AUDIO != "(AAC)" ]]; then
+                                                ffmpeg -i $y -c:v copy -c:a aac -strict -2 A.$y
+                                                #rm $y
+                                                mv A.$y $y
+                                            fi
+                                        done 2>/dev/null
+                                    else
+                                     echo "NO HAY NECESIDAD"
+
+                                 fi
+                             fi
+
+                         fi
+
+                     }
+
+                     function mp(){
+                        rename 's/.mp4//' *.mp4 -v -n > /dev/null 2>> /root/log.txt
+                        rename 's/.mkv//' *.mkv -v -n > /dev/null 2>> /root/log.txt
+                        rename 's/.avi//' *.avi -v -n > /dev/null 2>> /root/log.txt
+
+
+                }
+
+                function renom() {
+                    RD=$(pwd)
+                    nombresinespacio=${nameori}
+                    IDPELI=${IDPELICULA}
+                    IDIOMA2=${IDIOMA1}
+                    CALIDA2=${CALIDA1}
+                    RUTA2="/var/www/html/de/.enlaces"
+
+                    for MiPeli in `ls *.mp4 *.mkv *.avi *.mpg`; do
+                        echo $MiPeli
+                    done 2>/dev/null
+
+                    if [[ $menu_principall = 1 ]]; then
+
+                            pesodelarchi=$(ls -alh "$MiPeli"| awk '{print $5}' | grep "G")
+                            pesodelarchi2=$(ls -alh "$MiPeli"| awk '{print $5}' | grep "M")
+                            echo $pesodelarchi
+                            echo $pesodelarchi2
+
+                        if [ "$pesodelarchi" -o "$pesodelarchi2" ]; then
+                            if [[ $V720 = 1 ]]; then
+                                    bid=$(/var/www/html/panel/inc/xion/./insertar.php "$IDPELI" "$nombresinespacio" "${CALIDA2}-720" $IDIOMA2)
+                            else
+                                if [[ $pesodelarchi || $pesodelarchi2 ]]; then
+                                        echo "creando platilla"
+                                        bid=$(/var/www/html/panel/inc/xion/./insertar.php "$IDPELI" "$nombresinespacio" $CALIDA2 $IDIOMA2)
+                                else
+                                    echo "no hay pelicula"
+                                fi
+                            fi
+                        else
+                            echo "EL ARCHIVO ESTA DAÑADO!"
+                            exit
+                        fi
+                    fi
+                    for TPE in `ls -alh $MiPeli | awk -F " " '{print $5}'` ; do TPE1=`echo $TPE | sed 's/G/ Gigas/g' | sed 's/M/ Megas/g'` ; mv "$TPE" $TPE1 ; done 2>/dev/null
+
+                    DEFINIR_TPE1=$(echo $TPE1 | awk '{print $2}')
+                    if [[ $DEFINIR_TPE1 = Gigas ]]; then
+                        TPE2="1 GB"
+                    elif [[ $DEFINIR_TPE1 = Megas ]]; then
+                        TPE2="Menos de 1 GB"
+                    fi
+
+
+                    if [[ $IDIOMA2 == "LAT" ]]; then
+                        IDIOMA3=${IDIOMA2}
+                    elif [[ $IDIOMA2 == "SUB" ]]; then
+                        IDIOMA3=${IDIOMA2}
+                    elif [[ $IDIOMA3 == "ESP" ]]; then
+                        IDIOMA3=${IDIOMA2}
+                    fi
+
+
+
+
+
+                    #CONVETIR A 720
+                    #ffmpeg -i input.wmv -s hd720 -c:v libx264 -crf 23 -c:a aac -strict -2 output.mp4
+
+                    #PEGAR SUB
+                    #ffmpeg -i Vox_Lux.mp4 -vf "ass=Vox_Lux_2018.ass" -preset veryslow -strict -2 salida3.mp4
+                    #ffmpeg -i Vox_Lux.mp4 -vf "ass=Vox_Lux_2018.ass" -s hd720 -c:v libx264 -crf 23 -strict -2 salida4.mp4
+
+                    #for name in `ls *.mkv`; do
+                        #    mkvpropedit $name --edit info --set "title=$VALOR"
+                        #done 2>/dev/null
+                        NEWFILEN1=`echo $NEWFILEN | sed 's/_/ /g'` ; mv "$NEWFILEN" $NEWFILEN1 2>/dev/null
+                        
+
+                        for i in `ls *.mkv *.mp4 *.avi *.mpg`; do
+
+                            EXT=${i##*.}
+                            if [[ $EXT = mkv ]]; then
+
+                                Numtrack=$(mkvinfo $MiPeli | grep "Track number" | wc -l)
+
+                                for (( i = 1; i < Numtrack; i++ )); do 
+                                    mkvpropedit $MiPeli --edit info --set "title=$VALOR";
+                                    # sleep 0.5s
+                                    mkvpropedit "$MiPeli" --edit info --edit track:a$i --set name=PelisHD24.com; 
+                                    # sleep 0.5s; 
+                                    mkvpropedit "$MiPeli" --edit info --edit track:v$i --set name=PelisHD24.com;
+                                    # sleep 0.5s;
+                                    mkvpropedit "$MiPeli" --edit info --edit track:s$i --set name=PelisHD24.com;
+                                done
+                            else
+                                ffmpeg -i $MiPeli -acodec copy -vcodec copy -metadata title="$VALOR" M.$MiPeli
+                                [[ -e M.$MiPeli ]] && rm $MiPeli
+                                mv M.$MiPeli $MiPeli
+                            fi
+                        done 2>/dev/null
+                        
+
+                        #[T3.Ep6]
+
+                        #for NOM_M in `ls *.mp4` ; do
+                            #mv $NOM_M ${NOM_M,,}
+                            #done 2> /dev/null
+
+
+
+                            for g in * ; do mv "$g" "${g/"Copia_de_"/}" ; done > /dev/null 2>> /root/log.txt
+                            for g in * ; do mv "$g" "${g/"Copia de "/}" ; done > /dev/null 2>> /root/log.txt
+
+                            for iFILE in * ; do iNEWFILE=`echo $iFILE | sed 's/Ep1_/Ep01_/g' | sed 's/Ep2_/Ep02_/g' | sed 's/Ep3_/Ep03_/g' | sed 's/Ep4_/Ep04_/g' | sed 's/Ep5_/Ep05_/g' | sed 's/Ep6_/Ep06_/g' | sed 's/Ep7_/Ep07_/g' | sed 's/Ep8_/Ep08_/g' | sed 's/Ep9_/Ep09_/g'` ; mv "$iFILE" $iNEWFILE ; done 2>/dev/null
+
+                            for iiiFILE in * ; do iiNEWFILE=`echo $iiFILE | sed 's/T1E1/T1E01/g' | sed 's/T1E2/T1E02/g' | sed 's/T1E3/T1E03/g' | sed 's/T1E4/T1E04/g' | sed 's/T1E5/T1E05/g' | sed 's/T1E6/T1E06/g' | sed 's/T1E7/T1E07/g' | sed 's/T1E8/T1E08/g' | sed 's/T1E9/T1E09/g'` ; mv "$iiFILE" $iiNEWFILE ; done 2>/dev/null
+
+
+                            for iFILE in * ; do iNEWFILE=`echo $iFILE | sed 's/^1.mkv/01.mkv/g' | sed 's/^2.mkv/02.mkv/g' | sed 's/^3.mkv/03.mkv/g' | sed 's/^4.mkv/04.mkv/g' | sed 's/^5.mkv/05.mkv/g' | sed 's/^6.mkv/06.mkv/g' | sed 's/^7.mkv/07.mkv/g' | sed 's/^8.mkv/08.mkv/g' | sed 's/^9.mkv/09.mkv/g'` ; mv "$iFILE" $iNEWFILE ; done 2>/dev/null
+
+                            for iFILE in * ; do iNEWFILE=`echo $iFILE | sed 's/^1.mp4/01.mp4/g' | sed 's/^2.mp4/02.mp4/g' | sed 's/^3.mp4/03.mp4/g' | sed 's/^4.mp4/04.mp4/g' | sed 's/^5.mp4/05.mp4/g' | sed 's/^6.mp4/06.mp4/g' | sed 's/^7.mp4/07.mp4/g' | sed 's/^8.mp4/08.mp4/g' | sed 's/^9.mp4/09.mp4/g'` ; mv "$iFILE" $iNEWFILE ; done 2>/dev/null
+
+
+                            for iFILE in * ; do iNEWFILE=`echo $iFILE | sed 's/^1.avi/01.avi/g' | sed 's/^2.avi/02.avi/g' | sed 's/^3.avi/03.avi/g' | sed 's/^4.avi/04.avi/g' | sed 's/^5.avi/05.avi/g' | sed 's/^6.avi/06.avi/g' | sed 's/^7.avi/07.avi/g' | sed 's/^8.avi/08.avi/g' | sed 's/^9.avi/09.avi/g'` ; mv "$iFILE" $iNEWFILE ; done 2>/dev/null
+
+                            for i in * ; do mv -- "${i}" "${i//['][!”#$%&’()*+,/ :;<=>?@\^`{\|}~-']/_}" ; done 2>/dev/null
+
+                            for qq in * ; do mv "$qq" "${qq/"WwW"/}" ; done > /dev/null 2>> /root/log.txt
+                            for qq in * ; do mv "$qq" "${qq/"Www"/}" ; done > /dev/null 2>> /root/log.txt
+                            for f in * ; do mv "$f" "${f/"Copia de "/}" ; done > /dev/null 2>> /root/log.txt
+                            for ff in * ; do mv "$ff" "${ff/".PeliculasGoogleDrive.info"/}" ; done > /dev/null 2>> /root/log.txt
+                            for ff in * ; do mv "$ff" "${ff//".PeliculasGoogleDrive.info.mkv"/".mkv"}" ; done > /dev/null 2>> /root/log.txt
+                            for ff in * ; do mv "$ff" "${ff//"PeliculasGoogleDrive.info.mkv"/".mkv"}" ; done 2>/dev/null
+                            for ff in * ; do mv "$ff" "${ff//"PeliculasGoogleDrive.info.mp4"/".mp4"}" ; done 2>/dev/null
+                            for ff in * ; do mv "$ff" "${ff//"PeliculasGoogleDrive.info.avi"/".avi"}" ; done 2>/dev/null
+                            for ff in * ; do mv "$ff" "${ff//"PeliculasGoogleDrive.info."/}" ; done 2>/dev/null
+                            for fff in * ; do mv "$fff" "${fff/".PeliculasGoogleDrive.Info"/}" ; done > /dev/null 2>> /root/log.txt
+                            for g1 in * ; do mv "$g1" "${g1/"CineAdictosYa"/}" ; done > /dev/null 2>> /root/log.txt
+                            for f1 in * ; do mv "$f1" "${f1/"GDRIVELatinoHD"/}" ; done > /dev/null 2>> /root/log.txt
+                            for f2 in * ; do mv "$f2" "${f2/"Entrepeliculasyseries.com"/}" ; done > /dev/null 2>> /root/log.txt
+                            for f2 in * ; do mv "$f2" "${f2/"Hackstore.Net"/}" ; done 2> /dev/null
+                            PutoPunto
+
+                            for f in * ; do mv "$f" "${f/"GDRIVELATINOHD.SITE"/}" ; done 2>/dev/null
+                            for f in * ; do mv "$f" "${f/C0p14_d3_/}" ; done > /dev/null 2>> /root/log.txt
+                            for f in * ; do mv "$f" "${f/\[/}" ; done > /dev/null 2>> /root/log.txt
+                            for f in * ; do mv "$f" "${f/\]/}" ; done > /dev/null 2>> /root/log.txt
+
+                            for f in * ; do mv "$f" "${f//-/_}" ; done > /dev/null 2>> /root/log.txt
+                            for f in * ; do mv "$f" "${f//.MP4/.mp4}" ; done > /dev/null 2>> /root/log.txt
+                            for q in * ; do mv "$q" "${q/".[PelisHD24.com]"/}" ; done > /dev/null 2>> /root/log.txt
+
+                            for q in * ; do mv "$q" "${q/"WwW.PeliculasGoogleDrive.Info"/}" ; done > /dev/null 2>> /root/log.txt
+                            for q in * ; do mv "$q" "${q/"Www.PeliculasGoogleDrive.Info"/}" ; done > /dev/null 2>> /root/log.txt
+                            for q in * ; do mv "$q" "${q/"PeliculasGoogleDrive.info"/}" ; done > /dev/null 2>> /root/log.txt
+                            for q in * ; do mv "$q" "${q/"Pelislatino3gp.Net."/}" ; done > /dev/null 2>> /root/log.txt
+                            for q in * ; do mv "$q" "${q/"[todopelishd.com]"/}" ; done > /dev/null 2>> /root/log.txt
+                            for q in * ; do mv "$q" "${q/"TeslavoHD"/}" ; done > /dev/null 2>> /root/log.txt
+
+
+                            rename 's/Pelislatino3gp.Net.//' *.mkv -v -n
+                            rename 's/PelisLatino3gp.Net.//' *.mkv -v -n
+                            rename 's/PeliculasGoogleDrive.info.//' *.mp4 -v -n 
+                            rename 's/PeliculasGoogleDrive.info.//' *.mkv -v -n
+                            rename 's/PeliculasGoogleDrive.info.//' *.avi -v -n
+                            rename 's/PelisLatino3gp.Net.//' *.mp4 -v -n 
+                            rename 's/PelisLatino3gp.Net.//' *.mkv -v -n
+                            rename 's/PelisLatino3gp.Net.//' *.avi -v -n
+                            rename 's/cinecalidad.to//' *.mp4 -v -n 
+                            rename 's/cinecalidad.to//' *.mkv -v -n
+                            rename 's/cinecalidad.to//' *.avi -v -n
+                            PutoPunto
+                            for FILE in *.MP4 *MKV ; do NEWFILE=`echo $FILE | sed 's/ /_/g' | sed 's/t/7/g' | sed 's/e/3/g' | sed 's/o/0/g' | sed 's/i/1/g' | sed 's/s/5/g' | sed 's/b/6/g' | sed 's/a/4/g'` ; mv "$FILE" $NEWFILE ; done > /dev/null 2>> /root/log.txt
+
+                            for nombre_mayuscula in `ls *.MP4 *.MKV *.AVI`
+                            do
+                                mv $nombre_mayuscula ${nombre_mayuscula,,}
+                            done > /dev/null 2>> /root/log.txt
+
+                            for FILE in *.avi ; do NEWFILE=`echo $FILE | sed 's/ /_/g' | sed 's/t/7/g' | sed 's/e/3/g' | sed 's/o/0/g' | sed 's/s/5/g' | sed 's/b/6/g'` ; mv "$FILE" $NEWFILE ; done > /dev/null 2>> /root/log.txt
+
+                            for FILE in *.mp4 *.mkv *.mpg ; do NEWFILE=`echo $FILE | sed 's/ /_/g' | sed 's/t/7/g' | sed 's/e/3/g' | sed 's/o/0/g' | sed 's/i/1/g' | sed 's/s/5/g' | sed 's/b/6/g' | sed 's/a/4/g'` ; mv "$FILE" $NEWFILE ; done > /dev/null 2>> /root/log.txt
+                            echo
+                            rename 's/PeliculasGoogleDrive.info.//' *.mp4 -v -n 
+                            rename 's/PeliculasGoogleDrive.info.//' *.mkv -v -n
+                            rename 's/PeliculasGoogleDrive.info.//' *.avi -v -n
+                            rename 's/cinecalidad.to//' *.mp4 -v -n 
+                            rename 's/cinecalidad.to//' *.mkv -v -n
+                            rename 's/cinecalidad.to//' *.avi -v -n
+                            PutoPunto
+
+
+                          #   for FICHERO in `ls *.mp4 *.mkv *.avi *.mpg`
+                          #   do
+                          #       echo $FICHERO
+
+
+                          #       nombre_extension=${FICHERO#*.}
+
+                          #       case $nombre_extension in
+
+                          #         *mkv)
+                          #         for ii in `ls *.mkv` ; do mv $FICHERO $FICHERO.$VALOR.mkv ; done > /dev/null 2>> /root/log.txt         
+                          #         error=$? ;;
+                          #         *avi)
+                          #         for ii in `ls *.avi` ; do mv $FICHERO $FICHERO.$VALOR.avi ; done > /dev/null 2>> /root/log.txt         
+                          #         error=$? ;;
+                          #         *mp4)
+                          #         for ii in `ls *.mp4` ; do mv $FICHERO $FICHERO.$VALOR.mp4 ; done > /dev/null 2>> /root/log.txt         
+                          #         error=$? ;;
+
+                          #         *mkv)
+                          #         for ii in `ls *.mpg` ; do mv $FICHERO $FICHERO.$VALOR.mpg ; done > /dev/null 2>> /root/log.txt         
+                          #         error=$? ;;
+
+                          #     esac  
+                          # done > /dev/null 2>> /root/log.txt
+                          echo
+                          sleep 1
+                          rename 's/P3l15HD24.c0m//' *.mp4 *.mkv -v -n; rename 's/[[]]//' *.mp4 -v -n
+                          rename 's/P3li5HD24.c0m//' *.avi -v -n; rename 's/[[]]//' *.mp4 -v -n
+
+
+
+                          f=${MiPeli##*.}
+
+                          case $f in
+
+                              *mkv)
+                              canti=$(ls | wc -l)
+                              mostrar
+                              error=$?
+                              comprobar;;
+                              *avi)
+                              canti=$(ls | wc -l)
+                              mostrar
+                              error=$?
+                              comprobar;;
+                              *mp4)
+                              canti=$(ls | wc -l)
+                              mostrar
+                              error=$?
+                              comprobar;;
+
+                              *rar)
+                              canti=$(ls | wc -l)
+                              mostrar
+                              error=$?
+                              comprobar;;
+
+                              *zip)
+                              canti=$(ls | wc -l)
+                              mostrar
+                              error=$?
+                              comprobar;;
+                          esac                  
+
+                          # mp
+
+                          for q in * ; do mv "$q" "${q//"__"/_}" ; done 2>/dev/null
+                          for q in * ; do mv "$q" "${q//"___"/_}" ; done 2>/dev/null
+                          for q in * ; do mv "$q" "${q//"____"/_}" ; done 2>/dev/null
+                          for q in * ; do mv "$q" "${q//"_____"/_}" ; done 2>/dev/null
+                          for q in * ; do mv "$q" "${q//"______"/_}" ; done 2>/dev/null
+                          PutoPunto
+
+
+                          for MiPeli in `ls *.mp4 *.mkv *.avi *.mpg`; do
+                            echo $MiPeli
+                        done 2>/dev/null
+
+                        if [[ $menu_principall = 1 ]]; then
+                            SAVEIFS=$IFS
+                            IFS=$(echo -en "\n\b")
+
+                           pelisinex=${MiPeli%.*}; 
+                           for f in * ; do mv "$f" "${f/"$pelisinex"/"${nombresinespacio} ${CALIDA2} $IDIOMA2"}" ; done > /dev/null 2>> /root/log.txt
+                           
+                       fi
+
+                       if [[ $menu_principall = 2 ]]; then
+
+                       	cero=0
+                       	cero2=0
+                       	EPI=${EPI}
+                       	for MiPeli in `ls *.mp4 *.avi *.mkv *.mpg` ; do
+                            
+                            if [[ $EPI = 10 ]]; then
+                            	unset cero
+                            fi
+                            if [[ $NT = 10 ]]; then
+                            	unset cero2
+                            fi
+                            en=$(echo ${MiPeli##*.}); em=${MiPeli%.*}; eo=${em^^}
+                            echo $MiPeli; mv "$MiPeli" "S${cero2}${NT}E${cero}${EPI}_${eo}.${en}"
+
+                            ((EPI++))
+                        done
+                        EPI=1
+                        msg -ama "archivos renombrados"; ls
+
+                        for MiPeli in `ls *.mp4 *.avi *.mkv *.mpg` ; do
+                            echo $MiPeli
+                            mkdir $DD
+                            cd $DD
+                            mkdir Temp$NT.$DD
+                            cd $RD
+                            mv $MiPeli $RD/$DD/Temp$NT.$DD
+                        done > /dev/null 2>> /root/log.txt
+                    fi
+
+
+                    if [[ $V720 = 1 ]]; then
+                        (Calidad720 &)
+                        # Calidad720
+                        sleep 2
+                        echo "Creando version 720"
+                        sleep 2
+                        echo "Empezando el proceso de combercion"
+                        sleep 4
+                    fi
+                    for MiPeli in `ls *.mp4 *.mkv *.avi *.mpg`; do
+                        echo $MiPeli
+                    done 2>/dev/null
+
+
+                }
+
+                function CrearLinkVIP(){
+
+                    if [[ $FTPLOG2 ]]; then
+                       TodosLosEnlaces
+                       TodosLosEnlaces1
+                       TodosLosEnlaces2
+                   fi
+
+
+                   FTPLOG2=".ftplogfileOpen"
+                   LINKOPENPHP=$(cat $FTPLOG2 | awk -F "URL: " '{printf $2}')
+
+
+                   echo "--------------------------------
+                   Peso: 
+                   $TPE1
+
+                   [b]ENLACES DE DESCARGA[/b]
+
+                   [color=red][b]Mega[/b][/color]
+                   $MEGALPHP
+
+                   [color=green]Google Drive[/color]
+                   $LGDPHP
+
+                   -------------------
+                   Peso: $TPE2
+                   [color=blue][b]Verystream[/b][/color]
+                   $UrlOpenload1
+
+
+                   [b]CONTRASEÑA PARA DESCOMPRIMIR:[/b] [color=black][b]pelishd24.com[/b][/color]
+
+                   ---------------------------------"
+               }
+
+               function CrearLinksFREE() {
+
+
+                # echo $MEGALPHP > .u
+                # sed -i 's/#/%/g' ".u"
+                # sed -i 's/%!/%23!/g' ".u"
+
+                #  echo "<?php 
+                # \$MEGALPHPl = \"$MEGALPHP\";
+
+                #  ?>" > .links.php
+                #  php .links.php
+                # MEGALPHP1=$(/var/www/html/de/./acortador.php $MEGALPHP)
+                # LGDPHP1=$(/var/www/html/de/./acortador.php $LGDPHP)
+
+                # if [[ $NEWMEGALPHP ]]; then
+                   #     MEGALPHP1=$(curl --request GET "http://ouo.io/api/RT8uMIRV?s=$NEWMEGALPHP")
+                   # fi
+                   # if [[ $LGDPHP ]]; then
+                       #     LGDPHP1=$(curl --request GET "http://ouo.io/api/RT8uMIRV?s=$LGDPHP")
+                       # fi
+
+
+
+
+                       if [[ $opcion = 5 ]]; then
+                        lfree720=$(echo "--------------------------------
+                        Peso: $TPE1
+
+                        [b]ENLACES DE DESCARGA[/b]
+
+                        [color=red][b]Mega[/b][/color]
+                        $MEGALPHP1
+
+                        [color=green]Google Drive[/color]
+                        $LGDPHP1
+
+                        -------------------
+                        Peso: $TPE2
+                        [color=blue][b]Verystream[/b][/color]
+                        $UrlOpenload1
+
+
+                        [b]CONTRASEÑA PARA DESCOMPRIMIR:[/b] [color=black][b]pelishd24.com[/b][/color]
+
+                        ---------------------------------")
+                    else
+                        lfree=$(echo "--------------------------------
+                        Peso: $TPE1
+
+                        [b]ENLACES DE DESCARGA[/b]
+
+                        [color=red][b]Mega[/b][/color]
+                        $MEGALPHP1
+
+                        [color=green]Google Drive[/color]
+                        $LGDPHP1
+
+                        -------------------
+                        Peso: $TPE2
+                        [color=blue][b]Verystream[/b][/color]
+                        $UrlOpenload1
+
+
+                        [b]CONTRASEÑA PARA DESCOMPRIMIR:[/b] [color=black][b]pelishd24.com[/b][/color]
+
+                        ---------------------------------")
+                    fi
+
+
+                }
+                RUTA3="/var/www/html/de/.enlaces2"
+
+                function plantilla() {
+
+                    # UrlOpenload=$(< $fifo)
+                    echo "link very"
+                    echo $UrlOpenload1
+                    IP=$(curl https://api.ipify.org/)
+                    # LINK_STREAM2_DIRECTO=$(rclone link stream2_D:/PELICULAS/$Mi_Peli_TXT)
+                    FTPLOG=.ftplogfileStrem
+                    FTPLOG1=.ftplogfileCherry
+                    LINKMANGOHTML=$(cat $FTPLOG | awk -F "URL: " '{printf $2}')
+                    LINKCHERRYHTML=$(cat $FTPLOG1 | awk -F "URL: " '{printf $2}')
+                    # LGDVIPPHP=$(cat .linkgdVIP)
+                    # LGDDRIVE2PHP=$(cat .linkgd-2)
+                    LINK_STREAM2_DIRECTO=$(cat .linkgd-2)
+                    ENLACESABIERTOS=$(cat $RUTA2/GD_$MiPeli.txt)
+                    URLVIP=$(urlencode "http://$IP/de/.enlaces/VIP:_$MiPeli.txt")
+                    URLFREE=$(urlencode "http://$IP/de/.enlaces/ZFREE:_$MiPeli.txt")
+                    MiPeliDecode=$(urlencode "$MiPeli")
+                    if [[ $opcion = 5 ]]; then
+                       NEWFILEN=$(echo "${NEWFILEN}_${CALIDA1}_$IDIOMA1.720")
+                   else
+                       NEWFILEN=$(echo "${NEWFILEN}_${CALIDA1}_$IDIOMA1")
+                   fi
+
+                   NameOrigi=$(urlencode "$NEWFILEN")
+                   NEWMEGALPHP1=$(urlencode "$MEGALPHP")
+                   FembedLink=$(cat .fembedlink)
+                   netuTV=$(cat .netu)
+                   pwd=$(pwd)
+                   echo "$NEWMEGALPHP1"
+                   echo "$NEWMEGALPHP"
+                   echo $LGDPHPID
+                   echo
+                   echo "$MiPeliDecode"
+                   echo $NEWFILEN
+                   echo "$NameOrigi"
+                   echo 
+                   echo $FembedLink
+                   echo $IDPELI
+                   echo
+                   echo "ARRIBA ESTA EL ID"
+                   exten=${MiPeli#*.}
+                   #URLENCRIDRIVE=$(curl --request GET "http://93.104.209.122/.enlaces2/.linkdrive2s.php?id=$LGDDRIVE2PHP")
+
+                   # URLENCRIDRIVE=$(curl --request GET "http://93.104.209.122/de/.linkdrive.php?id=$LGDDRIVE2PHP")
+                   # drivecri=$(echo $URLENCRIDRIVE | awk -F "id=" '{print $2}')
+                   # echo $drivecri
+                   drivecri=$(echo $LGDDRIVE2PHP | awk -F "id=" '{print $2}')
+                   drivecri2=$(echo $LGDVIPPHP | awk -F "id=" '{print $2}')
+                   drivecri3=$(echo $LINK_STREAM2_DIRECTO | awk -F "id=" '{print $2}')
+                   echo $drivecri
+                   echo $drivecri2
+                   echo $drivecri3
+                   echo $UrlOpenload1
+
+
+                   # curl --request GET "http://93.104.209.122/de/.enlaces2/.tt.php?id=$IDPELI&ip=$IP&urlfree=$URLFREE&urlvip=$URLVIP&nameo=$NameOrigi&mipeli=$MiPeliDecode&openload=$UrlOpenload&drive1=$drivecri&drive2=$drivecri2&drive3=$drivecri3&mega=$NEWMEGALPHP1&ouo=$MEGALPHP1&lgd=$LGDPHPID"
+
+
+                   # curl --request GET "http://93.104.209.122/de/.enlaces2/.tt.php?id=$IDPELI&ip=$IP&urlfree=$URLFREE&urlvip=$URLVIP&nameo=$NameOrigi&mipeli=$MiPeliDecode&openload=$UrlOpenload&fembedd=$FembedLink&drive1=$drivecri&drive2=$drivecri2&drive3=$drivecri3&cherry=$UrlCherry&mango=$UrlMango&mega=$NEWMEGALPHP1&netuu=$netuTV&lgd=$drivecri"
+
+
+                   # BASE DE DATOS TEST
+
+                MEGALPHP1=$(/var/www/html/panel/inc/include/./ouo.php $MEGALPHP)
+                LGDPHP1=$(/var/www/html/panel/inc/include/./short.php $LGDPHP)
+
+            
+                pastepelis=$(/var/www/html/panel/inc/include/./pastepelis.php 0 "$nombresinespacio $CALIDA2 $IDIOMA2" "$IDIOMA3 | $CALIDA2" $MEGALPHP1 $LGDPHP1 $UrlVerystream "$TPE1" "$TPE2")
+                pastepelisvip=$(/var/www/html/panel/inc/include/./pastepelis.php 1 "$nombresinespacio $CALIDA2 $IDIOMA2" "$IDIOMA3 | $CALIDA2" $MEGALPHP $LGDPHP $UrlVerystream "$TPE1" "$TPE2")
+                drive1=$(/var/www/html/panel/inc/include/linkdrive.php $drivecri 2>/dev/null)
+                drive2=$(/var/www/html/panel/inc/include/linkdrivevip.php $drivecri2 2>/dev/null)
+                drive3=$(/var/www/html/panel/inc/include/linkdrive2.php $drivecri3 2>/dev/null)
+
+                array=($UrlVerystream $UrlNetu $LGDVIPPHP $LGDPHP $MEGALPHP $MEGALPHP1 $LGDPHP1)
+                arraydescarga=($UrlVerystream $MEGALPHP $LGDPHP $MEGALPHP1 $LGDPHP1)
+
+                # enlaces_pre=$(/var/www/html/panel/inc/include/./file.php "${array[@]}")
+                descarga=$(/var/www/html/panel/inc/include/./file.php "${arraydescarga[@]}")
+
+
+
+
+                enlaces_pre=$(/var/www/html/panel/inc/include/./serializar.php "${array[@]}")
+
+                # /var/www/html/panel/inc/xion/./agregar.php $IDPELI "$nombresinespacio" $CALIDA2 $IDIOMA2 $enlaces_pre $descarga "$lvip" "$lfree" 
+                /var/www/html/panel/inc/xion/./agregar.php $enlaces_pre $bid
+            }
+            function enlacesMG(){
+
+                IP=$(curl https://api.ipify.org/)
+                #for FILE in $MiPeli ; do NEWFILE=`echo $FILE | sed 's/\[/%5b/g' | sed 's/\]/%5d/g'`; mv "$FILE" $NEWFILE ; done > /dev/null 2>> /root/log.txt
+
+
+                echo -e "\033[1;33mPUEDE VER LOS ENLACES DESDE EL NAVEGADOR CON EL SIGUEINTE LINK: \033[0m"
+                if [[ $menu_principall = 1 ]]; then
+                    urlencode "http://$IP/de/.enlaces2/ADD:_$MiPeli.txt.php"
+                    echo -e "\n "
+                elif [[ $menu_principall = 2 ]]; then
+                    echo -e "\n "
+                    urlencode "http://$IP/de/.enlaces2/SERI.$DD.Temp.$iii.html"
+                    echo -e "\n "
+                fi
+
+
+
+            }
+
+
+            function LinkCreator() {
+
+
+                CrearLinkVIP > $RUTA2/VIP:_$MiPeli.txt
+                CrearLinksFREE > $RUTA2/ZFREE:_$MiPeli.txt
+                #plantilla > $RUTA3/ADD:_$MiPeli.txt.php
+                plantilla
+
+            }
+
+
+            function sudmenu() {
+
+                t=$(jobs -l)
+                v=""
+
+                until [[ $v = $t ]]; do
+                    echo $t ; sleep 10
+                    echo "Esperando que todos los Serv Terminen"
+                    jobs -l
+                    t=$(jobs -l)
+                done
+                echo -e "\033[1;36mTODOS LOS SERVICIOS SUBIDOS CORRECTAMENTE\033[0m"
+                EnlacesMostar
+                echo $MiPeli
+                if [[ $ERRORM1 = 0 ]]; then
+                    # rm -rf $MiPeli 2>/dev/null
+                    echo "Eliminado"
+                else
+                    echo "No se borro nada xD"
+
+                fi
+                echo "CASI ENTRA  AL IF"
+
+                if [[ $menu_principall = 1 ]]; then
+
+                   if [[ $opcion = 5 ]]; then
+                      CrearLinkVIP > $RUTA2/VIP720:_$MiPeli.txt
+                      CrearLinksFREE > $RUTA2/ZFREE720:_$MiPeli.txt
+                      plantilla
+                  else
+                      CrearLinkVIP > $RUTA2/VIP:_$MiPeli.txt
+                      echo "VIP CREADO"
+                      CrearLinksFREE > $RUTA2/ZFREE:_$MiPeli.txt
+                      plantilla
+                  fi
+                  #plantilla > $RUTA3/ADD:_$MiPeli.txt.php
+                  #rclone copy $RUTA3/ADD:_$MiPeli.txt.php driveEnlaces:/ -P
+              else
+                echo "ERROR CON LAS PLANTILLAS"
+                fi
+                echo "CASI ENTRA AL WHILE"
+                echo $MiPeli
+                while :
+                do
+                    #printf "${RED}";
+                    #if [[ $menu_principall = 1 ]]; then
+                        #    CrearLinkVIP > $RUTA2/VIP:_$MiPeli.txt
+                        #    CrearLinksFREE > $RUTA2/ZFREE:_$MiPeli.txt
+                        #    plantilla > $RUTA3/ADD:_$MiPeli.txt.php
+                        #fi
+
+
+
+
+                        echo -e "\033[1;34m=================================================\033[0m"
+                        # echo -e "\033[0;35m[1]\033[0m \033[1;31m>\033[0m VER ENLACES"
+                        echo -e "\033[0;35m[1]\033[0m \033[1;31m>\033[0m SALIR!!"
+                        # echo -e "\033[0;35m[2]\033[0m \033[1;31m>\033[0m VOLVER A SUBIR A OPENLOAD, STREAMANGO, STREAMCHERRY"
+                        # echo -e "\033[0;35m[3]\033[0m \033[1;31m>\033[0m VOLVER A SUBIR A OPENLOAD"
+                        # echo -e "\033[0;35m[4]\033[0m \033[1;31m>\033[0m VOLVER A SUBIR A STREANMANGO"
+                        # echo -e "\033[0;35m[5]\033[0m \033[1;31m>\033[0m VOLVER A SUBIR A STREAMCHERRY"
+                        # echo -e "\033[0;35m[6]\033[0m \033[1;31m>\033[0m VOLVER A SUBIR A GDRIVE"
+                        # echo -e "\033[0;35m[7]\033[0m \033[1;31m>\033[0m SALIR Y BORRAR"
+                        # echo -e "\033[0;35m[8]\033[0m \033[1;31m>\033[0m MOSTRAR ARCHIVOS"
+                        # echo -e "\033[0;35m[9]\033[0m \033[1;31m>\033[0m VOLVER A SUBIR VIP"
+                        # echo -e "\033[0;35m[10]\033[0m \033[1;31m>\033[0m VOLVER A SUBIR FEMBED"
+                        # echo -e "\033[0;35m[11]\033[0m \033[1;31m>\033[0m VER ESPACIO MEGA"
+                        # echo -e "\033[0;35m[12]\033[0m \033[1;31m>\033[0m VER LINK MEGA"
+                        # echo -e "\033[0;35m[13]\033[0m \033[1;31m>\033[0m VER TODOS LOS LINKS MEGA"
+                        # echo -e "\033[0;35m[14]\033[0m \033[1;31m>\033[0m SALIR!!"
+                        echo -e "\033[1;34m=================================================\033[0m"
+                        read borrarr
+                        case $borrarr in
+                            1) enlacesMG; sleep 30s; exit ;; 
+                            2) subida_o_s_s_todos ;; 
+                            3) subida_o_s_s_todos1 ;;
+                            4) subida_o_s_s_todos2 ;;
+                            5) subida_o_s_s_todos3 ;;
+                            6) subida_drive_todos ;;
+                            7) rm -rf * > 2 /dev/null; exit ;;
+                            8) pwd; ls -ls ;;
+                            9) gdtxt ;;
+                            10) subi14 ;;
+                            11) megadf --human;;
+                            12) linkmega ;;
+                            13) megals -e ;;
+                            14) exit 1 ;;
+                            *) echo "OPCION INVALIDAD.";
+                            echo "Presiona una tecla para continuar...";
+                            read foo;;
+                        esac
+                    done
+
+            }
+
+while :
+do
+    apt clean
+    apt-get clean
+    menu_principall
+done

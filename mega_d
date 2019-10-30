@@ -1,0 +1,180 @@
+#!/bin/bash
+
+##########################
+# SUBIR ARCHIVOS A MEGA  #
+##########################
+function subida_mega() {
+#IKEY4=/var/local/Key4.txt
+#USR4=(`cat $IKEY4 | sed -n 1p $IKEY4`)
+#PSW4=(`cat $IKEY4 | sed -n 2p $IKEY4`)
+for FICHERO_mega in `ls *.mp4 *.avi *.mkv *.mpg`
+do
+echo $FICHERO_mega
+done > /dev/null 2>> /root/log.txt
+
+
+RUTAMEGA=$(pwd)
+MEGARC=/root/.megarc
+MEGARC2=/root/megarc2
+listamega=/var/local/listamega
+listamega1=/var/local/listamega1
+lismega=/var/local/lismega
+SUBIDO="Uploaded $FICHERO_mega"
+CUENTALIMITE="EOVERQUOTA"
+NOLINKS=$(echo "ERROR: No files specified for upload!")
+MEGALIMIT="ERATELIMIT"
+MEGALIMIT3="File already exists"
+MEGALIMIT2="Invalid upload handle"
+ERRORCUENTA="ENOENT"
+RUTA2="/var/www/html/de/.enlaces"
+TOTAL=$(megadf -h | sed -n '1p' | awk '{printf $1}')
+A=1
+#megaput $FICHERO_mega --reload -u $USR4 -p $PSW4
+CMEGA=$(cat /root/.megarc | sed -n '2p' | awk -F " " '{printf $3}')
+PMEGA=$(cat /root/.megarc | sed -n '3p' | awk -F " " '{printf $3}')
+MEGA_Links=${1}
+function LinkMegaDOWN() {
+
+    megals -e /Root/$FICHERO_mega -u $CMEGA -p $PMEGA > $MEGA_Links ; #echo -e "\n " >> $RUTA2/GD_$MiPeli.txt
+        if [[ $MEGA_Links = ".megallin.txt" ]]; then
+            MEGALPHP='$(cat $MEGA_Links | awk -F " " '{printf $1}')'
+        fi
+        if [[ $MEGA_Links = ".linkmega720.txt" ]]; then
+            MEGALPHP720=$(cat $MEGA_Links | awk -F " " '{printf $1}')
+        fi
+    
+    
+}
+
+if [[ -f $FICHERO_mega ]]; then
+    echo -e "\033[1;31m=================================================\033[0m"
+    #megaput $FICHERO_mega 2>&1 | tee .megalog; sed '1d' .megalog > .megalog1; MEGALOG=$(cat .megalog1.txt)
+    megaput $FICHERO_mega --debug 2>&1 | tee $RUTAMEGA/.megalog
+    LinkMegaDOWN
+    ERRORM1=$?
+    MEGALOG=$(grep "EOVERQUOTA" $RUTAMEGA/.megalog)
+
+    ERRORM=$(cat .megalog | grep "Uploaded" | wc -l)
+    #errormega=$?
+
+else
+        echo -e "\033[1;31m=================================================\033[0m"
+        echo "\033[1;31mNO HAY NADA PARA MEGA :V\033[0m"
+fi
+
+
+    if fgrep "$CUENTALIMITE" $RUTAMEGA/.megalog ;then
+    #if [[ $MEGALOG = $CUENTALIMITE ]]; then
+                MEGAESP1="Free:  0 bytes"
+                MEGAESP=$(megadf --human | sed -n '3p')
+                
+                    while [[ $MEGAESP = $MEGAESP1 ]]; do
+                        
+                        MEGAESP=$(megadf --human | sed -n '3p')
+                            while read line 
+                            do
+                                
+                                echo "$line" > "$listamega$A"; CUENTAMEGA=$(cat "$listamega$A")
+                                let A++
+                                echo
+                                echo -e "\033[1;32mCUENTA LLENA...PASAREMOS A LA CUENTA $CUENTAMEGA EN UN MOMENTO!! :)\033[0m"
+                                sleep 3
+
+                                sed '2d' $MEGARC > $MEGARC2; sed -i "2i Username = $CUENTAMEGA" $MEGARC2; rm -rf $MEGARC; mv $MEGARC2 $MEGARC
+                                sleep 1
+                                UPDATECUENTA=$(cat $MEGARC | sed -n '2p' | awk -F " " '{printf $3}')
+                                MEGAESP=$(megadf --human | sed -n '3p')
+                                    if [[ $MEGAESP != $MEGAESP1 ]]; then
+                                        echo -e "\033[1;36mPERFECTO LA CUENTA \033[1;31m$UPDATECUENTA\033[0m ESTA DISPONIBLE!\033[0m"
+                                        break
+                                    fi
+
+                            done < "$listamega"
+                        #sed -n "$Ap" $listamega > $listamega1; CUENTAMEGA=$(cat "$listamega1")
+                        sleep 3
+                        CMEGA=$(cat /root/.megarc | sed -n '2p' | awk -F " " '{printf $3}')
+                        PMEGA=$(cat /root/.megarc | sed -n '3p' | awk -F " " '{printf $3}')
+                        megaput $FICHERO_mega --debug 2>&1 | tee .megalog; MEGALOG=$(grep "EOVERQUOTA" $RUTAMEGA/.megalog)
+                        LinkMegaDOWN
+                        ERRORM1=$?
+                        ERRORM=$(cat .megalog | grep "Uploaded" | wc -l)
+                        #sed '1d' $listamega > $lismega; rm -rf $listamega; mv $lismega $listamega
+                    done
+    fi
+if fgrep "$MEGALIMIT" $RUTAMEGA/.megalog ;then
+    until [[ $SUBIDO = $MEGASUB ]]; do
+        CMEGA=$(cat /root/.megarc | sed -n '2p' | awk -F " " '{printf $3}')
+        PMEGA=$(cat /root/.megarc | sed -n '3p' | awk -F " " '{printf $3}')
+         megaput $FICHERO_mega --debug 2>&1 | tee $RUTAMEGA/.megalog
+         LinkMegaDOWN
+        if fgrep "$SUBIDO" $RUTAMEGA/.megalog ;then
+                MEGASUB=${SUBIDO}
+                echo "$MEGASUB"
+                break
+        elif fgrep "$MEGALIMIT3" $RUTAMEGA/.megalog ;then
+                MEGASUB=${SUBIDO}
+                echo "$MEGASUB"
+                break
+
+        fi
+    done
+fi
+if fgrep "$MEGALIMIT2" $RUTAMEGA/.megalog ;then
+    until [[ $SUBIDO = $MEGASUB ]]; do
+        CMEGA=$(cat /root/.megarc | sed -n '2p' | awk -F " " '{printf $3}')
+        PMEGA=$(cat /root/.megarc | sed -n '3p' | awk -F " " '{printf $3}')
+         megaput $FICHERO_mega --debug 2>&1 | tee $RUTAMEGA/.megalog
+         LinkMegaDOWN
+        if fgrep "$SUBIDO" $RUTAMEGA/.megalog ;then
+                MEGASUB=${SUBIDO}
+                echo "$MEGASUB"
+                break
+        fi
+    done
+fi      
+
+if fgrep "$ERRORCUENTA"  $RUTAMEGA/.megalog ;then
+    sed -i '2d' /root/.megarc
+    while read line 
+    do
+                                
+         echo "$line" > "$listamega$A"; CUENTAMEGA=$(cat "$listamega$A")
+         let A++
+         echo
+         echo -e "\033[1;32mERROR DE CUENTA...PASAREMOS A LA CUENTA $CUENTAMEGA EN UN MOMENTO!! :)\033[0m"
+         sleep 3
+
+         #sed '2d' $MEGARC > $MEGARC2; sed -i "2i Username = $CUENTAMEGA" $MEGARC2; rm -rf $MEGARC; mv $MEGARC2 $MEGARC
+         sed -i "2i\Username = $CUENTAMEGA" /root/.megarc
+
+         sleep 1
+         #UPDATECUENTA=$(cat $MEGARC | sed -n '2p' | awk -F " " '{printf $3}')
+         MEGAESP=$(megadf --human | sed -n '1p' | awk '{print $1}')
+         echo -e "\033[1;36mPERFECTO LA CUENTA \033[1;31m$CUENTAMEGA\033[0m ESTA DISPONIBLE!\033[0m"
+             if [[ $MEGAESP = "Total:" ]]; then  
+                 while true ; do
+                    megaput $FICHERO_mega --debug 2>&1 | tee .megalog
+                    sleep 2s
+                    COMPROBAR=$(megals -e /Root/$FICHERO_mega | awk '{print $2}')
+                    if [[ $COMPROBAR = "/Root/$FICHERO_mega" ]]; then
+                        break
+                    fi
+                done
+                break
+             fi
+        sed -i '2d' /root/.megarc
+
+    done < "$listamega"
+
+fi
+
+
+if [[ $ERRORM = 1 ]]; then
+        echo -e "\n "
+        echo -e "\033[1;36mSubido correctamente a\033[0m \033[1;31mMEGA\033[0m"
+        echo -e "\033[1;31m=====================================\033[0m"
+        echo -e "\033[1;33mLINKS DE DESCARGA MEGA\033[0m"
+        megals -e /Root/$FICHERO_mega
+        echo -e "\033[1;36m=================================================\033[0m"
+fi
+}
