@@ -1,5 +1,5 @@
 #!/bin/bash
-BLANCOF='\033[47m'; RED='\033[0;31m'; REDCLARO='\033[1;31m'; AZUL='\033[0;34m'; AZULCLARO='\033[1;34m'; VERDE='\033[0;32m'; VERDECLARO='\033[1;32m'; CYAN='\033[0;36m'; CYANCLARO='\033[1;36m'; PURPURA='\033[0;35m'; PURPURAC='\033[1;35m'; CAFE='\033[1;37m'; AMARILLO='\033[1;33m'; NC='\033[0m'; CONTRAMEG=$(cat /usr/local/contramega); RFembed="/var/www/html/panel/inc/include/fembed.php"; RNetu="/var/www/html/panel/inc/include/netu1.php"; SFembed="/var/www/html/panel/inc/include/./fembed.php"; SNetu="/var/www/html/panel/inc/include/./netu1.php"; Rvery="/var/www/html/panel/inc/include/./very.php"; CONFIG="/usr/local/bin/config.ini"; CONFIGGLOBAL="/var/www/html/panel/inc/config.php"
+BLANCOF='\033[47m'; RED='\033[0;31m'; REDCLARO='\033[1;31m'; AZUL='\033[0;34m'; AZULCLARO='\033[1;34m'; VERDE='\033[0;32m'; VERDECLARO='\033[1;32m'; CYAN='\033[0;36m'; CYANCLARO='\033[1;36m'; PURPURA='\033[0;35m'; PURPURAC='\033[1;35m'; CAFE='\033[1;37m'; AMARILLO='\033[1;33m'; NC='\033[0m'; RFembed="/var/www/html/panel/inc/include/fembed.php"; RNetu="/var/www/html/panel/inc/include/netu1.php"; SFembed="/var/www/html/panel/inc/include/./fembed.php"; SNetu="/var/www/html/panel/inc/include/./netu1.php"; Rvery="/var/www/html/panel/inc/include/./very.php"; SJetload="/var/www/html/panel/inc/include/./jetload.php"; CONFIG="/usr/local/bin/config.ini"; CONFIGGLOBAL="/var/www/html/panel/inc/config.php"; barraAzul="\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
 
 source $CONFIG
 PSW6=$PASSRAR
@@ -17,27 +17,27 @@ function validar_cuenta(){
         -openload)
             postmenu
             if [[ $USER_OPEN ]];then
-                VALORUSEROPEN=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"OpenloadUser\"\]" | cut -d "=" -f2 | cut -d "\"" -f2)
+                VALORUSEROPEN=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"OpenloadUser\"\]" | cut -d "\"" -f4)
                 sed -i "s/${VALORUSEROPEN}/${USER_OPEN}/g" $CONFIGGLOBAL
             fi
             if [[ $PASS_OPEN ]];then
-                VALORPASSOPEN=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"OpenloadPass\"\]" | cut -d "=" -f2 | cut -d "\"" -f2)
+                VALORPASSOPEN=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"OpenloadPass\"\]" | cut -d "\"" -f4)
                 sed -i "s/${VALORPASSOPEN}/${PASS_OPEN}/g" $CONFIGGLOBAL
             fi            
             ;;
         -verystream)
             postmenu
             if [[ $USER_OPEN ]];then
-                VALORUSEROPEN=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"VerystreamUser\"\]" | cut -d "=" -f2 | cut -d "\"" -f2)
+                VALORUSEROPEN=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"VerystreamUser\"\]" | cut -d "\"" -f4)
                 sed -i "s/${VALORUSEROPEN}/${USER_OPEN}/g" $CONFIGGLOBAL
             fi
             if [[ $PASS_OPEN ]];then
-                VALORPASSOPEN=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"VerystreamPass\"\]" | cut -d "=" -f2 | cut -d "\"" -f2)
+                VALORPASSOPEN=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"VerystreamPass\"\]" | cut -d "\"" -f4)
                 sed -i "s/${VALORPASSOPEN}/${PASS_OPEN}/g" $CONFIGGLOBAL
             fi
             ;;
         -netu)
-            IDAPINETU=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"NetuApi\"\]" | cut -d "=" -f2 | cut -d "\"" -f2)
+            IDAPINETU=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"NetuApi\"\]" | cut -d "\"" -f4)
             read -p "ID API: " API_NETU
             sed -i "s/${IDAPINETU}/${API_NETU}/g" $CONFIGGLOBAL
             ;;
@@ -45,17 +45,39 @@ function validar_cuenta(){
             read -p "CLIENTE ID: " CLIEN_ID
             read -p "CLIENTE SECRET: " CLIENT_SECRET
             if [[ $CLIEN_ID ]];then
-                VALORUSEROPEN=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"ClientIde\"\]" | cut -d "=" -f2 | cut -d "\"" -f2)
+                VALORUSEROPEN=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"ClientIde\"\]" | cut -d "\"" -f4)
                 sed -i "s/${VALORUSEROPEN}/${CLIEN_ID}/g" $CONFIGGLOBAL
             fi
             if [[ $CLIENT_SECRET ]];then
-                VALORPASSOPEN=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"ClientSecret\"\]" | cut -d "=" -f2 | cut -d "\"" -f2)
+                VALORPASSOPEN=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"ClientSecret\"\]" | cut -d "\"" -f4)
                 sed -i "s/${VALORPASSOPEN}/${CLIENT_SECRET}/g" $CONFIGGLOBAL
             fi
-        -Gooledrive)
-            read -p "USER ID: " USER_ID
             ;;
-
+        -jetload)
+            read -p "KEY: " JET_KEY
+            if [[ $JET_KEY ]];then
+                VALORUSEROPEN=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"JetloadKey\"\]" | cut -d "\"" -f4)
+                sed -i "s/${VALORUSEROPEN}/${JET_KEY}/g" $CONFIGGLOBAL
+            fi
+            ;;
+        -Mega)
+            echo -e "\033[1;37m[\033[1;31m01\033[1;37m] • \033[1;33mAGREGAR LISTADO DE CUENTAS \033[1;37m
+[\033[1;31m02\033[1;37m] • \033[1;33mCUENTA INDIVIDUAL \033[1;37m
+[\033[1;31m03\033[1;37m] • \033[1;33mLIMPIAR CUENTAS LLENAS \033[1;37m
+[\033[1;31m04\033[1;37m] • \033[1;33mCAMBIAR CONTRASEÑA \033[1;37m"
+            read lm1
+            case $lm1 in 
+                1) nano /var/local/listamega ;;
+                2) nano /root/.megarc ;;
+                3) LimpiarCuentasMega ;;
+                4) echo -e "\033[1;33mCONTTRASEÑA ACTUAL: \033[1;37m \033[1;35m$CONTRAMEG \033[1;37m"; 
+                read -p "INGRESAR NUEVA CONTRASEÑA: " CONTRAMEGA
+                # CONTRM=$(cat $CONFIG | grep "CONTRAMEG" | cut -d"\"" -f2); 
+                sed -i "s/\"${CONTRAMEG}\"/\"${CONTRAMEGA}\"/g" $CONFIG
+                source $CONFIG
+                ;;
+            esac
+            ;;
     esac
     echo $raya; echo "Datos actualizados."
 
@@ -473,72 +495,52 @@ function tst(){
 
     clear
     printf "${AZULCLARO}";
-    echo "/////////-----------------------//////////"
-    echo "CAMBIAR DATOS DE LOS SIGUIENTES SERVIDORES"
-    echo "/////////-----------------------//////////"
-    echo "   ________"
-    echo "1. OPENLOAD"
-    echo "   __________"
-    echo "2. VERYSTREAM"
-    echo "   ____________"
-    echo "3. NETU"
-    echo "   ____"
-    echo "4. MEGA"
-    echo "   ______"
-    echo "5. FEMBED"
-    echo "   ===================================="
-    echo "6. CAMBIAR CONTRASEÑA PARA DESCOMPRIMIR"
-    echo "   ===================================="
-    echo "7. CAMBIAR CUENTA DRIVE"
-    echo "   ===================================="
-    echo "8. ELIMINAR REGISTROS DE ENLACES"
-    echo "   ===================================="
-    echo "9. AGREGAR PROXIES PARA MEGA"
+    echo -e "\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
+    echo -e "\E[41;1;37m               ❖ CONFIGURAR SERVIDORES ❖                \E[0m"
+    echo -e "\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
+    echo ""
+    echo -e "\033[1;37m[\033[1;31m01\033[1;37m] • \033[1;33mOPENLOAD \033[1;37m
+[\033[1;31m02\033[1;37m] • \033[1;33mVERYSTREAM \033[1;37m
+[\033[1;31m03\033[1;37m] • \033[1;33mNETU \033[1;37m
+[\033[1;31m04\033[1;37m] • \033[1;33mJETLOAD \033[1;37m
+[\033[1;31m05\033[1;37m] • \033[1;33mFEMBED \033[1;37m
+[\033[1;31m06\033[1;37m] • \033[1;33mMEGA \033[1;37m
+[\033[1;31m07\033[1;37m] • \033[1;33mCONTRASEÑA PARA DESCOMPRIMIR RAR \033[1;37m"
 
     printf "${VERDECLARO}";
     read -p "Seleccionar una opcion: " TST1
 
     if [[ $TST1 = 1 ]]; then
+        echo -e "$barraAzul"
         validar_cuenta -openload
 
     elif [[ $TST1 = 2 ]]; then
+        echo -e "$barraAzul"
         validar_cuenta -verystream
 
     elif [[ $TST1 = 3 ]]; then
+        echo -e "$barraAzul"
         validar_cuenta -netu
 
-    elif [[ $TST1 = 4 ]]; then
-        echo "1] = agregar lista de cuentas mega"
-        echo "2] = Cuenta mega Individual"
-        echo "3] = Limpiar cuentas llenas"
-        echo "4] = Cambiar contraseña"
-        read lm1
-        case $lm1 in 
-            1) nano /var/local/listamega ;;
-            2) nano /root/.megarc ;;
-            3) LimpiarCuentasMega ;;
-            4) read -p "Ingresar nueva contraseña: " CONTRAMEGA && echo $CONTRAMEGA > /usr/local/contramega
-        esac
-    elif [[ $TST1 = 5 ]]; then
+    elif [[ $TST1 = 4 ]];then
+        echo -e "$barraAzul"
+        validar_cuenta -jetload
+
+    elif [[ $TST1 = 5 ]];then
+        echo -e "$barraAzul"
         validar_cuenta -fembed
 
     elif [[ $TST1 = 6 ]]; then
-        echo "Contraseña actual: $PASSRAR"; 
-        read -p "CONTRASEÑA: " PASS_RAR
-        sed -i "s/PASSRAR=\"${PASSRAR}\"/PASSRAR=\"${PASS_RAR}\"/g" $CONFIG
-        source $CONFIG
-        PSW6=$PASSRAR
+        echo -e "$barraAzul"
+        validar_cuenta -Mega
 
     elif [[ $TST1 = 7 ]]; then
-        CambiarToken
-
-    elif [[ $TST1 = 8 ]]; then
-        rm /var/www/html/de/.enlaces/*
-        rm /var/www/html/de/.enlaces2/*
-    elif [[ $TST1 = 9 ]]; then
-        nano /var/www/html/proxies.txt
-
-
+        echo -e "$barraAzul"
+        echo -e "\033[1;33mCONTTRASEÑA ACTUAL: \033[1;37m \033[1;35m$PASSRAR \033[1;37m"; 
+        read -p "INGRESAR NUEVA CONTRASEÑA: " PASS_RAR
+        [[ $PASS_RAR ]] && sed -i "s/PASSRAR=\"${PASSRAR}\"/PASSRAR=\"${PASS_RAR}\"/g" $CONFIG
+        source $CONFIG
+        PSW6=$PASSRAR
     fi
 }
 function AUD (){
@@ -2111,6 +2113,14 @@ function netu()
 
     MostarEnlaces "Netu" $netuTV $errornetu
 }
+function jetload()
+{
+    jl=$($SJetload $MiPeli)
+    errorJl=$?
+    echo $jl > $fifo3
+
+    MostarEnlaces "Jetload" $jl $errorJl
+}
 
 function EnlacesMostar()
 {
@@ -2120,6 +2130,8 @@ function EnlacesMostar()
     echo $UrlFembed
     UrlNetu=$(< $fifo2)
     echo $UrlNetu
+    UrlJetload=$(< $fifo3)
+    echo $UrlJetload
 }
 function subida_o_s_s() 
 {
@@ -2130,6 +2142,8 @@ function subida_o_s_s()
     [[ -e $fifo1 ]] && rm $fifo1
     fifo2="/tmp/fifo${puesto}netu"
     [[ -e $fifo2 ]] && rm $fifo2
+    fifo3="/tmp/fifo${puesto}jetload"
+    [[ -e $fifo3 ]] && rm $fifo3
 
     PP=1
 
@@ -2144,6 +2158,12 @@ function subida_o_s_s()
     echo -e "     ---> \033[0;35mSUBIENDO A NETU\033[0m <--- "
     netu &
     sleep 2
+
+    echo -e "     ---> \033[0;35mSUBIENDO A JETLOAD\033[0m <--- "
+    jetload &
+    sleep 2
+
+    
 }
 
 
@@ -3133,7 +3153,7 @@ rename 's/.avi//' *.avi -v -n > /dev/null 2>> /root/log.txt
                 drive2=$(/var/www/html/panel/inc/include/linkdrivevip.php $drivecri2 2>/dev/null)
                 drive3=$(/var/www/html/panel/inc/include/linkdrive2.php $drivecri3 2>/dev/null)
 
-                array=($UrlVerystream $UrlNetu $LGDVIPPHP $LGDPHP $MEGALPHP $MEGALPHP1 $LGDPHP1)
+                array=($UrlVerystream $UrlNetu $LGDVIPPHP $LGDPHP $MEGALPHP $MEGALPHP1 $LGDPHP1 $UrlJetload)
                 arraydescarga=($UrlVerystream $MEGALPHP $LGDPHP $MEGALPHP1 $LGDPHP1)
 
                 # enlaces_pre=$(/var/www/html/panel/inc/include/./file.php "${array[@]}")
