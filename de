@@ -1,8 +1,66 @@
 #!/bin/bash
-BLANCOF='\033[47m'; RED='\033[0;31m'; REDCLARO='\033[1;31m'; AZUL='\033[0;34m'; AZULCLARO='\033[1;34m'; VERDE='\033[0;32m'; VERDECLARO='\033[1;32m'; CYAN='\033[0;36m'; CYANCLARO='\033[1;36m'; PURPURA='\033[0;35m'; PURPURAC='\033[1;35m'; CAFE='\033[1;37m'; AMARILLO='\033[1;33m'; NC='\033[0m'; RFembed="/var/www/html/panel/inc/include/fembed.php"; RNetu="/var/www/html/panel/inc/include/netu1.php"; SFembed="/var/www/html/panel/inc/include/./fembed.php"; SNetu="/var/www/html/panel/inc/include/./netu1.php"; Rvery="/var/www/html/panel/inc/include/./very.php"; SJetload="/var/www/html/panel/inc/include/./jetload.php"; CONFIG="/usr/local/bin/config.ini"; CONFIGGLOBAL="/var/www/html/panel/inc/config.php"; barraAzul="\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
+BLANCOF='\033[47m'; RED='\033[0;31m'; REDCLARO='\033[1;31m'; AZUL='\033[0;34m'; AZULCLARO='\033[1;34m'; VERDE='\033[0;32m'; VERDECLARO='\033[1;32m'; CYAN='\033[0;36m'; CYANCLARO='\033[1;36m'; PURPURA='\033[0;35m'; PURPURAC='\033[1;35m'; CAFE='\033[1;37m'; AMARILLO='\033[1;33m'; NC='\033[0m'; RFembed="/var/www/html/panel/inc/include/fembed.php"; RNetu="/var/www/html/panel/inc/include/netu1.php"; SFembed="/var/www/html/panel/inc/include/./fembed.php"; SNetu="/var/www/html/panel/inc/include/./netu1.php"; Rvery="/var/www/html/panel/inc/include/./very.php"; SJetload="/var/www/html/panel/inc/include/./jetload.php"; CONFIG="/usr/local/bin/config.ini"; CONFIGGLOBAL="/var/www/html/panel/inc/config.php"; barraAzul="\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"; ruta_drive=$(pwd)
 
 source $CONFIG
 PSW6=$PASSRAR
+function ActivarEnlaces()
+{
+    [[ $ESTADOOPENLOAD == true ]] && _OPACT=$(echo -e "\033[1;32m● [ON]") || _OPACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
+    [[ $ESTADOVERYSTREAM == true ]] && _VSACT=$(echo -e "\033[1;32m● [ON]") || _VSACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
+    [[ $ESTADONETU == true ]] && _NTACT=$(echo -e "\033[1;32m● [ON]") || _NTACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
+    [[ $ESTADOJETLOAD == true ]] && _JLACT=$(echo -e "\033[1;32m● [ON]") || _JLACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
+    [[ $ESTADOFEMBED == true ]] && _FBACT=$(echo -e "\033[1;32m● [ON]") || _FBACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
+    [[ $ESTADOMEGA == true ]] && _MGACT=$(echo -e "\033[1;32m● [ON]") || _MGACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
+    [[ $ESTADODRIVEVIP == true ]] && _DVIPACT=$(echo -e "\033[1;32m● [ON]") || _DVIPACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
+    [[ $ESTADODRIVEFREE == true ]] && _DFREEACT=$(echo -e "\033[1;32m● [ON]") || _DFREEACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
+
+    echo -e "\033[1;37m[\033[1;31m01\033[1;37m] • \033[1;33mOPENLOAD \033[1;37m    $_OPACT
+[\033[1;31m02\033[1;37m] • \033[1;33mVERYSTREAM \033[1;37m  $_VSACT
+[\033[1;31m03\033[1;37m] • \033[1;33mNETU \033[1;37m        $_NTACT
+[\033[1;31m04\033[1;37m] • \033[1;33mJETLOAD \033[1;37m     $_JLACT
+[\033[1;31m05\033[1;37m] • \033[1;33mFEMBED \033[1;37m      $_FBACT
+[\033[1;31m06\033[1;37m] • \033[1;33mMEGA \033[1;37m        $_MGACT
+[\033[1;31m07\033[1;37m] • \033[1;33mGD VIP \033[1;37m      $_DVIPACT
+[\033[1;31m08\033[1;37m] • \033[1;33mGD FREE \033[1;37m     $_DFREEACT"
+    echo -e "$barraAzul"
+    read -p "NUMERO DEL SERVIDOR ACTIVAR/DESACTIVAR: " NSER
+    case $NSER in
+        1) 
+            [[ $ESTADOOPENLOAD == true ]] && sed -i "s/ESTADOOPENLOAD=true/ESTADOOPENLOAD=false/g" $CONFIG || sed -i "s/ESTADOOPENLOAD=false/ESTADOOPENLOAD=true/g" $CONFIG
+            source $CONFIG
+            ;;
+        2) 
+            [[ $ESTADOVERYSTREAM == true ]] && sed -i "s/ESTADOVERYSTREAM=true/ESTADOVERYSTREAM=false/g" $CONFIG || sed -i "s/ESTADOVERYSTREAM=false/ESTADOVERYSTREAM=true/g" $CONFIG
+            source $CONFIG
+            ;; 
+        3)
+            [[ $ESTADONETU == true ]] && sed -i "s/ESTADONETU=true/ESTADONETU=false/g" $CONFIG || sed -i "s/ESTADONETU=false/ESTADONETU=true/g" $CONFIG
+            source $CONFIG
+            ;;
+        4)
+            [[ $ESTADOJETLOAD == true ]] && sed -i "s/ESTADOJETLOAD=true/ESTADOJETLOAD=false/g" $CONFIG || sed -i "s/ESTADOJETLOAD=false/ESTADOJETLOAD=true/g" $CONFIG
+            source $CONFIG
+            ;;
+        5)
+            [[ $ESTADOFEMBED == true ]] && sed -i "s/ESTADOFEMBED=true/ESTADOFEMBED=false/g" $CONFIG || sed -i "s/ESTADOFEMBED=false/ESTADOFEMBED=true/g" $CONFIG
+            source $CONFIG
+            ;;
+        6)
+            [[ $ESTADOMEGA == true ]] && sed -i "s/ESTADOMEGA=true/ESTADOMEGA=false/g" $CONFIG || sed -i "s/ESTADOMEGA=false/ESTADOMEGA=true/g" $CONFIG
+            source $CONFIG
+            ;;
+        7)
+            [[ $ESTADODRIVEVIP == true ]] && sed -i "s/ESTADODRIVEVIP=true/ESTADODRIVEVIP=false/g" $CONFIG || sed -i "s/ESTADODRIVEVIP=false/ESTADODRIVEVIP=true/g" $CONFIG
+            source $CONFIG
+            ;;
+        8)
+            [[ $ESTADODRIVEFREE == true ]] && sed -i "s/ESTADODRIVEFREE=true/ESTADODRIVEFREE=false/g" $CONFIG || sed -i "s/ESTADODRIVEFREE=false/ESTADODRIVEFREE=true/g" $CONFIG
+            source $CONFIG
+            ;;
+        *) echo default
+        ;;
+    esac
+}
 function validar_cuenta(){
 
     function postmenu()
@@ -72,7 +130,6 @@ function validar_cuenta(){
                 3) LimpiarCuentasMega ;;
                 4) echo -e "\033[1;33mCONTTRASEÑA ACTUAL: \033[1;37m \033[1;35m$CONTRAMEG \033[1;37m"; 
                 read -p "INGRESAR NUEVA CONTRASEÑA: " CONTRAMEGA
-                # CONTRM=$(cat $CONFIG | grep "CONTRAMEG" | cut -d"\"" -f2); 
                 sed -i "s/\"${CONTRAMEG}\"/\"${CONTRAMEGA}\"/g" $CONFIG
                 source $CONFIG
                 ;;
@@ -354,7 +411,7 @@ function accion() {
 
     case $opcion in 
 
-        1) drived; descompri 2>/dev/null; EscogerAudio 2>/dev/null; PegarSubtitulos 2>/dev/null; renom; TArchivo; subida_o_s_s; DriveRClone; subida_mega .megallin.txt; IFS=$SAVEIFS; sudmenu ;; #openloadd
+        1) drived; descompri 2>/dev/null; EscogerAudio 2>/dev/null; PegarSubtitulos 2>/dev/null; renom; TArchivo; subida_o_s_s; IFS=$SAVEIFS; sudmenu ;; #openloadd
 
         2) drived; TArchivo; descompri; EscogerAudio; PegarSubtitulos; renom; ConvertirPeli; subida_o_s_s; DriveRClone; subida_mega .megallin.txt; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
         # 2) drived; PegarSubtitulos; TArchivo; descompri; renom; ConvertirPeli; sudmenu ;;
@@ -495,9 +552,9 @@ function tst(){
 
     clear
     printf "${AZULCLARO}";
-    echo -e "\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
-    echo -e "\E[41;1;37m               ❖ CONFIGURAR SERVIDORES ❖                \E[0m"
-    echo -e "\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
+    echo -e "\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
+    echo -e "\E[41;1;37m❖ OPCIONES DE CONFIGURACION Y DATOS DE SERVIDORES ❖\E[0m"
+    echo -e "\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
     echo ""
     echo -e "\033[1;37m[\033[1;31m01\033[1;37m] • \033[1;33mOPENLOAD \033[1;37m
 [\033[1;31m02\033[1;37m] • \033[1;33mVERYSTREAM \033[1;37m
@@ -505,36 +562,20 @@ function tst(){
 [\033[1;31m04\033[1;37m] • \033[1;33mJETLOAD \033[1;37m
 [\033[1;31m05\033[1;37m] • \033[1;33mFEMBED \033[1;37m
 [\033[1;31m06\033[1;37m] • \033[1;33mMEGA \033[1;37m
-[\033[1;31m07\033[1;37m] • \033[1;33mCONTRASEÑA PARA DESCOMPRIMIR RAR \033[1;37m"
+[\033[1;31m07\033[1;37m] • \033[1;33mCONTRASEÑA PARA DESCOMPRIMIR RAR \033[1;37m
+[\033[1;31m08\033[1;37m] • \033[1;33mACTIVAR O DESACTIVAR SERVIDORES \033[1;37m"
 
     printf "${VERDECLARO}";
     read -p "Seleccionar una opcion: " TST1
 
-    if [[ $TST1 = 1 ]]; then
-        echo -e "$barraAzul"
-        validar_cuenta -openload
+    [[ $TST1 = 1 ]] && echo -e "$barraAzul" && validar_cuenta -openload
+    [[ $TST1 = 2 ]] && echo -e "$barraAzul" && validar_cuenta -verystream
+    [[ $TST1 = 3 ]] && echo -e "$barraAzul" && validar_cuenta -netu
+    [[ $TST1 = 4 ]] && echo -e "$barraAzul" && validar_cuenta -jetload
+    [[ $TST1 = 5 ]] && echo -e "$barraAzul" && validar_cuenta -fembed
+    [[ $TST1 = 6 ]] && echo -e "$barraAzul" && validar_cuenta -Mega
 
-    elif [[ $TST1 = 2 ]]; then
-        echo -e "$barraAzul"
-        validar_cuenta -verystream
-
-    elif [[ $TST1 = 3 ]]; then
-        echo -e "$barraAzul"
-        validar_cuenta -netu
-
-    elif [[ $TST1 = 4 ]];then
-        echo -e "$barraAzul"
-        validar_cuenta -jetload
-
-    elif [[ $TST1 = 5 ]];then
-        echo -e "$barraAzul"
-        validar_cuenta -fembed
-
-    elif [[ $TST1 = 6 ]]; then
-        echo -e "$barraAzul"
-        validar_cuenta -Mega
-
-    elif [[ $TST1 = 7 ]]; then
+    if [[ $TST1 = 7 ]];then
         echo -e "$barraAzul"
         echo -e "\033[1;33mCONTTRASEÑA ACTUAL: \033[1;37m \033[1;35m$PASSRAR \033[1;37m"; 
         read -p "INGRESAR NUEVA CONTRASEÑA: " PASS_RAR
@@ -542,6 +583,7 @@ function tst(){
         source $CONFIG
         PSW6=$PASSRAR
     fi
+    [[ $TST1 = 8 ]] && ActivarEnlaces
 }
 function AUD (){
 
@@ -657,20 +699,16 @@ function menu_principall() {
         exit
     fi
 
-
-    echo "==================================="
-    echo "[1] SUBIR UN ARCHIVO"
-    echo "==================================="
-    echo "[2] SUBIR VARIOS ARCHIVOS"
-    echo "==================================="
-    echo "[3] SOLO DESCARGAR"
-    echo "==================================="
-    echo "[4] CONFIGURAR"
-    echo "==================================="
-    echo "[5] CREAR CUENTAS MEGA"
-    echo "==================================="
-    echo "[6] VENTANAS DE TRABAJO"
-    echo "==================================="
+echo -e "\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
+echo -e "\E[41;1;37m               ❖ BREAK UPLOADER PLUS ❖          \E[0m"
+echo -e "\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
+echo ""
+echo -e "\033[1;37m[\033[1;31m01\033[1;37m] • \033[1;33mSUBIR UN ARCHIVO \033[1;37m
+[\033[1;31m02\033[1;37m] • \033[1;33mSUBIR VARIOS ARCHIVOS \033[1;37m      
+[\033[1;31m03\033[1;37m] • \033[1;33mSOLO DESCARGAR \033[1;37m          
+[\033[1;31m04\033[1;37m] • \033[1;33mCONFIGURAR \033[1;37m           
+[\033[1;31m05\033[1;37m] • \033[1;33mCREAR CUENTAS MEGA \033[1;37m              
+[\033[1;31m06\033[1;37m] • \033[1;33mVENTANAS DE TRABAJO \033[1;37m"
 
     printf "${VERDECLARO}";
     read -n 1 -p "INGRESA UN NUMERO [1-4]: " menu_principall
@@ -1907,16 +1945,12 @@ if [[ $Err3 = 0 ]]; then
 fi
 fi
 }
-
-
 function PutoPunto() {
     for fiche1 in `ls .*.mp4 .*.avi .*.mkv .*.mpg`; do
         echo $fiche1
         mv "$fiche1" "${fiche1:1}"
     done 2>/dev/null
 }
-
-
 function LimiteVIP() {
 
     if [[ $Err1 -eq 1 ]]; then
@@ -1927,140 +1961,41 @@ function LimiteVIP() {
             sleep 2
         done
     fi
-
-    
 }
-
-function DriveRClone()
+function DatosGD 
 {
-    RUTA2="/var/www/html/de/.enlaces"
-    ruta_drive=$(pwd)
-    for MiPeli in `ls *.mp4 *.avi *.mkv *.mpg` ; do
-        echo $MiPeli
-    done 2>/dev/null
+    CGD2=$1; LINKT=$2; errorG=$3
+    if [[ $errorG = 0 ]]; then
+        echo -e "\n "
+        echo -e "\033[1;36mSubido correctamente a\033[0m \033[1;33m$CGD2\033[0m"
+        echo -e "\033[1;33mLINK\033[0m"
+        LGDD=$(cat $LINKT | awk -F "=" '{printf $2}')
+        cat $LINKT
+        # LGDD=$(cat $LINKT | awk -F "=" '{printf $2}') ; echo "https://drive.google.com/uc?id=$LGDD&export=download"
+        echo -e "\033[1;31m=====================================\033[0m"
 
-    function DatosGD 
-    {
-        CGD2=$1; LINKT=$2; errorG=$3
-        if [[ $errorG = 0 ]]; then
-            echo -e "\n "
-            echo -e "\033[1;36mSubido correctamente a\033[0m \033[1;33m$CGD2\033[0m"
-            echo -e "\033[1;33mLINK\033[0m"
-            LGDD=$(cat $LINKT | awk -F "=" '{printf $2}')
-            cat $LINKT
-            # LGDD=$(cat $LINKT | awk -F "=" '{printf $2}') ; echo "https://drive.google.com/uc?id=$LGDD&export=download"
-            echo -e "\033[1;31m=====================================\033[0m"
+        [[ $CGD2 == "DRIVE FREE" ]] && LGDPHP=$(cat $LINKT); LINK_STREAM2_DIRECTO=$(cat $LINKT)
 
-            [[ $CGD2 == "DRIVE FREE" ]] && LGDPHP=$(cat $LINKT); LINK_STREAM2_DIRECTO=$(cat $LINKT)
-
-            if [[ $CGD2 == "GD-VIP" ]];then
-                LGDVIPPHP=$(cat $LINKT)
-                volerXd=$(pwd)
-                cd $RCOPY2 && drive pub -id "$LGDD"; drive unpub -id "$LGDD"; cd $volerXd
-                
-                if [[ $COPIAGD2 == true ]];then
-                    cd $RCOPY2 && drive copy -id "$LGDD" "$NAMEBINDERCOPY"; sleep 2s
-                    drive pub ${NAMEBINDERCOPY}/"${MiPeli}"
-                    newlink=$(rclone link newdrive:/"$MiPeli")
-                    # newlink=$(drive pub FilesBackups/"$MiPeli" | awk  -F "published on" '{print $2}')
-                    export IDBACKUUP=$(echo $newlink | awk -F "=" '{print $2}')
-                    drive pub VIP/"$MiPeli"
-                    drive unpub -id "$LGDD"
-                    cd $volerXd
-                fi
+        if [[ $CGD2 == "GD-VIP" ]];then
+            LGDVIPPHP=$(cat $LINKT)
+            volerXd=$(pwd)
+            cd $RCOPY2 && drive pub -id "$LGDD"; drive unpub -id "$LGDD"; cd $volerXd
+            
+            if [[ $COPIAGD2 == true ]];then
+                cd $RCOPY2 && drive copy -id "$LGDD" "$NAMEBINDERCOPY"; sleep 2s
+                drive pub ${NAMEBINDERCOPY}/"${MiPeli}"
+                newlink=$(rclone link newdrive:/"$MiPeli")
+                # newlink=$(drive pub FilesBackups/"$MiPeli" | awk  -F "published on" '{print $2}')
+                export IDBACKUUP=$(echo $newlink | awk -F "=" '{print $2}')
+                drive pub VIP/"$MiPeli"
+                drive unpub -id "$LGDD"
+                cd $volerXd
             fi
-        else 
-            echo -e "\033[1;36mVIDA TRISTE OCURRIO UN ERROR\033[0m \033[1;33m$CGD2\033[0m :("
         fi
-    }
-    
-    function drive22()
-    {
-        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD-VIP\033[0m" 
-        rclone copy $ruta_drive/$MiPeli -P "${DRIVE2}":/
-        errorG=$?
-        LINK_DRIVE2=".linkgdVIP"
-        ProgressBar
-        msg -ama "Obteniendo enlaces VIP"
-        rclone link ${DRIVE2}:/$MiPeli > $LINK_DRIVE2
-        ERRLINK=$?
-        if [[ $ERRLINK != 0 ]]; then
-            until [[ $ERRLINK = 0 ]]; do
-                rclone link ${DRIVE2}:/$MiPeli > $LINK_DRIVE2
-                ERRLINK=$?
-                sleep 3
-            done
-        fi
-        kill $PIDI1
-        CGD1="GD-VIP"; DatosGD "GD-VIP" $LINK_DRIVE2 $errorG
-    }
-    drive22 
-    sleep 3s
-        
-    function drive33() 
-    {
-        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mDRIVE FREE\033[0m"
-        rclone copy $ruta_drive/$MiPeli -P ${DRIVE3}:/
-        errorG=$?
-        LINK_DRIVE3=".linkgd"
-        ProgressBar
-        msg -ama "Obteniendo enlaces DRIVE..."
-        rclone link ${DRIVE3}:/"${MiPeli}" > $LINK_DRIVE3
-        ERRLINK=$?
-        if [[ $ERRLINK != 0 ]]; then
-            until [[ $ERRLINK = 0 ]]; do
-                msg -verd "Volviendo a intentar"
-                rclone link ${DRIVE3}:/"${MiPeli}" > $LINK_DRIVE3
-                ERRLINK=$?
-                sleep 3
-            done
-        fi
-        kill $PIDI1
-        DatosGD "DRIVE FREE" $LINK_DRIVE3 $errorG
-    }   
-    drive33 
-    sleep 5s
-    function drive_2_directo() 
-    {
-
-        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mDRIVE DIRECTO\033[0m"
-        estenxion=${MiPeli##*.}
-        if [[ $estenxion = mkv ]]; then
-            Mi_Peli_TXT=$(echo "${MiPeli/\.mkv/\.txt}")
-        elif [[ $estenxion = mp4 ]]; then
-            Mi_Peli_TXT=$(echo "${MiPeli/\.mp4/\.txt}")
-        elif [[ $estenxion = avi ]]; then
-            Mi_Peli_TXT=$(echo "${MiPeli/\.avi/\.txt}")
-        fi
-        echo $Mi_Peli_TXT
-        rclone copyto $ruta_drive/$MiPeli stream2_D:/PELICULAS/$Mi_Peli_TXT -P
-        errorG=$?
-        LINK_STREAM2_DIRECTO=$(rclone link stream2_D:/PELICULAS/$Mi_Peli_TXT)
-        CGD1="DRIVE-DIRECTO" ; DatosGD
-
-    }
-
-        
-    #     echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mDRIVE-DOWNLOAD\033[0m" ; sleep 2s
-    #     rclone copy $ruta_drive/$MiPeli -P drive4:/Maira
-    #     errorG=$?
-    #     ProgressBar
-    #     msg -ama "Obteniendo enlaces DRIVE-DOWN..."
-    #     rclone link drive4:/Maira/$MiPeli > .linkgd
-    #     ERRLINK=$?
-    #     if [[ $ERRLINK != 0 ]]; then
-    #        until [[ $ERRLINK = 0 ]]; do
-    #           rclone link drive3:/$MiPeli > .linkgdVIP
-    #           ERRLINK=$?
-    #           sleep 3
-    #       done
-    #   fi
-    #   kill $PIDI1
-    #   CGD1="DRIVE-DOWNLOAD" ; DatosGD
-
-# drive_2_directo 
+    else 
+        echo -e "\033[1;36mVIDA TRISTE OCURRIO UN ERROR\033[0m \033[1;33m$CGD2\033[0m :("
+    fi
 }
-
 ###########################
 # SUBIR ARCHIVOS A O,S,S  #
 ###########################
@@ -2080,8 +2015,65 @@ function MostarEnlaces()
 
     fi
 }
+function drive_2_directo() 
+{
 
-function subi1()
+    echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mDRIVE DIRECTO\033[0m"
+    estenxion=${MiPeli##*.}
+    if [[ $estenxion = mkv ]]; then
+        Mi_Peli_TXT=$(echo "${MiPeli/\.mkv/\.txt}")
+    elif [[ $estenxion = mp4 ]]; then
+        Mi_Peli_TXT=$(echo "${MiPeli/\.mp4/\.txt}")
+    elif [[ $estenxion = avi ]]; then
+        Mi_Peli_TXT=$(echo "${MiPeli/\.avi/\.txt}")
+    fi
+    echo $Mi_Peli_TXT
+    rclone copyto $ruta_drive/$MiPeli stream2_D:/PELICULAS/$Mi_Peli_TXT -P
+    errorG=$?
+    LINK_STREAM2_DIRECTO=$(rclone link stream2_D:/PELICULAS/$Mi_Peli_TXT)
+    CGD1="DRIVE-DIRECTO" ; DatosGD
+
+}
+function drive22()
+{
+    rclone copy $ruta_drive/$MiPeli -P "${DRIVE2}":/
+    errorG=$?
+    LINK_DRIVE2=".linkgdVIP"
+    ProgressBar
+    msg -ama "Obteniendo enlaces VIP"
+    rclone link ${DRIVE2}:/$MiPeli > $LINK_DRIVE2
+    ERRLINK=$?
+    if [[ $ERRLINK != 0 ]]; then
+        until [[ $ERRLINK = 0 ]]; do
+            rclone link ${DRIVE2}:/$MiPeli > $LINK_DRIVE2
+            ERRLINK=$?
+            sleep 3
+        done
+    fi
+    kill $PIDI1
+    CGD1="GD-VIP"; DatosGD "GD-VIP" $LINK_DRIVE2 $errorG
+}
+function drive33() 
+{
+    rclone copy $ruta_drive/$MiPeli -P ${DRIVE3}:/
+    errorG=$?
+    LINK_DRIVE3=".linkgd"
+    ProgressBar
+    msg -ama "Obteniendo enlaces DRIVE..."
+    rclone link ${DRIVE3}:/"${MiPeli}" > $LINK_DRIVE3
+    ERRLINK=$?
+    if [[ $ERRLINK != 0 ]]; then
+        until [[ $ERRLINK = 0 ]]; do
+            msg -verd "Volviendo a intentar"
+            rclone link ${DRIVE3}:/"${MiPeli}" > $LINK_DRIVE3
+            ERRLINK=$?
+            sleep 3
+        done
+    fi
+    kill $PIDI1
+    DatosGD "DRIVE FREE" $LINK_DRIVE3 $errorG
+}   
+function Verystream()
 {
     vvery=$($Rvery $MiPeli) 
     errorVery=$?
@@ -2147,27 +2139,55 @@ function subida_o_s_s()
 
     PP=1
 
-    echo -e "     ---> \033[1;34mSUBIENDO A VERYSTREAM\033[0m     <--- "
-    subi1 &
-    sleep 2
-
-    # echo -e "     ---> \033[0;34mSUBIENDO A FEMBED\033[0m <--- "
-    # fembed &
-    # sleep 2
-
-    echo -e "     ---> \033[0;35mSUBIENDO A NETU\033[0m <--- "
-    netu &
-    sleep 2
-
-    echo -e "     ---> \033[0;35mSUBIENDO A JETLOAD\033[0m <--- "
-    jetload &
-    sleep 2
-
+    if [[ $ESTADOOPENLOAD == true ]];then
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mOPENLOAD\033[0m"
+        subi1 &
+        sleep 2
+    fi
     
+    if [[ $ESTADOVERYSTREAM == true ]];then
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mVERYSTREAM\033[0m"
+        Verystream &
+        sleep 2
+    fi
+
+    if [[ $ESTADOFEMBED == true ]];then
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mFEMBED\033[0m"
+        fembed &
+        sleep 2
+    fi
+    
+    if [[ $ESTADONETU == true ]];then
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mNETU\033[0m"
+        netu &
+        sleep 2
+    fi
+
+    if [[ $ESTADOJETLOAD == true ]];then
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mJETLOAD\033[0m"
+        jetload &
+        sleep 2
+    fi
+
+    if [[ $ESTADODRIVEVIP == true ]];then
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD-VIP\033[0m"
+        drive22
+    fi
+
+    if [[ $ESTADODRIVEFREE == true ]];then
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD FREE\033[0m" 
+        drive33
+    fi
+    
+    if [[ $ESTADOMEGA ]];then
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD FREE\033[0m" 
+        subida_mega .megallin.txt
+    fi
 }
 
 
                 ####################################################################################################################################
+               
                 ################################################################################
                 ##############################################
 
