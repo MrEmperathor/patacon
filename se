@@ -423,66 +423,6 @@ function alberth() {
 echo
 printf "${NC}"
 
-function accion() {
-
-    alberth
-    echo -e "\033[1;34m=================================================\033[0m"
-    echo -e "\033[0;35m[1]\033[0m \033[1;31m>\033[0m DESCARGA DE OPENLOAD,VSTREAM,YOUTUBE...ETC"
-    echo -e "\033[0;35m[2]\033[0m \033[1;31m>\033[0m DESCARGA DE GDRIVE"
-    echo -e "\033[0;35m[3]\033[0m \033[1;31m>\033[0m DESCARGA DE MEGA"
-    echo -e "\033[0;35m[4]\033[0m \033[1;31m>\033[0m DESCARGA TORRENT"
-    echo -e "\033[0;35m[5]\033[0m \033[1;31m>\033[0m DESCARGAR Y SUBIR EN 720P"
-    echo -e "\033[0;35m[6]\033[0m \033[1;31m>\033[0m DESCARGAR > SUBIR A MEGA"
-    # echo -e "\033[0;35m[8]\033[0m \033[1;31m>\033[0m SOLO SUBIR A GDRIVE"
-    # echo -e "\033[0;35m[9]\033[0m \033[1;31m>\033[0m SOLO SUBIR A MEGA"
-    # echo -e "\033[0;35m[10]\033[0m \033[1;31m>\033[0m SOLO SUBIR A VIP"
-    # echo -e "\033[0;35m[11]\033[0m \033[1;31m>\033[0m SOLO SUBIR A FEMBED"
-    # echo -e "\033[0;35m[12]\033[0m \033[1;31m>\033[0m VER ESPACIO MEGA"
-    # echo -e "\033[0;35m[13]\033[0m \033[1;31m>\033[0m VER LINKS MEGA"
-    # echo -e "\033[0;35m[14]\033[0m \033[1;31m>\033[0m SUBIR 720P"
-    # echo -e "\033[0;35m[15]\033[0m \033[1;31m>\033[0m DESCARGAR DE DRIVE & SUBIR A MEGA"
-    echo -e "\033[1;34m=================================================\033[0m"
-    read -p "INTRODUCE LA OPCION A USAR: " opcion
-
-    case $opcion in 
-
-        1) drived; descompri 2>/dev/null; EscogerAudio 2>/dev/null; PegarSubtitulos 2>/dev/null; renom; TArchivo; subida_o_s_s; IFS=$SAVEIFS; sudmenu ;; #openloadd
-
-        2) drived; TArchivo; descompri; EscogerAudio; PegarSubtitulos; renom; ConvertirPeli; subida_o_s_s; DriveRClone; subida_mega .megallin.txt; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
-        # 2) drived; PegarSubtitulos; TArchivo; descompri; renom; ConvertirPeli; sudmenu ;;
-        
-        3) drived; descompri; EscogerAudio; PegarSubtitulos; renom; TArchivo; subida_o_s_s; DriveRClone; subida_mega .megallin.txt; sudmenu ;; #megad
-
-        4) drived; descompri; EscogerAudio; PegarSubtitulos; renom; ConvertirPeli; TArchivo; subida_o_s_s; DriveRClone; subida_mega .megallin.txt; sudmenu ;; #ariad
-
-        5) subir720; TArchivo; descompri; EscogerAudio; PegarSubtitulos; renom; ConvertirPeli; subida_o_s_s; DriveRClone; subida_mega .megallin.txt; sudmenu ;; #d_todos ;;
-
-        6) drived; TArchivo; descompri; EscogerAudio; PegarSubtitulos; renom; subida_mega .megallin.txt; ConvertirPeli; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
-
-        7) subida_o_s_s1; sudmenu ;;
-
-        8) DriveRClone; sudmenu ;;
-
-        9) subida_mega; sudmenu ;;
-
-        10) gdtxt; sudmenu ;;
-
-        11) subi14; sudmenu ;;
-
-        12) clear; megadf --human & sleep 15 ;;
-
-        13) megals -e; sudmenu ;;
-
-        14) openloadd; TArchivo; renom; gdtxt; subida_mega; sudmenu ;;
-
-        15) drived; TArchivo; renom; descompri; subida_mega; sudmenu ;;
-        *) echo "no es una opcion válida.";
-        echo "Presiona una tecla para continuar...";
-        read foo;;
-    esac
-
-}
-
 function accion1() {
 
     alberth
@@ -749,24 +689,20 @@ echo -e "\033[0;34m━━━━━━━━━━━━━━━━━━━━�
 echo -e "\E[41;1;37m               ❖ BREAK UPLOADER PLUS ❖          \E[0m"
 echo -e "\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
 echo ""
-echo -e "\033[1;37m[\033[1;31m01\033[1;37m] • \033[1;33mSUBIR UN ARCHIVO \033[1;37m
-[\033[1;31m02\033[1;37m] • \033[1;33mSUBIR VARIOS ARCHIVOS \033[1;37m      
-[\033[1;31m03\033[1;37m] • \033[1;33mSOLO DESCARGAR \033[1;37m          
-[\033[1;31m04\033[1;37m] • \033[1;33mCONFIGURAR \033[1;37m           
-[\033[1;31m05\033[1;37m] • \033[1;33mCREAR CUENTAS MEGA \033[1;37m              
-[\033[1;31m06\033[1;37m] • \033[1;33mVENTANAS DE TRABAJO \033[1;37m"
+echo -e "\033[1;37m[\033[1;31m01\033[1;37m] • \033[1;33mSUBIR SERIE \033[1;37m"
+
+
 
     printf "${VERDECLARO}";
     read -n 1 -p "INGRESA UN NUMERO [1-4]: " menu_principall
 
     case $menu_principall in 
 
-        1) accion ;;
-        2) accion1 ;; 
-        3) DES_C ;;
-        4) tst ;;
-        5) CrearCuentaMega ;;
-        6) screen -X windowlist -b ;;
+        1) accion1 ;; 
+        2) DES_C ;;
+        3) tst ;;
+        4) CrearCuentaMega ;;
+        5) screen -X windowlist -b ;;
     
 
     esac
