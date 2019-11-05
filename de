@@ -1,5 +1,5 @@
 #!/bin/bash
-BLANCOF='\033[47m'; RED='\033[0;31m'; REDCLARO='\033[1;31m'; AZUL='\033[0;34m'; AZULCLARO='\033[1;34m'; VERDE='\033[0;32m'; VERDECLARO='\033[1;32m'; CYAN='\033[0;36m'; CYANCLARO='\033[1;36m'; PURPURA='\033[0;35m'; PURPURAC='\033[1;35m'; CAFE='\033[1;37m'; AMARILLO='\033[1;33m'; NC='\033[0m'; RFembed="/var/www/html/panel/inc/include/fembed.php"; RNetu="/var/www/html/panel/inc/include/netu1.php"; SFembed="/var/www/html/panel/inc/include/./fembed.php"; SNetu="/var/www/html/panel/inc/include/./netu1.php"; Rvery="/var/www/html/panel/inc/include/./very.php"; SJetload="/var/www/html/panel/inc/include/./jetload.php"; CONFIG="/usr/local/bin/config.ini"; CONFIGGLOBAL="/var/www/html/panel/inc/config.php"; barraAzul="\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"; ruta_drive=$(pwd)
+BLANCOF='\033[47m'; RED='\033[0;31m'; REDCLARO='\033[1;31m'; AZUL='\033[0;34m'; AZULCLARO='\033[1;34m'; VERDE='\033[0;32m'; VERDECLARO='\033[1;32m'; CYAN='\033[0;36m'; CYANCLARO='\033[1;36m'; PURPURA='\033[0;35m'; PURPURAC='\033[1;35m'; CAFE='\033[1;37m'; AMARILLO='\033[1;33m'; NC='\033[0m'; RFembed="/var/www/html/panel/inc/include/fembed.php"; RNetu="/var/www/html/panel/inc/include/netu1.php"; SFembed="/var/www/html/panel/inc/include/./fembed.php"; SNetu="/var/www/html/panel/inc/include/./netu1.php"; Rvery="/var/www/html/panel/inc/include/./very.php"; SJetload="/var/www/html/panel/inc/include/./jetload.php"; Uptoboxx="/var/www/html/panel/inc/include/./uptobox.php"; CONFIG="/usr/local/bin/config.ini"; CONFIGGLOBAL="/var/www/html/panel/inc/config.php"; barraAzul="\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"; ruta_drive=$(pwd)
 
 source $CONFIG
 PSW6=$PASSRAR
@@ -11,6 +11,7 @@ function ActivarEnlaces()
     [[ $ESTADOVERYSTREAM == true ]] && _VSACT=$(echo -e "\033[1;32m● [ON]") || _VSACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
     [[ $ESTADONETU == true ]] && _NTACT=$(echo -e "\033[1;32m● [ON]") || _NTACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
     [[ $ESTADOJETLOAD == true ]] && _JLACT=$(echo -e "\033[1;32m● [ON]") || _JLACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
+    [[ $ESTADOUPTOBOX == true ]] && _UPACT=$(echo -e "\033[1;32m● [ON]") || _UPACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
     [[ $ESTADOFEMBED == true ]] && _FBACT=$(echo -e "\033[1;32m● [ON]") || _FBACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
     [[ $ESTADOMEGA == true ]] && _MGACT=$(echo -e "\033[1;32m● [ON]") || _MGACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
     [[ $ESTADODRIVEVIP == true ]] && _DVIPACT=$(echo -e "\033[1;32m● [ON]") || _DVIPACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
@@ -21,11 +22,12 @@ function ActivarEnlaces()
 [\033[1;31m02\033[1;37m] • \033[1;33mVERYSTREAM \033[1;37m  $_VSACT
 [\033[1;31m03\033[1;37m] • \033[1;33mNETU \033[1;37m        $_NTACT
 [\033[1;31m04\033[1;37m] • \033[1;33mJETLOAD \033[1;37m     $_JLACT
-[\033[1;31m05\033[1;37m] • \033[1;33mFEMBED \033[1;37m      $_FBACT
-[\033[1;31m06\033[1;37m] • \033[1;33mMEGA \033[1;37m        $_MGACT
-[\033[1;31m07\033[1;37m] • \033[1;33mGD VIP \033[1;37m      $_DVIPACT
-[\033[1;31m08\033[1;37m] • \033[1;33mGD FREE \033[1;37m     $_DFREEACT
-[\033[1;31m09\033[1;37m] • \033[1;33mELIMINAR SUB\033[1;37m $_ELSUB"
+[\033[1;31m05\033[1;37m] • \033[1;33mUPTOBOX \033[1;37m     $_UPACT
+[\033[1;31m06\033[1;37m] • \033[1;33mFEMBED \033[1;37m      $_FBACT
+[\033[1;31m07\033[1;37m] • \033[1;33mMEGA \033[1;37m        $_MGACT
+[\033[1;31m08\033[1;37m] • \033[1;33mGD VIP \033[1;37m      $_DVIPACT
+[\033[1;31m09\033[1;37m] • \033[1;33mGD FREE \033[1;37m     $_DFREEACT
+[\033[1;31m10\033[1;37m] • \033[1;33mELIMINAR SUB\033[1;37m $_ELSUB"
     echo -e "$barraAzul"
     read -p "NUMERO DEL SERVICIO ACTIVAR/DESACTIVAR: " NSER
     case $NSER in
@@ -45,23 +47,26 @@ function ActivarEnlaces()
             [[ $ESTADOJETLOAD == true ]] && sed -i "s/ESTADOJETLOAD=true/ESTADOJETLOAD=false/g" $CONFIG || sed -i "s/ESTADOJETLOAD=false/ESTADOJETLOAD=true/g" $CONFIG
             source $CONFIG
             ;;
-        5)
-            [[ $ESTADOFEMBED == true ]] && sed -i "s/ESTADOFEMBED=true/ESTADOFEMBED=false/g" $CONFIG || sed -i "s/ESTADOFEMBED=false/ESTADOFEMBED=true/g" $CONFIG
+        5)  [[ $ESTADOUPTOBOX == true ]] && sed -i "s/ESTADOUPTOBOX=true/ESTADOUPTOBOX=false/g" $CONFIG || sed -i "s/ESTADOUPTOBOX=false/ESTADOUPTOBOX=true/g" $CONFIG
             source $CONFIG
             ;;
         6)
-            [[ $ESTADOMEGA == true ]] && sed -i "s/ESTADOMEGA=true/ESTADOMEGA=false/g" $CONFIG || sed -i "s/ESTADOMEGA=false/ESTADOMEGA=true/g" $CONFIG
+            [[ $ESTADOFEMBED == true ]] && sed -i "s/ESTADOFEMBED=true/ESTADOFEMBED=false/g" $CONFIG || sed -i "s/ESTADOFEMBED=false/ESTADOFEMBED=true/g" $CONFIG
             source $CONFIG
             ;;
         7)
-            [[ $ESTADODRIVEVIP == true ]] && sed -i "s/ESTADODRIVEVIP=true/ESTADODRIVEVIP=false/g" $CONFIG || sed -i "s/ESTADODRIVEVIP=false/ESTADODRIVEVIP=true/g" $CONFIG
+            [[ $ESTADOMEGA == true ]] && sed -i "s/ESTADOMEGA=true/ESTADOMEGA=false/g" $CONFIG || sed -i "s/ESTADOMEGA=false/ESTADOMEGA=true/g" $CONFIG
             source $CONFIG
             ;;
         8)
-            [[ $ESTADODRIVEFREE == true ]] && sed -i "s/ESTADODRIVEFREE=true/ESTADODRIVEFREE=false/g" $CONFIG || sed -i "s/ESTADODRIVEFREE=false/ESTADODRIVEFREE=true/g" $CONFIG
+            [[ $ESTADODRIVEVIP == true ]] && sed -i "s/ESTADODRIVEVIP=true/ESTADODRIVEVIP=false/g" $CONFIG || sed -i "s/ESTADODRIVEVIP=false/ESTADODRIVEVIP=true/g" $CONFIG
             source $CONFIG
             ;;
         9)
+            [[ $ESTADODRIVEFREE == true ]] && sed -i "s/ESTADODRIVEFREE=true/ESTADODRIVEFREE=false/g" $CONFIG || sed -i "s/ESTADODRIVEFREE=false/ESTADODRIVEFREE=true/g" $CONFIG
+            source $CONFIG
+            ;;
+        10)
             [[ $ELIMI_SUB == true ]] && sed -i "s/ELIMI_SUB=true/ELIMI_SUB=false/g" $CONFIG || sed -i "s/ELIMI_SUB=false/ELIMI_SUB=true/g" $CONFIG
             source $CONFIG
             ;;
@@ -126,6 +131,13 @@ function validar_cuenta(){
                 sed -i "s/${VALORUSEROPEN}/${JET_KEY}/g" $CONFIGGLOBAL
             fi
             ;;
+        -uptobox)
+            read -p "SESS_ID: " JET_KEY
+            if [[ $JET_KEY ]];then
+                VALL=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"UptoboxSses\"\]" | cut -d "\"" -f4)
+                sed -i "s/${VALL}/${JET_KEY}/g" $CONFIGGLOBAL
+            fi
+            ;;
         -Mega)
             echo -e "\033[1;37m[\033[1;31m01\033[1;37m] • \033[1;33mAGREGAR LISTADO DE CUENTAS \033[1;37m
 [\033[1;31m02\033[1;37m] • \033[1;33mCUENTA INDIVIDUAL \033[1;37m
@@ -138,7 +150,7 @@ function validar_cuenta(){
                 3) LimpiarCuentasMega ;;
                 4) echo -e "\033[1;33mCONTTRASEÑA ACTUAL: \033[1;37m \033[1;35m$CONTRAMEG \033[1;37m"; 
                 read -p "INGRESAR NUEVA CONTRASEÑA: " CONTRAMEGA
-                sed -i "s/\"${CONTRAMEG}\"/\"${CONTRAMEGA}\"/g" $CONFIG
+                [[ $CONTRAMEGA ]] && sed -i "s/\"${CONTRAMEG}\"/\"${CONTRAMEGA}\"/g" $CONFIG
                 source $CONFIG
                 ;;
             esac
@@ -149,7 +161,11 @@ function validar_cuenta(){
             -short)
                 read -p "KEY: " JET_KEY; [[ $JET_KEY ]] && VV=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"Acortador2\"\]" | cut -d "\"" -f4) && sed -i "s/${VV}/${JET_KEY}/g" $CONFIGGLOBAL
             ;;
-
+            -marca)
+                echo -e "\033[1;33mMARCA DE AGUA ACTUAL: \033[1;37m \033[1;35m$VALOR \033[1;37m";
+                read -p "INGRESE MARCA DE AGUA: " VAL
+                [[ $VAL ]] && sed -i "s/\"${VALOR}\"/\"${VAL}\"/g" $CONFIG
+                source $CONFIG
     esac
     echo $raya; echo "Datos actualizados."
 
@@ -571,16 +587,16 @@ function tst(){
     echo -e "\E[41;1;37m❖ OPCIONES DE CONFIGURACION Y DATOS DE SERVIDORES ❖\E[0m"
     echo -e "\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
     echo ""
-    echo -e "\033[1;37m[\033[1;31m01\033[1;37m] • \033[1;33mOPENLOAD \033[1;37m
-[\033[1;31m02\033[1;37m] • \033[1;33mVERYSTREAM \033[1;37m
+    echo -e "\033[1;37m[\033[1;31m01\033[1;37m] • \033[1;33mOPENLOAD \033[1;37m                              [\033[1;31m12\033[1;37m] • \033[1;33mMARCA DE AGUA \033[1;37m
+[\033[1;31m02\033[1;37m] • \033[1;33mVERYSTREAM \033[1;37m                            [\033[1;31m11\033[1;37m] • \033[1;33mACTIVAR O DESACTIVAR SERVICIOS \033[1;37m
 [\033[1;31m03\033[1;37m] • \033[1;33mNETU \033[1;37m
 [\033[1;31m04\033[1;37m] • \033[1;33mJETLOAD \033[1;37m
-[\033[1;31m05\033[1;37m] • \033[1;33mFEMBED \033[1;37m
-[\033[1;31m06\033[1;37m] • \033[1;33mMEGA \033[1;37m
-[\033[1;31m07\033[1;37m] • \033[1;33mOUO \033[1;37m
-[\033[1;31m08\033[1;37m] • \033[1;33mSHORT \033[1;37m
-[\033[1;31m09\033[1;37m] • \033[1;33mCONTRASEÑA PARA DESCOMPRIMIR RAR \033[1;37m
-[\033[1;31m10\033[1;37m] • \033[1;33mACTIVAR O DESACTIVAR SERVICIOS \033[1;37m"
+[\033[1;31m05\033[1;37m] • \033[1;33mUPTOBOX \033[1;37m
+[\033[1;31m06\033[1;37m] • \033[1;33mFEMBED \033[1;37m
+[\033[1;31m07\033[1;37m] • \033[1;33mMEGA \033[1;37m
+[\033[1;31m08\033[1;37m] • \033[1;33mOUO \033[1;37m
+[\033[1;31m09\033[1;37m] • \033[1;33mSHORT \033[1;37m
+[\033[1;31m10\033[1;37m] • \033[1;33mCONTRASEÑA PARA DESCOMPRIMIR RAR \033[1;37m"
 
     printf "${VERDECLARO}";
     read -p "Seleccionar una opcion: " TST1
@@ -589,12 +605,15 @@ function tst(){
     [[ $TST1 = 2 ]] && echo -e "$barraAzul" && validar_cuenta -verystream
     [[ $TST1 = 3 ]] && echo -e "$barraAzul" && validar_cuenta -netu
     [[ $TST1 = 4 ]] && echo -e "$barraAzul" && validar_cuenta -jetload
-    [[ $TST1 = 5 ]] && echo -e "$barraAzul" && validar_cuenta -fembed
-    [[ $TST1 = 6 ]] && echo -e "$barraAzul" && validar_cuenta -Mega
-    [[ $TST1 = 7 ]] && echo -e "$barraAzul" && validar_cuenta -ouo
-    [[ $TST1 = 8 ]] && echo -e "$barraAzul" && validar_cuenta -short
+    [[ $TST1 = 5 ]] && echo -e "$barraAzul" && validar_cuenta -Uptobox
+    [[ $TST1 = 6 ]] && echo -e "$barraAzul" && validar_cuenta -fembed
+    [[ $TST1 = 7 ]] && echo -e "$barraAzul" && validar_cuenta -Mega
+    [[ $TST1 = 8 ]] && echo -e "$barraAzul" && validar_cuenta -ouo
+    [[ $TST1 = 9 ]] && echo -e "$barraAzul" && validar_cuenta -short
 
-    if [[ $TST1 = 9 ]];then
+    
+
+    if [[ $TST1 = 10 ]];then
         echo -e "$barraAzul"
         echo -e "\033[1;33mCONTTRASEÑA ACTUAL: \033[1;37m \033[1;35m$PASSRAR \033[1;37m"; 
         read -p "INGRESAR NUEVA CONTRASEÑA: " PASS_RAR
@@ -602,7 +621,9 @@ function tst(){
         source $CONFIG
         PSW6=$PASSRAR
     fi
-    [[ $TST1 = 10 ]] && ActivarEnlaces
+    [[ $TST1 = 11 ]] && ActivarEnlaces
+    [[ $TST1 = 12 ]] && echo -e "$barraAzul" && validar_cuenta -marca
+    
 }
 function AUD (){
 
@@ -1639,7 +1660,6 @@ fi
             rm $MiPelii
             rm $subt
         fi
-
     fi
                 
 done
@@ -1738,10 +1758,15 @@ fi
 fi
 }
 function ElimSub()
-{
-    if [[ ELIMINARSUB ]];then    
+{ 
+    SIHAY=$(ffmpeg -i $MiPeli 2>&1 | grep -i Subtitle | wc -l)
+    if [[ $SIHAY = 0 ]];then
         mkvmerge -o sin_sub.$MiPeli --no-subtitles $MiPeli; 
-        [[ -e sin_sub.$MiPeli ]] && rm $MiPeli; mv sin_sub.$MiPeli $MiPeli 2>/dev/null
+        [[ -e sin_sub.$MiPeli ]] && rm $MiPeli
+        mv sin_sub.$MiPeli $MiPeli
+        msg -ama "Subtitulos Borrados"
+    else
+        msg -ama "No hay subtitulos para eliminar"
     fi
 }
 function PutoPunto() {
@@ -1773,7 +1798,7 @@ function DatosGD
         # LGDD=$(cat $LINKT | awk -F "=" '{printf $2}') ; echo "https://drive.google.com/uc?id=$LGDD&export=download"
         echo -e "\033[1;31m=====================================\033[0m"
 
-        [[ $CGD2 == "DRIVE FREE" ]] && LGDPHP=$(cat $LINKT); LINK_STREAM2_DIRECTO=$(cat $LINKT)
+        [[ $CGD2 == "DRIVE FREE" ]] && LGDPHP="https://drive.google.com/uc?id=$LGDD&export=download"; LINK_STREAM2_DIRECTO=$(cat $LINKT)
 
         if [[ $CGD2 == "GD-VIP" ]];then
             LGDVIPPHP=$(cat $LINKT)
@@ -1912,6 +1937,14 @@ function jetload()
 
     MostarEnlaces "Jetload" $jl $errorJl
 }
+function Uptobox1()
+{
+    upt=$($Uptoboxx $MiPeli 2>/dev/null)
+    errorUP=$?
+    echo $upt > $fifo4
+
+    MostarEnlaces "Uptobox" $up $errorUP
+}
 
 function EnlacesMostar()
 {
@@ -1923,6 +1956,8 @@ function EnlacesMostar()
     echo $UrlNetu
     UrlJetload=$(< $fifo3)
     echo $UrlJetload
+    UrlUotobox=$(< $fifo4)
+    echo $UrlUotobox
 }
 function subida_o_s_s() 
 {
@@ -1935,6 +1970,8 @@ function subida_o_s_s()
     [[ -e $fifo2 ]] && rm $fifo2
     fifo3="/tmp/fifo${puesto}jetload"
     [[ -e $fifo3 ]] && rm $fifo3
+    fifo4="/tmp/fifo${puesto}uptobox"
+    [[ -e $fifo4 ]] && rm $fifo4
 
     PP=1
 
@@ -1965,6 +2002,11 @@ function subida_o_s_s()
     if [[ $ESTADOJETLOAD == true ]];then
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mJETLOAD\033[0m"
         jetload &
+        sleep 2
+    fi
+    if [[ $ESTADOUPTOBOX == true ]];then
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mUPTOBOX\033[0m"
+        Uptobox1 &
         sleep 2
     fi
 
@@ -2469,322 +2511,314 @@ rename 's/.mkv//' *.mkv -v -n > /dev/null 2>> /root/log.txt
 rename 's/.avi//' *.avi -v -n > /dev/null 2>> /root/log.txt
 }
 
-                function renom() {
-                    RD=$(pwd)
-                    nombresinespacio=${nameori}
-                    IDPELI=${IDPELICULA}
-                    IDIOMA2=${IDIOMA1}
-                    CALIDA2=${CALIDA1}
-                    RUTA2="/var/www/html/de/.enlaces"
-
-                    for MiPeli in `ls *.mp4 *.mkv *.avi *.mpg`; do
-                        echo $MiPeli
-                    done 2>/dev/null
-
-                    if [[ $menu_principall = 1 ]]; then
-
-                            pesodelarchi=$(ls -alh "$MiPeli"| awk '{print $5}' | grep "G")
-                            pesodelarchi2=$(ls -alh "$MiPeli"| awk '{print $5}' | grep "M")
-                            echo $pesodelarchi
-                            echo $pesodelarchi2
-
-                        if [ "$pesodelarchi" -o "$pesodelarchi2" ]; then
-                            if [[ $V720 = 1 ]]; then
-                                    bid=$(/var/www/html/panel/inc/xion/./insertar.php "$IDPELI" "$nombresinespacio" "${CALIDA2}-720" $IDIOMA2)
-                            else
-                                if [[ $pesodelarchi || $pesodelarchi2 ]]; then
-                                        echo "creando platilla"
-                                        bid=$(/var/www/html/panel/inc/xion/./insertar.php "$IDPELI" "$nombresinespacio" $CALIDA2 $IDIOMA2)
-                                else
-                                    echo "no hay pelicula"
-                                fi
-                            fi
-                        else
-                            echo "EL ARCHIVO ESTA DAÑADO!"
-                            exit
-                        fi
-                    fi
-                    for TPE in `ls -alh $MiPeli | awk -F " " '{print $5}'` ; do TPE1=`echo $TPE | sed 's/G/ Gigas/g' | sed 's/M/ Megas/g'` ; mv "$TPE" $TPE1 ; done 2>/dev/null
-
-                    DEFINIR_TPE1=$(echo $TPE1 | awk '{print $2}')
-                    if [[ $DEFINIR_TPE1 = Gigas ]]; then
-                        TPE2="1 GB"
-                    elif [[ $DEFINIR_TPE1 = Megas ]]; then
-                        TPE2="Menos de 1 GB"
-                    fi
-
-
-                    if [[ $IDIOMA2 == "LAT" ]]; then
-                        IDIOMA3=${IDIOMA2}
-                    elif [[ $IDIOMA2 == "SUB" ]]; then
-                        IDIOMA3=${IDIOMA2}
-                    elif [[ $IDIOMA3 == "ESP" ]]; then
-                        IDIOMA3=${IDIOMA2}
-                    fi
-
-                    #CONVETIR A 720
-                    #ffmpeg -i input.wmv -s hd720 -c:v libx264 -crf 23 -c:a aac -strict -2 output.mp4
-
-                    #PEGAR SUB
-                    #ffmpeg -i Vox_Lux.mp4 -vf "ass=Vox_Lux_2018.ass" -preset veryslow -strict -2 salida3.mp4
-                    #ffmpeg -i Vox_Lux.mp4 -vf "ass=Vox_Lux_2018.ass" -s hd720 -c:v libx264 -crf 23 -strict -2 salida4.mp4
-
-                    #for name in `ls *.mkv`; do
-                        #    mkvpropedit $name --edit info --set "title=$VALOR"
-                        #done 2>/dev/null
-                        NEWFILEN1=`echo $NEWFILEN | sed 's/_/ /g'` ; mv "$NEWFILEN" $NEWFILEN1 2>/dev/null
-                        
-
-                        [[ ELIMI_SUB == true ]] && ElimSub
-                        for i in `ls *.mkv *.mp4 *.avi *.mpg`; do
-
-                            EXT=${i##*.}
-                            if [[ $EXT = mkv ]]; then
-
-                                Numtrack=$(mkvinfo $MiPeli | grep "Track number" | wc -l)
-
-                                for (( i = 1; i < Numtrack; i++ )); do 
-                                    mkvpropedit $MiPeli --edit info --set "title=$VALOR";
-                                    # sleep 0.5s
-                                    mkvpropedit "$MiPeli" --edit info --edit track:a$i --set name=${VALOR}; 
-                                    # sleep 0.5s; 
-                                    mkvpropedit "$MiPeli" --edit info --edit track:v$i --set name=${VALOR};
-                                    # sleep 0.5s;
-                                    mkvpropedit "$MiPeli" --edit info --edit track:s$i --set name=${VALOR};
-                                done
-                            else
-                                ffmpeg -i $MiPeli -acodec copy -vcodec copy -metadata title="$VALOR" M.$MiPeli
-                                [[ -e M.$MiPeli ]] && rm $MiPeli
-                                mv M.$MiPeli $MiPeli
-                            fi
-                        done 2>/dev/null
-                        
-
-                        #[T3.Ep6]
-
-                        #for NOM_M in `ls *.mp4` ; do
-                            #mv $NOM_M ${NOM_M,,}
-                            #done 2> /dev/null
-
-
-
-                            for g in * ; do mv "$g" "${g/"Copia_de_"/}" ; done > /dev/null 2>> /root/log.txt
-                            for g in * ; do mv "$g" "${g/"Copia de "/}" ; done > /dev/null 2>> /root/log.txt
-
-                            for iFILE in * ; do iNEWFILE=`echo $iFILE | sed 's/Ep1_/Ep01_/g' | sed 's/Ep2_/Ep02_/g' | sed 's/Ep3_/Ep03_/g' | sed 's/Ep4_/Ep04_/g' | sed 's/Ep5_/Ep05_/g' | sed 's/Ep6_/Ep06_/g' | sed 's/Ep7_/Ep07_/g' | sed 's/Ep8_/Ep08_/g' | sed 's/Ep9_/Ep09_/g'` ; mv "$iFILE" $iNEWFILE ; done 2>/dev/null
-
-                            for iiiFILE in * ; do iiNEWFILE=`echo $iiFILE | sed 's/T1E1/T1E01/g' | sed 's/T1E2/T1E02/g' | sed 's/T1E3/T1E03/g' | sed 's/T1E4/T1E04/g' | sed 's/T1E5/T1E05/g' | sed 's/T1E6/T1E06/g' | sed 's/T1E7/T1E07/g' | sed 's/T1E8/T1E08/g' | sed 's/T1E9/T1E09/g'` ; mv "$iiFILE" $iiNEWFILE ; done 2>/dev/null
-
-
-                            for iFILE in * ; do iNEWFILE=`echo $iFILE | sed 's/^1.mkv/01.mkv/g' | sed 's/^2.mkv/02.mkv/g' | sed 's/^3.mkv/03.mkv/g' | sed 's/^4.mkv/04.mkv/g' | sed 's/^5.mkv/05.mkv/g' | sed 's/^6.mkv/06.mkv/g' | sed 's/^7.mkv/07.mkv/g' | sed 's/^8.mkv/08.mkv/g' | sed 's/^9.mkv/09.mkv/g'` ; mv "$iFILE" $iNEWFILE ; done 2>/dev/null
-
-                            for iFILE in * ; do iNEWFILE=`echo $iFILE | sed 's/^1.mp4/01.mp4/g' | sed 's/^2.mp4/02.mp4/g' | sed 's/^3.mp4/03.mp4/g' | sed 's/^4.mp4/04.mp4/g' | sed 's/^5.mp4/05.mp4/g' | sed 's/^6.mp4/06.mp4/g' | sed 's/^7.mp4/07.mp4/g' | sed 's/^8.mp4/08.mp4/g' | sed 's/^9.mp4/09.mp4/g'` ; mv "$iFILE" $iNEWFILE ; done 2>/dev/null
-
-
-                            for iFILE in * ; do iNEWFILE=`echo $iFILE | sed 's/^1.avi/01.avi/g' | sed 's/^2.avi/02.avi/g' | sed 's/^3.avi/03.avi/g' | sed 's/^4.avi/04.avi/g' | sed 's/^5.avi/05.avi/g' | sed 's/^6.avi/06.avi/g' | sed 's/^7.avi/07.avi/g' | sed 's/^8.avi/08.avi/g' | sed 's/^9.avi/09.avi/g'` ; mv "$iFILE" $iNEWFILE ; done 2>/dev/null
-
-                            for i in * ; do mv -- "${i}" "${i//['][!”#$%&’()*+,/ :;<=>?@\^`{\|}~-']/_}" ; done 2>/dev/null
+function renom() {
+RD=$(pwd)
+nombresinespacio=${nameori}
+IDPELI=${IDPELICULA}
+IDIOMA2=${IDIOMA1}
+CALIDA2=${CALIDA1}
+RUTA2="/var/www/html/de/.enlaces"
+
+for MiPeli in `ls *.mp4 *.mkv *.avi *.mpg`; do
+    echo $MiPeli
+done 2>/dev/null
+
+if [[ $menu_principall = 1 ]]; then
+
+        pesodelarchi=$(ls -alh "$MiPeli"| awk '{print $5}' | grep "G")
+        pesodelarchi2=$(ls -alh "$MiPeli"| awk '{print $5}' | grep "M")
+        echo $pesodelarchi
+        echo $pesodelarchi2
+
+    if [ "$pesodelarchi" -o "$pesodelarchi2" ]; then
+        if [[ $V720 = 1 ]]; then
+                bid=$(/var/www/html/panel/inc/xion/./insertar.php "$IDPELI" "$nombresinespacio" "${CALIDA2}-720" $IDIOMA2)
+        else
+            if [[ $pesodelarchi || $pesodelarchi2 ]]; then
+                    echo "creando platilla"
+                    bid=$(/var/www/html/panel/inc/xion/./insertar.php "$IDPELI" "$nombresinespacio" $CALIDA2 $IDIOMA2)
+            else
+                echo "no hay pelicula"
+            fi
+        fi
+    else
+        echo "EL ARCHIVO ESTA DAÑADO!"
+        exit
+    fi
+fi
+for TPE in `ls -alh $MiPeli | awk -F " " '{print $5}'` ; do TPE1=`echo $TPE | sed 's/G/ Gigas/g' | sed 's/M/ Megas/g'` ; mv "$TPE" $TPE1 ; done 2>/dev/null
+
+DEFINIR_TPE1=$(echo $TPE1 | awk '{print $2}')
+if [[ $DEFINIR_TPE1 = Gigas ]]; then
+    TPE2="1 GB"
+elif [[ $DEFINIR_TPE1 = Megas ]]; then
+    TPE2="Menos de 1 GB"
+fi
+
+
+if [[ $IDIOMA2 == "LAT" ]]; then
+    IDIOMA3=${IDIOMA2}
+elif [[ $IDIOMA2 == "SUB" ]]; then
+    IDIOMA3=${IDIOMA2}
+elif [[ $IDIOMA3 == "ESP" ]]; then
+    IDIOMA3=${IDIOMA2}
+fi
+
+#CONVETIR A 720
+#ffmpeg -i input.wmv -s hd720 -c:v libx264 -crf 23 -c:a aac -strict -2 output.mp4
+
+#PEGAR SUB
+#ffmpeg -i Vox_Lux.mp4 -vf "ass=Vox_Lux_2018.ass" -preset veryslow -strict -2 salida3.mp4
+#ffmpeg -i Vox_Lux.mp4 -vf "ass=Vox_Lux_2018.ass" -s hd720 -c:v libx264 -crf 23 -strict -2 salida4.mp4
+
+#for name in `ls *.mkv`; do
+    #    mkvpropedit $name --edit info --set "title=$VALOR"
+    #done 2>/dev/null
+    NEWFILEN1=`echo $NEWFILEN | sed 's/_/ /g'` ; mv "$NEWFILEN" $NEWFILEN1 2>/dev/null
+    
+
+    [[ $ELIMINARSUB == true ]] && ElimSub
+    for i in `ls *.mkv *.mp4 *.avi *.mpg`; do
+
+        EXT=${i##*.}
+        if [[ $EXT = mkv ]]; then
+
+            Numtrack=$(mkvinfo $MiPeli | grep "Track number" | wc -l)
+
+            for (( i = 1; i < Numtrack; i++ )); do 
+                mkvpropedit $MiPeli --edit info --set "title=$VALOR";
+                # sleep 0.5s
+                mkvpropedit "$MiPeli" --edit info --edit track:a$i --set name=${VALOR}; 
+                # sleep 0.5s; 
+                mkvpropedit "$MiPeli" --edit info --edit track:v$i --set name=${VALOR};
+                # sleep 0.5s;
+                mkvpropedit "$MiPeli" --edit info --edit track:s$i --set name=${VALOR};
+            done
+        else
+            ffmpeg -i $MiPeli -acodec copy -vcodec copy -metadata title="$VALOR" M.$MiPeli
+            [[ -e M.$MiPeli ]] && rm $MiPeli
+            mv M.$MiPeli $MiPeli
+        fi
+    done 2>/dev/null
+    
+
+    #[T3.Ep6]
+
+    #for NOM_M in `ls *.mp4` ; do
+        #mv $NOM_M ${NOM_M,,}
+        #done 2> /dev/null
+
+
+
+        for g in * ; do mv "$g" "${g/"Copia_de_"/}" ; done > /dev/null 2>> /root/log.txt
+        for g in * ; do mv "$g" "${g/"Copia de "/}" ; done > /dev/null 2>> /root/log.txt
+
+        for iFILE in * ; do iNEWFILE=`echo $iFILE | sed 's/Ep1_/Ep01_/g' | sed 's/Ep2_/Ep02_/g' | sed 's/Ep3_/Ep03_/g' | sed 's/Ep4_/Ep04_/g' | sed 's/Ep5_/Ep05_/g' | sed 's/Ep6_/Ep06_/g' | sed 's/Ep7_/Ep07_/g' | sed 's/Ep8_/Ep08_/g' | sed 's/Ep9_/Ep09_/g'` ; mv "$iFILE" $iNEWFILE ; done 2>/dev/null
+
+        for iiiFILE in * ; do iiNEWFILE=`echo $iiFILE | sed 's/T1E1/T1E01/g' | sed 's/T1E2/T1E02/g' | sed 's/T1E3/T1E03/g' | sed 's/T1E4/T1E04/g' | sed 's/T1E5/T1E05/g' | sed 's/T1E6/T1E06/g' | sed 's/T1E7/T1E07/g' | sed 's/T1E8/T1E08/g' | sed 's/T1E9/T1E09/g'` ; mv "$iiFILE" $iiNEWFILE ; done 2>/dev/null
+
+
+        for iFILE in * ; do iNEWFILE=`echo $iFILE | sed 's/^1.mkv/01.mkv/g' | sed 's/^2.mkv/02.mkv/g' | sed 's/^3.mkv/03.mkv/g' | sed 's/^4.mkv/04.mkv/g' | sed 's/^5.mkv/05.mkv/g' | sed 's/^6.mkv/06.mkv/g' | sed 's/^7.mkv/07.mkv/g' | sed 's/^8.mkv/08.mkv/g' | sed 's/^9.mkv/09.mkv/g'` ; mv "$iFILE" $iNEWFILE ; done 2>/dev/null
+
+        for iFILE in * ; do iNEWFILE=`echo $iFILE | sed 's/^1.mp4/01.mp4/g' | sed 's/^2.mp4/02.mp4/g' | sed 's/^3.mp4/03.mp4/g' | sed 's/^4.mp4/04.mp4/g' | sed 's/^5.mp4/05.mp4/g' | sed 's/^6.mp4/06.mp4/g' | sed 's/^7.mp4/07.mp4/g' | sed 's/^8.mp4/08.mp4/g' | sed 's/^9.mp4/09.mp4/g'` ; mv "$iFILE" $iNEWFILE ; done 2>/dev/null
+
+
+        for iFILE in * ; do iNEWFILE=`echo $iFILE | sed 's/^1.avi/01.avi/g' | sed 's/^2.avi/02.avi/g' | sed 's/^3.avi/03.avi/g' | sed 's/^4.avi/04.avi/g' | sed 's/^5.avi/05.avi/g' | sed 's/^6.avi/06.avi/g' | sed 's/^7.avi/07.avi/g' | sed 's/^8.avi/08.avi/g' | sed 's/^9.avi/09.avi/g'` ; mv "$iFILE" $iNEWFILE ; done 2>/dev/null
+
+        for i in * ; do mv -- "${i}" "${i//['][!”#$%&’()*+,/ :;<=>?@\^`{\|}~-']/_}" ; done 2>/dev/null
 
-                            for qq in * ; do mv "$qq" "${qq/"WwW"/}" ; done > /dev/null 2>> /root/log.txt
-                            for qq in * ; do mv "$qq" "${qq/"Www"/}" ; done > /dev/null 2>> /root/log.txt
-                            for f in * ; do mv "$f" "${f/"Copia de "/}" ; done > /dev/null 2>> /root/log.txt
-                            for ff in * ; do mv "$ff" "${ff/".PeliculasGoogleDrive.info"/}" ; done > /dev/null 2>> /root/log.txt
-                            for ff in * ; do mv "$ff" "${ff//".PeliculasGoogleDrive.info.mkv"/".mkv"}" ; done > /dev/null 2>> /root/log.txt
-                            for ff in * ; do mv "$ff" "${ff//"PeliculasGoogleDrive.info.mkv"/".mkv"}" ; done 2>/dev/null
-                            for ff in * ; do mv "$ff" "${ff//"PeliculasGoogleDrive.info.mp4"/".mp4"}" ; done 2>/dev/null
-                            for ff in * ; do mv "$ff" "${ff//"PeliculasGoogleDrive.info.avi"/".avi"}" ; done 2>/dev/null
-                            for ff in * ; do mv "$ff" "${ff//"PeliculasGoogleDrive.info."/}" ; done 2>/dev/null
-                            for fff in * ; do mv "$fff" "${fff/".PeliculasGoogleDrive.Info"/}" ; done > /dev/null 2>> /root/log.txt
-                            for g1 in * ; do mv "$g1" "${g1/"CineAdictosYa"/}" ; done > /dev/null 2>> /root/log.txt
-                            for f1 in * ; do mv "$f1" "${f1/"GDRIVELatinoHD"/}" ; done > /dev/null 2>> /root/log.txt
-                            for f2 in * ; do mv "$f2" "${f2/"Entrepeliculasyseries.com"/}" ; done > /dev/null 2>> /root/log.txt
-                            for f2 in * ; do mv "$f2" "${f2/"Hackstore.Net"/}" ; done 2> /dev/null
-                            PutoPunto
-
-                            for f in * ; do mv "$f" "${f/"GDRIVELATINOHD.SITE"/}" ; done 2>/dev/null
-                            for f in * ; do mv "$f" "${f/C0p14_d3_/}" ; done > /dev/null 2>> /root/log.txt
-                            for f in * ; do mv "$f" "${f/\[/}" ; done > /dev/null 2>> /root/log.txt
-                            for f in * ; do mv "$f" "${f/\]/}" ; done > /dev/null 2>> /root/log.txt
-
-                            for f in * ; do mv "$f" "${f//-/_}" ; done > /dev/null 2>> /root/log.txt
-                            for f in * ; do mv "$f" "${f//.MP4/.mp4}" ; done > /dev/null 2>> /root/log.txt
-                            for q in * ; do mv "$q" "${q/".[PelisHD24.com]"/}" ; done > /dev/null 2>> /root/log.txt
-
-                            for q in * ; do mv "$q" "${q/"WwW.PeliculasGoogleDrive.Info"/}" ; done > /dev/null 2>> /root/log.txt
-                            for q in * ; do mv "$q" "${q/"Www.PeliculasGoogleDrive.Info"/}" ; done > /dev/null 2>> /root/log.txt
-                            for q in * ; do mv "$q" "${q/"PeliculasGoogleDrive.info"/}" ; done > /dev/null 2>> /root/log.txt
-                            for q in * ; do mv "$q" "${q/"Pelislatino3gp.Net."/}" ; done > /dev/null 2>> /root/log.txt
-                            for q in * ; do mv "$q" "${q/"[todopelishd.com]"/}" ; done > /dev/null 2>> /root/log.txt
-                            for q in * ; do mv "$q" "${q/"TeslavoHD"/}" ; done > /dev/null 2>> /root/log.txt
-
-
-                            rename 's/Pelislatino3gp.Net.//' *.mkv -v -n
-                            rename 's/PelisLatino3gp.Net.//' *.mkv -v -n
-                            rename 's/PeliculasGoogleDrive.info.//' *.mp4 -v -n 
-                            rename 's/PeliculasGoogleDrive.info.//' *.mkv -v -n
-                            rename 's/PeliculasGoogleDrive.info.//' *.avi -v -n
-                            rename 's/PelisLatino3gp.Net.//' *.mp4 -v -n 
-                            rename 's/PelisLatino3gp.Net.//' *.mkv -v -n
-                            rename 's/PelisLatino3gp.Net.//' *.avi -v -n
-                            rename 's/cinecalidad.to//' *.mp4 -v -n 
-                            rename 's/cinecalidad.to//' *.mkv -v -n
-                            rename 's/cinecalidad.to//' *.avi -v -n
-                            PutoPunto
-                            for FILE in *.MP4 *MKV ; do NEWFILE=`echo $FILE | sed 's/ /_/g' | sed 's/t/7/g' | sed 's/e/3/g' | sed 's/o/0/g' | sed 's/i/1/g' | sed 's/s/5/g' | sed 's/b/6/g' | sed 's/a/4/g'` ; mv "$FILE" $NEWFILE ; done > /dev/null 2>> /root/log.txt
-
-                            for nombre_mayuscula in `ls *.MP4 *.MKV *.AVI`
-                            do
-                                mv $nombre_mayuscula ${nombre_mayuscula,,}
-                            done > /dev/null 2>> /root/log.txt
-
-                            for FILE in *.avi ; do NEWFILE=`echo $FILE | sed 's/ /_/g' | sed 's/t/7/g' | sed 's/e/3/g' | sed 's/o/0/g' | sed 's/s/5/g' | sed 's/b/6/g'` ; mv "$FILE" $NEWFILE ; done > /dev/null 2>> /root/log.txt
-
-                            for FILE in *.mp4 *.mkv *.mpg ; do NEWFILE=`echo $FILE | sed 's/ /_/g' | sed 's/t/7/g' | sed 's/e/3/g' | sed 's/o/0/g' | sed 's/i/1/g' | sed 's/s/5/g' | sed 's/b/6/g' | sed 's/a/4/g'` ; mv "$FILE" $NEWFILE ; done > /dev/null 2>> /root/log.txt
-                            echo
-                            rename 's/PeliculasGoogleDrive.info.//' *.mp4 -v -n 
-                            rename 's/PeliculasGoogleDrive.info.//' *.mkv -v -n
-                            rename 's/PeliculasGoogleDrive.info.//' *.avi -v -n
-                            rename 's/cinecalidad.to//' *.mp4 -v -n 
-                            rename 's/cinecalidad.to//' *.mkv -v -n
-                            rename 's/cinecalidad.to//' *.avi -v -n
-                            PutoPunto
-
-
-                          #   for FICHERO in `ls *.mp4 *.mkv *.avi *.mpg`
-                          #   do
-                          #       echo $FICHERO
-
-
-                          #       nombre_extension=${FICHERO#*.}
-
-                          #       case $nombre_extension in
-
-                          #         *mkv)
-                          #         for ii in `ls *.mkv` ; do mv $FICHERO $FICHERO.$VALOR.mkv ; done > /dev/null 2>> /root/log.txt         
-                          #         error=$? ;;
-                          #         *avi)
-                          #         for ii in `ls *.avi` ; do mv $FICHERO $FICHERO.$VALOR.avi ; done > /dev/null 2>> /root/log.txt         
-                          #         error=$? ;;
-                          #         *mp4)
-                          #         for ii in `ls *.mp4` ; do mv $FICHERO $FICHERO.$VALOR.mp4 ; done > /dev/null 2>> /root/log.txt         
-                          #         error=$? ;;
-
-                          #         *mkv)
-                          #         for ii in `ls *.mpg` ; do mv $FICHERO $FICHERO.$VALOR.mpg ; done > /dev/null 2>> /root/log.txt         
-                          #         error=$? ;;
-
-                          #     esac  
-                          # done > /dev/null 2>> /root/log.txt
-                          echo
-                          sleep 1
-                          rename 's/P3l15HD24.c0m//' *.mp4 *.mkv -v -n; rename 's/[[]]//' *.mp4 -v -n
-                          rename 's/P3li5HD24.c0m//' *.avi -v -n; rename 's/[[]]//' *.mp4 -v -n
-
-
-
-                          f=${MiPeli##*.}
-
-                          case $f in
-
-                              *mkv)
-                              canti=$(ls | wc -l)
-                              mostrar
-                              error=$?
-                              comprobar;;
-                              *avi)
-                              canti=$(ls | wc -l)
-                              mostrar
-                              error=$?
-                              comprobar;;
-                              *mp4)
-                              canti=$(ls | wc -l)
-                              mostrar
-                              error=$?
-                              comprobar;;
-
-                              *rar)
-                              canti=$(ls | wc -l)
-                              mostrar
-                              error=$?
-                              comprobar;;
-
-                              *zip)
-                              canti=$(ls | wc -l)
-                              mostrar
-                              error=$?
-                              comprobar;;
-                          esac                  
-
-                          # mp
-
-                          for q in * ; do mv "$q" "${q//"__"/_}" ; done 2>/dev/null
-                          for q in * ; do mv "$q" "${q//"___"/_}" ; done 2>/dev/null
-                          for q in * ; do mv "$q" "${q//"____"/_}" ; done 2>/dev/null
-                          for q in * ; do mv "$q" "${q//"_____"/_}" ; done 2>/dev/null
-                          for q in * ; do mv "$q" "${q//"______"/_}" ; done 2>/dev/null
-                          PutoPunto
-
-
-                          for MiPeli in `ls *.mp4 *.mkv *.avi *.mpg`; do
-                            echo $MiPeli
-                        done 2>/dev/null
-
-                        if [[ $menu_principall = 1 ]]; then
-                            SAVEIFS=$IFS
-                            IFS=$(echo -en "\n\b")
-
-                           pelisinex=${MiPeli%.*}
-                           for f in * ; do mv "$f" "${f/"$pelisinex"/"${nombresinespacio} ${CALIDA2} $IDIOMA2"}" ; done > /dev/null 2>> /root/log.txt
-                           
-                       fi
-
-                       if [[ $menu_principall = 2 ]]; then
-
-                       	cero=0
-                       	cero2=0
-                       	EPI=${EPI}
-                       	for MiPeli in `ls *.mp4 *.avi *.mkv *.mpg` ; do
-                            
-                            if [[ $EPI = 10 ]]; then
-                            	unset cero
-                            fi
-                            if [[ $NT = 10 ]]; then
-                            	unset cero2
-                            fi
-                            en=$(echo ${MiPeli##*.}); em=${MiPeli%.*}; eo=${em^^}
-                            echo $MiPeli; mv "$MiPeli" "S${cero2}${NT}E${cero}${EPI}_${eo}.${en}"
-
-                            ((EPI++))
-                        done
-                        EPI=1
-                        msg -ama "archivos renombrados"; ls
-
-                        for MiPeli in `ls *.mp4 *.avi *.mkv *.mpg` ; do
-                            echo $MiPeli
-                            mkdir $DD
-                            cd $DD
-                            mkdir Temp$NT.$DD
-                            cd $RD
-                            mv $MiPeli $RD/$DD/Temp$NT.$DD
-                        done > /dev/null 2>> /root/log.txt
-                    fi
-
-
-                    if [[ $V720 = 1 ]]; then
-                        (Calidad720 &)
-                        # Calidad720
-                        sleep 2
-                        echo "Creando version 720"
-                        sleep 2
-                        echo "Empezando el proceso de combercion"
-                        sleep 4
-                    fi
-                    for MiPeli in `ls *.mp4 *.mkv *.avi *.mpg`; do
-                        echo $MiPeli
-                    done 2>/dev/null
-
-
-                }
+        for qq in * ; do mv "$qq" "${qq/"WwW"/}" ; done > /dev/null 2>> /root/log.txt
+        for qq in * ; do mv "$qq" "${qq/"Www"/}" ; done > /dev/null 2>> /root/log.txt
+        for f in * ; do mv "$f" "${f/"Copia de "/}" ; done > /dev/null 2>> /root/log.txt
+        for ff in * ; do mv "$ff" "${ff/".PeliculasGoogleDrive.info"/}" ; done > /dev/null 2>> /root/log.txt
+        for ff in * ; do mv "$ff" "${ff//".PeliculasGoogleDrive.info.mkv"/".mkv"}" ; done > /dev/null 2>> /root/log.txt
+        for ff in * ; do mv "$ff" "${ff//"PeliculasGoogleDrive.info.mkv"/".mkv"}" ; done 2>/dev/null
+        for ff in * ; do mv "$ff" "${ff//"PeliculasGoogleDrive.info.mp4"/".mp4"}" ; done 2>/dev/null
+        for ff in * ; do mv "$ff" "${ff//"PeliculasGoogleDrive.info.avi"/".avi"}" ; done 2>/dev/null
+        for ff in * ; do mv "$ff" "${ff//"PeliculasGoogleDrive.info."/}" ; done 2>/dev/null
+        for fff in * ; do mv "$fff" "${fff/".PeliculasGoogleDrive.Info"/}" ; done > /dev/null 2>> /root/log.txt
+        for g1 in * ; do mv "$g1" "${g1/"CineAdictosYa"/}" ; done > /dev/null 2>> /root/log.txt
+        for f1 in * ; do mv "$f1" "${f1/"GDRIVELatinoHD"/}" ; done > /dev/null 2>> /root/log.txt
+        for f2 in * ; do mv "$f2" "${f2/"Entrepeliculasyseries.com"/}" ; done > /dev/null 2>> /root/log.txt
+        for f2 in * ; do mv "$f2" "${f2/"Hackstore.Net"/}" ; done 2> /dev/null
+        PutoPunto
+
+        for f in * ; do mv "$f" "${f/"GDRIVELATINOHD.SITE"/}" ; done 2>/dev/null
+        for f in * ; do mv "$f" "${f/C0p14_d3_/}" ; done > /dev/null 2>> /root/log.txt
+        for f in * ; do mv "$f" "${f/\[/}" ; done > /dev/null 2>> /root/log.txt
+        for f in * ; do mv "$f" "${f/\]/}" ; done > /dev/null 2>> /root/log.txt
+
+        for f in * ; do mv "$f" "${f//-/_}" ; done > /dev/null 2>> /root/log.txt
+        for f in * ; do mv "$f" "${f//.MP4/.mp4}" ; done > /dev/null 2>> /root/log.txt
+        for q in * ; do mv "$q" "${q/".[PelisHD24.com]"/}" ; done > /dev/null 2>> /root/log.txt
+
+        for q in * ; do mv "$q" "${q/"WwW.PeliculasGoogleDrive.Info"/}" ; done > /dev/null 2>> /root/log.txt
+        for q in * ; do mv "$q" "${q/"Www.PeliculasGoogleDrive.Info"/}" ; done > /dev/null 2>> /root/log.txt
+        for q in * ; do mv "$q" "${q/"PeliculasGoogleDrive.info"/}" ; done > /dev/null 2>> /root/log.txt
+        for q in * ; do mv "$q" "${q/"Pelislatino3gp.Net."/}" ; done > /dev/null 2>> /root/log.txt
+        for q in * ; do mv "$q" "${q/"[todopelishd.com]"/}" ; done > /dev/null 2>> /root/log.txt
+        for q in * ; do mv "$q" "${q/"TeslavoHD"/}" ; done > /dev/null 2>> /root/log.txt
+
+
+        rename 's/Pelislatino3gp.Net.//' *.mkv -v -n
+        rename 's/PelisLatino3gp.Net.//' *.mkv -v -n
+        rename 's/PeliculasGoogleDrive.info.//' *.mp4 -v -n 
+        rename 's/PeliculasGoogleDrive.info.//' *.mkv -v -n
+        rename 's/PeliculasGoogleDrive.info.//' *.avi -v -n
+        rename 's/PelisLatino3gp.Net.//' *.mp4 -v -n 
+        rename 's/PelisLatino3gp.Net.//' *.mkv -v -n
+        rename 's/PelisLatino3gp.Net.//' *.avi -v -n
+        rename 's/cinecalidad.to//' *.mp4 -v -n 
+        rename 's/cinecalidad.to//' *.mkv -v -n
+        rename 's/cinecalidad.to//' *.avi -v -n
+        PutoPunto
+        for FILE in *.MP4 *MKV ; do NEWFILE=`echo $FILE | sed 's/ /_/g' | sed 's/t/7/g' | sed 's/e/3/g' | sed 's/o/0/g' | sed 's/i/1/g' | sed 's/s/5/g' | sed 's/b/6/g' | sed 's/a/4/g'` ; mv "$FILE" $NEWFILE ; done > /dev/null 2>> /root/log.txt
+
+        for nombre_mayuscula in `ls *.MP4 *.MKV *.AVI`
+        do
+            mv $nombre_mayuscula ${nombre_mayuscula,,}
+        done > /dev/null 2>> /root/log.txt
+
+        for FILE in *.avi ; do NEWFILE=`echo $FILE | sed 's/ /_/g' | sed 's/t/7/g' | sed 's/e/3/g' | sed 's/o/0/g' | sed 's/s/5/g' | sed 's/b/6/g'` ; mv "$FILE" $NEWFILE ; done > /dev/null 2>> /root/log.txt
+
+        for FILE in *.mp4 *.mkv *.mpg ; do NEWFILE=`echo $FILE | sed 's/ /_/g' | sed 's/t/7/g' | sed 's/e/3/g' | sed 's/o/0/g' | sed 's/i/1/g' | sed 's/s/5/g' | sed 's/b/6/g' | sed 's/a/4/g'` ; mv "$FILE" $NEWFILE ; done > /dev/null 2>> /root/log.txt
+        echo
+        rename 's/PeliculasGoogleDrive.info.//' *.mp4 -v -n 
+        rename 's/PeliculasGoogleDrive.info.//' *.mkv -v -n
+        rename 's/PeliculasGoogleDrive.info.//' *.avi -v -n
+        rename 's/cinecalidad.to//' *.mp4 -v -n 
+        rename 's/cinecalidad.to//' *.mkv -v -n
+        rename 's/cinecalidad.to//' *.avi -v -n
+        PutoPunto
+
+
+        #   for FICHERO in `ls *.mp4 *.mkv *.avi *.mpg`
+        #   do
+        #       echo $FICHERO
+
+
+        #       nombre_extension=${FICHERO#*.}
+
+        #       case $nombre_extension in
+
+        #         *mkv)
+        #         for ii in `ls *.mkv` ; do mv $FICHERO $FICHERO.$VALOR.mkv ; done > /dev/null 2>> /root/log.txt         
+        #         error=$? ;;
+        #         *avi)
+        #         for ii in `ls *.avi` ; do mv $FICHERO $FICHERO.$VALOR.avi ; done > /dev/null 2>> /root/log.txt         
+        #         error=$? ;;
+        #         *mp4)
+        #         for ii in `ls *.mp4` ; do mv $FICHERO $FICHERO.$VALOR.mp4 ; done > /dev/null 2>> /root/log.txt         
+        #         error=$? ;;
+
+        #         *mkv)
+        #         for ii in `ls *.mpg` ; do mv $FICHERO $FICHERO.$VALOR.mpg ; done > /dev/null 2>> /root/log.txt         
+        #         error=$? ;;
+
+        #     esac  
+        # done > /dev/null 2>> /root/log.txt
+        echo
+        sleep 1
+        rename 's/P3l15HD24.c0m//' *.mp4 *.mkv -v -n; rename 's/[[]]//' *.mp4 -v -n
+        rename 's/P3li5HD24.c0m//' *.avi -v -n; rename 's/[[]]//' *.mp4 -v -n
+
+
+
+        f=${MiPeli##*.}
+
+        case $f in
+
+            *mkv)
+            canti=$(ls | wc -l)
+            mostrar
+            error=$?
+            comprobar;;
+            *avi)
+            canti=$(ls | wc -l)
+            mostrar
+            error=$?
+            comprobar;;
+            *mp4)
+            canti=$(ls | wc -l)
+            mostrar
+            error=$?
+            comprobar;;
+
+            *rar)
+            canti=$(ls | wc -l)
+            mostrar
+            error=$?
+            comprobar;;
+
+            *zip)
+            canti=$(ls | wc -l)
+            mostrar
+            error=$?
+            comprobar;;
+        esac                  
+
+        # mp
+
+        for q in * ; do mv "$q" "${q//"__"/_}" ; done 2>/dev/null
+        for q in * ; do mv "$q" "${q//"___"/_}" ; done 2>/dev/null
+        for q in * ; do mv "$q" "${q//"____"/_}" ; done 2>/dev/null
+        for q in * ; do mv "$q" "${q//"_____"/_}" ; done 2>/dev/null
+        for q in * ; do mv "$q" "${q//"______"/_}" ; done 2>/dev/null
+        PutoPunto
+
+
+        for MiPeli in `ls *.mp4 *.mkv *.avi *.mpg`; do
+            echo $MiPeli
+        done 2>/dev/null
+
+    if [[ $menu_principall = 1 ]]; then
+        SAVEIFS=$IFS
+        IFS=$(echo -en "\n\b")
+
+        pelisinex=${MiPeli%.*}
+        for f in * ; do mv "$f" "${f/"$pelisinex"/"${nombresinespacio} ${CALIDA2} $IDIOMA2"}" ; done > /dev/null 2>> /root/log.txt  
+    fi
+
+    if [[ $menu_principall = 2 ]]; then
+
+        cero=0
+        cero2=0
+        EPI=${EPI}
+        for MiPeli in `ls *.mp4 *.avi *.mkv *.mpg` ; do
+            
+            if [[ $EPI = 10 ]]; then
+                unset cero
+            fi
+            if [[ $NT = 10 ]]; then
+                unset cero2
+            fi
+            en=$(echo ${MiPeli##*.}); em=${MiPeli%.*}; eo=${em^^}
+            echo $MiPeli; mv "$MiPeli" "S${cero2}${NT}E${cero}${EPI}_${eo}.${en}"
+
+            ((EPI++))
+        done
+        EPI=1
+        msg -ama "archivos renombrados"; ls
+
+        for MiPeli in `ls *.mp4 *.avi *.mkv *.mpg` ; do
+            echo $MiPeli; mkdir $DD; cd $DD; mkdir Temp$NT.$DD; cd $RD; mv $MiPeli $RD/$DD/Temp$NT.$DD
+        done > /dev/null 2>> /root/log.txt
+    fi
+
+
+if [[ $V720 = 1 ]]; then
+    (Calidad720 &)
+    # Calidad720
+    sleep 2
+    echo "Creando version 720"
+    sleep 2
+    echo "Empezando el proceso de combercion"
+    sleep 4
+fi
+for MiPeli in `ls *.mp4 *.mkv *.avi *.mpg`; do
+    echo $MiPeli
+done 2>/dev/null
+}
 
                 function CrearLinkVIP(){
 
@@ -2963,13 +2997,13 @@ rename 's/.avi//' *.avi -v -n > /dev/null 2>> /root/log.txt
                 LGDPHP1=$(/var/www/html/panel/inc/include/./ouo.php $LGDPHP)
 
             
-                pastepelis=$(/var/www/html/panel/inc/include/./pastepelis.php 0 "$nombresinespacio $CALIDA2 $IDIOMA2" "$IDIOMA3 | $CALIDA2" $MEGALPHP1 $LGDPHP1 $UrlVerystream "$TPE1" "$TPE2")
-                pastepelisvip=$(/var/www/html/panel/inc/include/./pastepelis.php 1 "$nombresinespacio $CALIDA2 $IDIOMA2" "$IDIOMA3 | $CALIDA2" $MEGALPHP $LGDPHP $UrlVerystream "$TPE1" "$TPE2")
-                drive1=$(/var/www/html/panel/inc/include/linkdrive.php $drivecri 2>/dev/null)
-                drive2=$(/var/www/html/panel/inc/include/linkdrivevip.php $drivecri2 2>/dev/null)
-                drive3=$(/var/www/html/panel/inc/include/linkdrive2.php $drivecri3 2>/dev/null)
+                # pastepelis=$(/var/www/html/panel/inc/include/./pastepelis.php 0 "$nombresinespacio $CALIDA2 $IDIOMA2" "$IDIOMA3 | $CALIDA2" $MEGALPHP1 $LGDPHP1 $UrlVerystream "$TPE1" "$TPE2")
+                # pastepelisvip=$(/var/www/html/panel/inc/include/./pastepelis.php 1 "$nombresinespacio $CALIDA2 $IDIOMA2" "$IDIOMA3 | $CALIDA2" $MEGALPHP $LGDPHP $UrlVerystream "$TPE1" "$TPE2")
+                # drive1=$(/var/www/html/panel/inc/include/linkdrive.php $drivecri 2>/dev/null)
+                # drive2=$(/var/www/html/panel/inc/include/linkdrivevip.php $drivecri2 2>/dev/null)
+                # drive3=$(/var/www/html/panel/inc/include/linkdrive2.php $drivecri3 2>/dev/null)
 
-                array=($UrlVerystream $UrlNetu $LGDVIPPHP $LGDPHP $MEGALPHP $MEGALPHP1 $LGDPHP1 $UrlJetload)
+                array=($UrlVerystream $UrlNetu $LGDVIPPHP $LGDPHP $MEGALPHP $MEGALPHP1 $LGDPHP1 $UrlJetload $UrlFembed $UrlUotobox)
                 arraydescarga=($UrlVerystream $MEGALPHP $LGDPHP $MEGALPHP1 $LGDPHP1)
 
                 # enlaces_pre=$(/var/www/html/panel/inc/include/./file.php "${array[@]}")
