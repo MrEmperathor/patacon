@@ -379,14 +379,12 @@ function plantilla2() {
 #sed -i "s%https://%\nhttps://%g" .LinkOpenSerie.$DD.Temp.$NT
 #sed -i "s%https://%\nhttps://%g" .LinkMangoSerie.$DD.Temp.$NT
 IP=$(cat "/var/local/IP")
-DD2=${DD}
-FTPLOG2="$RD/.LogOpen.$DD.Temp.$NT"
-FTPLOG3="$RD/.logMango.$DD.Temp.$NT"
-FTPLOG1=.ftplogfileCherry
-RUTA2="/var/www/html/de/.enlaces"
-URLVIP="/var/www/html/de/.enlaces/VIP.$DD.Temp.$NT.txt"
-TodosLosEnlaces3 > /dev/null
-TodosLosEnlaces4 > /dev/null
+# DD2=${DD}
+# FTPLOG1=.ftplogfileCherry
+# RUTA2="/var/www/html/de/.enlaces"
+# URLVIP="/var/www/html/de/.enlaces/VIP.$DD.Temp.$NT.txt"
+# TodosLosEnlaces3 > /dev/null
+# TodosLosEnlaces4 > /dev/null
 
 # pastepelis=$(/var/www/html/panel/inc/include/./pasteserie.php 1 "$FILEE" "TEMPORADA $NT | $IDIOMA1 | $CALIDA1" "${enlaVIP[@]}" "${D_D[@]}")
 
@@ -401,7 +399,6 @@ TodosLosEnlaces4 > /dev/null
 # enlaces_pre8=$(/var/www/html/panel/inc/include/./file.php "$pastepelis")
 #-------------------------
 
-MEGAENLACES
 enlaces_pre=$(/var/www/html/panel/inc/include/./serializar.php "${enlaces_vip[@]}")
 enlaces_pre1=$(/var/www/html/panel/inc/include/./serializar.php "${enlaces_free[@]}")
 enlaces_pre2=$(/var/www/html/panel/inc/include/./serializar.php "${netuTV[@]}")
@@ -546,16 +543,16 @@ function tst(){
     echo -e "\E[41;1;37m❖ OPCIONES DE CONFIGURACION Y DATOS DE SERVIDORES ❖\E[0m"
     echo -e "\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
     echo ""
-    echo -e "\033[1;37m[\033[1;31m01\033[1;37m] • \033[1;33mOPENLOAD \033[1;37m                              [\033[1;31m12\033[1;37m] • \033[1;33mMARCA DE AGUA \033[1;37m
-[\033[1;31m02\033[1;37m] • \033[1;33mVERYSTREAM \033[1;37m                            [\033[1;31m11\033[1;37m] • \033[1;33mACTIVAR O DESACTIVAR SERVICIOS \033[1;37m
-[\033[1;31m03\033[1;37m] • \033[1;33mNETU \033[1;37m
+    echo -e "\033[1;37m[\033[1;31m01\033[1;37m] • \033[1;33mOPENLOAD \033[1;37m                              [\033[1;31m11\033[1;37m] • \033[1;33mCONTRASEÑA PARA DESCOMPRIMIR RAR \033[1;37m
+[\033[1;31m02\033[1;37m] • \033[1;33mVERYSTREAM \033[1;37m                            [\033[1;31m12\033[1;37m] • \033[1;33mACTIVAR O DESACTIVAR SERVICIOS \033[1;37m
+[\033[1;31m03\033[1;37m] • \033[1;33mNETU \033[1;37m                                  [\033[1;31m13\033[1;37m] • \033[1;33mMARCA DE AGUA \033[1;37m
 [\033[1;31m04\033[1;37m] • \033[1;33mJETLOAD \033[1;37m
 [\033[1;31m05\033[1;37m] • \033[1;33mUPTOBOX \033[1;37m
-[\033[1;31m06\033[1;37m] • \033[1;33mFEMBED \033[1;37m
-[\033[1;31m07\033[1;37m] • \033[1;33mMEGA \033[1;37m
-[\033[1;31m08\033[1;37m] • \033[1;33mOUO \033[1;37m
-[\033[1;31m09\033[1;37m] • \033[1;33mSHORT \033[1;37m
-[\033[1;31m10\033[1;37m] • \033[1;33mCONTRASEÑA PARA DESCOMPRIMIR RAR \033[1;37m"
+[\033[1;31m06\033[1;37m] • \033[1;33mGOUNLIMITED \033[1;37m
+[\033[1;31m07\033[1;37m] • \033[1;33mFEMBED \033[1;37m
+[\033[1;31m08\033[1;37m] • \033[1;33mMEGA \033[1;37m
+[\033[1;31m09\033[1;37m] • \033[1;33mOUO \033[1;37m
+[\033[1;31m10\033[1;37m] • \033[1;33mSHORT \033[1;37m"
 
     printf "${VERDECLARO}";
     read -p "Seleccionar una opcion: " TST1
@@ -703,7 +700,9 @@ echo -e "\033[0;34m━━━━━━━━━━━━━━━━━━━━�
 echo -e "\E[41;1;37m               ❖ BREAK UPLOADER PLUS ❖          \E[0m"
 echo -e "\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
 echo ""
-echo -e "\033[1;37m[\033[1;31m01\033[1;37m] • \033[1;33mSUBIR SERIE \033[1;37m"
+echo -e "\033[1;37m[\033[1;31m01\033[1;37m] • \033[1;33mSUBIR SERIE \033[1;37m
+\033[1;37m[\033[1;31m02\033[1;37m] • \033[1;33mCONFIGURAR \033[1;37m
+\033[1;37m[\033[1;31m03\033[1;37m] • \033[1;33mVENTANAS DE TRABAJO \033[1;37m"
 
 
 
@@ -713,10 +712,10 @@ echo -e "\033[1;37m[\033[1;31m01\033[1;37m] • \033[1;33mSUBIR SERIE \033[1;37m
     case $menu_principall in 
 
         1) accion1 ;; 
-        2) DES_C ;;
-        3) tst ;;
-        4) CrearCuentaMega ;;
-        5) screen -X windowlist -b ;;
+        # 2) DES_C ;;
+        2) tst ;;
+        # 4) CrearCuentaMega ;;
+        3) screen -X windowlist -b ;;
     
 
     esac
@@ -1926,7 +1925,7 @@ function Uptobox1()
     upName=(`ls ${RD}/${R_CARPETA_SERIE}`)
     mul; ProgressBar
     for (( i = 0; i < "${#upName[@]}"; i++ )); do
-        UptTV[$i]=$($Uptoboxx ${RD}/${R_CARPETA_SERIE}/"${upName[$i]}")
+        UptTV[$i]=$($Uptoboxx "${RD}/${R_CARPETA_SERIE}/${upName[$i]}")
         errorUP=$?
         MostarEnlaces "Uptobox" ${UptTV[$i]} $errorUP "${upName[$i]}" 
         sleep 3
@@ -2365,9 +2364,10 @@ function LiimiteGD() {
                         jobs -l
                         t=$(jobs -l)
                     done
-                    msg -azu "TEMPORADA $NNNN SUBIDA CORRECTAMENTE!!"
-                    echo "NOMBRE DE LA SERIE $DD2"
-                    echo "$RUTA4/SERI.$DD2.Temp.$iii.php"
+                    echo -e "\033[1;36mTEMPORADA \033[0m \033[1;32m$NT \033[0m \033[1;36mSUBIDA CORRECTAMENTE!! \033[0m"
+                    # msg -azu "TEMPORADA $NT SUBIDA CORRECTAMENTE!!"
+                    echo -e "\033[1;36mNOMBRE DE LA SERIE \033[0m \033[1;32m$FILEE\033[0m"
+                    msg -ama "$R_CARPETA_SERIE"
                     cd $ruta
                     # plantilla2 > "$RUTA4/SERI.$DD2.Temp.$NT.php"
                     plantilla2 
@@ -2550,35 +2550,33 @@ rename 's/.mkv//' *.mkv -v -n > /dev/null 2>> /root/log.txt
 rename 's/.avi//' *.avi -v -n > /dev/null 2>> /root/log.txt
 }
 
-function renom() {
-RD=$(pwd)
-nombresinespacio=${nameori}
-IDPELI=${IDPELICULA}
-IDIOMA2=${IDIOMA1}
-CALIDA2=${CALIDA1}
-RUTA2="/var/www/html/de/.enlaces"
+function renom()
+{
+    RD=$(pwd)
+    nombresinespacio=${nameori}
+    IDPELI=${IDPELICULA}
+    IDIOMA2=${IDIOMA1}
+    CALIDA2=${CALIDA1}
+    RUTA2="/var/www/html/de/.enlaces"
 
-for MiPeli in `ls *.mp4 *.mkv *.avi *.mpg`; do
-    echo $MiPeli
-done 2>/dev/null
+    for MiPeli in `ls *.mp4 *.mkv *.avi *.mpg`; do
+        echo $MiPeli
+    done 2>/dev/null
 
-for TPE in `ls -alh $MiPeli | awk -F " " '{print $5}'` ; do TPE1=`echo $TPE | sed 's/G/ Gigas/g' | sed 's/M/ Megas/g'` ; mv "$TPE" $TPE1 ; done 2>/dev/null
+    for TPE in `ls -alh $MiPeli | awk -F " " '{print $5}'` ; do TPE1=`echo $TPE | sed 's/G/ Gigas/g' | sed 's/M/ Megas/g'` ; mv "$TPE" $TPE1 ; done 2>/dev/null
 
-DEFINIR_TPE1=$(echo $TPE1 | awk '{print $2}')
-if [[ $DEFINIR_TPE1 = Gigas ]]; then
-    TPE2="1 GB"
-elif [[ $DEFINIR_TPE1 = Megas ]]; then
-    TPE2="Menos de 1 GB"
-fi
+    DEFINIR_TPE1=$(echo $TPE1 | awk '{print $2}')
+    if [[ $DEFINIR_TPE1 = Gigas ]]; then
+        TPE2="1 GB"
+    elif [[ $DEFINIR_TPE1 = Megas ]]; then
+        TPE2="Menos de 1 GB"
+    fi
 
 
-if [[ $IDIOMA2 == "LAT" ]]; then
-    IDIOMA3=${IDIOMA2}
-elif [[ $IDIOMA2 == "SUB" ]]; then
-    IDIOMA3=${IDIOMA2}
-elif [[ $IDIOMA3 == "ESP" ]]; then
-    IDIOMA3=${IDIOMA2}
-fi
+    [[ $IDIOMA2 == "LAT" ]] && IDIOMA3=${IDIOMA2}
+    [[ $IDIOMA2 == "SUB" ]] && IDIOMA3=${IDIOMA2}
+    [[ $IDIOMA3 == "ESP" ]] && IDIOMA3=${IDIOMA2}
+
     NEWFILEN1=`echo $NEWFILEN | sed 's/_/ /g'` ; mv "$NEWFILEN" $NEWFILEN1 2>/dev/null
     
 
@@ -2668,13 +2666,13 @@ fi
             [[ $NT = 10 ]] && unset cero2
 
             en=$(echo ${MiPeli##*.}); em=${MiPeli%.*}; eo=${em^^}
-            echo $MiPeli; mv "$MiPeli" "${NAMESERI} S${cero2}${NT}E${cero}${EPI}.${en}"
+            echo $MiPeli; mv "$MiPeli" "${NAMESERI^^} S${cero2}${NT}E${cero}${EPI}.${en}"
 
             ((EPI++))
         done
         EPI=1
         msg -ama "archivos renombrados"; ls
-
+        FILEE=${FILEE^^}
         R_CARPETA_SERIE="${FILEE}/Temporada ${NT}"
         mkdir -p "${R_CARPETA_SERIE}"
         
