@@ -561,7 +561,7 @@ function tst(){
     [[ $TST1 = 2 ]] && echo -e "$barraAzul" && validar_cuenta -verystream
     [[ $TST1 = 3 ]] && echo -e "$barraAzul" && validar_cuenta -netu
     [[ $TST1 = 4 ]] && echo -e "$barraAzul" && validar_cuenta -jetload
-    [[ $TST1 = 5 ]] && echo -e "$barraAzul" && validar_cuenta -Uptobox
+    [[ $TST1 = 5 ]] && echo -e "$barraAzul" && validar_cuenta -uptobox
     [[ $TST1 = 6 ]] && echo -e "$barraAzul" && validar_cuenta -gounlimited
     [[ $TST1 = 7 ]] && echo -e "$barraAzul" && validar_cuenta -fembed
     [[ $TST1 = 8 ]] && echo -e "$barraAzul" && validar_cuenta -Mega
@@ -1352,6 +1352,30 @@ function ComprobarExtAudio(){
         rm -rf $1
     fi
 }
+function aguaMarca()
+{
+    for m in `ls *.mkv *.mp4 *.avi *.mpg`; do
+
+        Numtrack=$(mkvinfo "${m}" | grep "Track number" | wc -l)
+        EXT=${m##*.}
+        if [[ $EXT == "mkv" || $Numtrack -eq 2 ]]; then
+
+            for (( i = 1; i < Numtrack; i++ )); do 
+                mkvpropedit "${m}" --edit info --set "title=${VALOR}";
+                # sleep 0.5s
+                mkvpropedit "${m}" --edit info --edit track:a$i --set name=${VALOR}; 
+                # sleep 0.5s; 
+                mkvpropedit "${m}" --edit info --edit track:v$i --set name=${VALOR};
+                # sleep 0.5s;
+                mkvpropedit "${m}" --edit info --edit track:s$i --set name=${VALOR};
+            done
+        else
+            ffmpeg -i "${m}" -acodec copy -vcodec copy -metadata "title=${VALOR}" "M.${m}"
+            [[ -e "M.${m}" ]] && rm "${m}"
+            mv "M.${m}" "${m}"
+        fi
+    done 2>/dev/null
+}
 
 function EscogerAudio(){
 
@@ -2062,11 +2086,6 @@ function subida_o_s_s()
         Gounlimited
         sleep 2
     fi
-    
-    if [[ $ESTADOMEGA == true ]];then
-        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mMEGA\033[0m" 
-        MegaSerie
-    fi
 
     if [[ $ESTADODRIVEFREE = true ]];then
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD FREE\033[0m" 
@@ -2078,6 +2097,11 @@ function subida_o_s_s()
         SubidaDriveVIP $RD $R_CARPETA_SERIE
     fi
 
+    if [[ $ESTADOMEGA == true ]];then
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mMEGA\033[0m" 
+        MegaSerie
+    fi
+
     if [[ $ESTADOOUO == true ]];then
         echo -e "\033[1;36mOBTENIENDO ENLACES DE \033[0m \033[1;33mOUO\033[0m"
         Acortadorr enlaces_free1[@] $SOUO ENLACESOUO "OUO"
@@ -2087,7 +2111,6 @@ function subida_o_s_s()
         echo -e "\033[1;36mOBTENIENDO ENLACES DE \033[0m \033[1;33mSHORT\033[0m"
         Acortadorr MEGAENLACES[@] $SSHORT ENLACESSHORT "SHORT"
     fi
-    
 }
 
 
@@ -2341,6 +2364,7 @@ function LiimiteGD() {
                     PutoPunto
                     echo $DD
                     descompri
+                    aguaMarca
                     EscogerAudio
                     PegarSubtitulos
                     TArchivo
@@ -2559,9 +2583,7 @@ function renom()
     CALIDA2=${CALIDA1}
     RUTA2="/var/www/html/de/.enlaces"
 
-    for MiPeli in `ls *.mp4 *.mkv *.avi *.mpg`; do
-        echo $MiPeli
-    done 2>/dev/null
+    MiPeli=$(ls *.mp4 *.mkv *.avi *.mpg 2>/dev/null)
 
     for TPE in `ls -alh $MiPeli | awk -F " " '{print $5}'` ; do TPE1=`echo $TPE | sed 's/G/ Gigas/g' | sed 's/M/ Megas/g'` ; mv "$TPE" $TPE1 ; done 2>/dev/null
 
@@ -2581,28 +2603,6 @@ function renom()
     
 
     [[ $ELIMINARSUB == true ]] && ElimSub
-    for i in `ls *.mkv *.mp4 *.avi *.mpg`; do
-
-        EXT=${i##*.}
-        if [[ $EXT = mkv ]]; then
-
-            Numtrack=$(mkvinfo $MiPeli | grep "Track number" | wc -l)
-
-            for (( i = 1; i < Numtrack; i++ )); do 
-                mkvpropedit $MiPeli --edit info --set "title=$VALOR";
-                # sleep 0.5s
-                mkvpropedit "$MiPeli" --edit info --edit track:a$i --set name=${VALOR}; 
-                # sleep 0.5s; 
-                mkvpropedit "$MiPeli" --edit info --edit track:v$i --set name=${VALOR};
-                # sleep 0.5s;
-                mkvpropedit "$MiPeli" --edit info --edit track:s$i --set name=${VALOR};
-            done
-        else
-            ffmpeg -i $MiPeli -acodec copy -vcodec copy -metadata title="$VALOR" M.$MiPeli
-            [[ -e M.$MiPeli ]] && rm $MiPeli
-            mv M.$MiPeli $MiPeli
-        fi
-    done 2>/dev/null
     
         PutoPunto
         echo
@@ -2650,9 +2650,7 @@ function renom()
         PutoPunto
 
 
-        for MiPeli in `ls *.mp4 *.mkv *.avi *.mpg`; do
-            echo $MiPeli
-        done 2>/dev/null
+        MiPeli=$(ls *.mp4 *.mkv *.avi *.mpg 2>/dev/null)
 
 
     if [[ $menu_principall = 1 ]]; then
@@ -2691,9 +2689,7 @@ if [[ $V720 = 1 ]]; then
     echo "Empezando el proceso de combercion"
     sleep 4
 fi
-for MiPeli in `ls *.mp4 *.mkv *.avi *.mpg`; do
-    echo $MiPeli
-done 2>/dev/null
+MiPeli=$(ls *.mp4 *.mkv *.avi *.mpg 2>/dev/null)
 }
 
 function sudmenu() {

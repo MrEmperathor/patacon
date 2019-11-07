@@ -1420,31 +1420,27 @@ function ComprobarExtAudio(){
 }
 function aguaMarca()
 {
+    for m in `ls *.mkv *.mp4 *.avi *.mpg`; do
 
-    
-    for i in `ls *.mkv *.mp4 *.avi *.mpg`; do
-
-        EXT=${i##*.}
-        if [[ $EXT = mkv ]]; then
-
-            Numtrack=$(mkvinfo "${i}" | grep "Track number" | wc -l)
+        Numtrack=$(mkvinfo "${m}" | grep "Track number" | wc -l)
+        EXT=${m##*.}
+        if [[ $EXT == "mkv" || $Numtrack -eq 2 ]]; then
 
             for (( i = 1; i < Numtrack; i++ )); do 
-                mkvpropedit "${i}" --edit info --set "title=$VALOR";
+                mkvpropedit "${m}" --edit info --set "title=${VALOR}";
                 # sleep 0.5s
-                mkvpropedit "${i}" --edit info --edit track:a$i --set name=${VALOR}; 
+                mkvpropedit "${m}" --edit info --edit track:a$i --set name=${VALOR}; 
                 # sleep 0.5s; 
-                mkvpropedit "${i}" --edit info --edit track:v$i --set name=${VALOR};
+                mkvpropedit "${m}" --edit info --edit track:v$i --set name=${VALOR};
                 # sleep 0.5s;
-                mkvpropedit "${i}" --edit info --edit track:s$i --set name=${VALOR};
+                mkvpropedit "${m}" --edit info --edit track:s$i --set name=${VALOR};
             done
         else
-            ffmpeg -i "${i}" -acodec copy -vcodec copy -metadata title="$VALOR" "M.${i}"
-            [[ -e "M.${i}" ]] && rm "${i}"
-            mv "M.${i}" "${i}"
+            ffmpeg -i "${m}" -acodec copy -vcodec copy -metadata "title=${VALOR}" "M.${m}"
+            [[ -e "M.${m}" ]] && rm "${m}"
+            mv "M.${m}" "${m}"
         fi
     done 2>/dev/null
-
 }
 
 function EscogerAudio(){
@@ -2323,9 +2319,7 @@ IDIOMA2=${IDIOMA1}
 CALIDA2=${CALIDA1}
 RUTA2="/var/www/html/de/.enlaces"
 
-for MiPeli in `ls *.mp4 *.mkv *.avi *.mpg`; do
-    echo $MiPeli
-done 2>/dev/null
+MiPeli=$(ls *.mp4 *.mkv *.avi *.mpg 2>/dev/null)
 
 if [[ $menu_principall = 1 ]]; then
 
@@ -2550,9 +2544,7 @@ fi
         PutoPunto
 
 
-        for MiPeli in `ls *.mp4 *.mkv *.avi *.mpg`; do
-            echo $MiPeli
-        done 2>/dev/null
+        MiPeli=$(ls *.mp4 *.mkv *.avi *.mpg 2>/dev/null)
 
     if [[ $menu_principall = 1 ]]; then
         IFS=$(echo -en "\n\b")
@@ -2597,9 +2589,7 @@ if [[ $V720 = 1 ]]; then
     echo "Empezando el proceso de combercion"
     sleep 4
 fi
-for MiPeli in `ls *.mp4 *.mkv *.avi *.mpg`; do
-    echo $MiPeli
-done 2>/dev/null
+MiPeli=$(ls *.mp4 *.mkv *.avi *.mpg 2>/dev/null)
 ruta_drive=$(pwd)
 }
 
