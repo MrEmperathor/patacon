@@ -178,8 +178,16 @@ function validar_cuenta(){
                 read -p "INGRESE MARCA DE AGUA: " VAL
                 [[ $VAL ]] && sed -i "s/\"${VALOR}\"/\"${VAL}\"/g" $CONFIG
                 source $CONFIG
+            ;;
+            -carp_vip)
+                echo -e "\033[1;33mNOMBRE FOLDER ACTUAL: \033[1;37m \033[1;35m$FOLDER_SERIE_VIP \033[1;37m";
+                read -p "INGRESE NOMBRE DEL NUEVO DIRECTORIO: " VAL
+                [[ $VAL ]] && sed -i "s/\"${FOLDER_SERIE_VIP}\"/\"${VAL}\"/g" $CONFIG
+                source $CONFIG
+            ;;
     esac
     echo $raya; echo "Datos actualizados."
+    sleep 3
 
 }
 
@@ -546,8 +554,8 @@ function tst(){
     echo -e "\033[1;37m[\033[1;31m01\033[1;37m] • \033[1;33mOPENLOAD \033[1;37m                              [\033[1;31m11\033[1;37m] • \033[1;33mCONTRASEÑA PARA DESCOMPRIMIR RAR \033[1;37m
 [\033[1;31m02\033[1;37m] • \033[1;33mVERYSTREAM \033[1;37m                            [\033[1;31m12\033[1;37m] • \033[1;33mACTIVAR O DESACTIVAR SERVICIOS \033[1;37m
 [\033[1;31m03\033[1;37m] • \033[1;33mNETU \033[1;37m                                  [\033[1;31m13\033[1;37m] • \033[1;33mMARCA DE AGUA \033[1;37m
-[\033[1;31m04\033[1;37m] • \033[1;33mJETLOAD \033[1;37m
-[\033[1;31m05\033[1;37m] • \033[1;33mUPTOBOX \033[1;37m
+[\033[1;31m04\033[1;37m] • \033[1;33mJETLOAD \033[1;37m                               [\033[1;31m14\033[1;37m] • \033[1;33mNOMBE CARPETA GD-VIP \033[1;37m
+[\033[1;31m05\033[1;37m] • \033[1;33mUPTOBOX \033[1;37m                               
 [\033[1;31m06\033[1;37m] • \033[1;33mGOUNLIMITED \033[1;37m
 [\033[1;31m07\033[1;37m] • \033[1;33mFEMBED \033[1;37m
 [\033[1;31m08\033[1;37m] • \033[1;33mMEGA \033[1;37m
@@ -580,6 +588,7 @@ function tst(){
     fi
     [[ $TST1 = 12 ]] && ActivarEnlaces
     [[ $TST1 = 13 ]] && echo -e "$barraAzul" && validar_cuenta -marca
+    [[ $TST1 = 14 ]] && echo -e "$barraAzul" && validar_cuenta -carp_vip
     
 }
 function AUD (){
@@ -1831,23 +1840,26 @@ function MostarEnlaces()
     
 function SubidaDriveFREE()
 {   
-    RD=$1; R_SERIE=$2;
-    DRIVER=${DRIVE3}
-    rclone copy ${RD}/${R_SERIE} -P ${DRIVER}:/${FOLDER_SERIE}/${R_SERIE}
-    nombres=($(rclone ls ${DRIVER}:/${FOLDER_SERIE}/${R_SERIE} | cut -d" " -f2-))
+    RD="${1}"; R_SERIE="${2}";
+    DRIVER="${DRIVE3}"
+    
+    rclone copy "${RD}/${R_SERIE}" -P ${DRIVER}:/"${FOLDER_SERIE}/${R_SERIE}"
+    nombres=($(rclone ls ${DRIVER}:/"${FOLDER_SERIE}/${R_SERIE}" | cut -d" " -f2-))
     a=0
-
+    volverxD=$(pwd); cd $RCOPY2 && drive new -folder "${FOLDER_SERIE_VIP}/${R_SERIE}"; cd $volverxD
     for i in "${nombres[@]}"
     do
         echo $i
+        echo $barraAzul
         enlaces_free[$a]=$(rclone link ${DRIVER}:/"${FOLDER_SERIE}/${R_SERIE}/${i}")
         ID[$a]=$(echo ${enlaces_free[$a]} | awk -F "=" '{printf $2}')
 
-            if [[ $ESTADODRIVEFREE == true && $ESTADODRIVEVIP == true ]];then
-                cd $RCOPY2 && drive copy -id "${ID[$a]}" "${FOLDER_SERIE_VIP}/${R_SERIE}/${i}"; sleep 2s
+            # if [[ $ESTADODRIVEFREE == true && $ESTADODRIVEVIP == true ]];then
+                echo "Subiendo vip # $i"; echo ${FOLDER_SERIE_VIP}/${R_SERIE}/
+                cd $RCOPY2 && drive copy -id "${ID[$a]}" "${FOLDER_SERIE_VIP}/${R_SERIE}/"; sleep 2s
                 enlaces_vip[$a]=$(drive pub "${FOLDER_SERIE_VIP}/${R_SERIE}/${i}" | awk  -F "published on " '{print $2}')
                 ID_VIP[$a]=$(echo ${enlaces_vip[$a]} | awk -F "=" '{printf $2}'); drive unpub -id "${ID_VIP[$a]}"
-            fi
+            # fi
         ((a++))
     done
     cd $RD

@@ -964,7 +964,7 @@ function EstruDes(){
 
     [[ $IDIOMA1 = 1 ]] && IDIOMA1="LAT" && ElimAudio=1 && AUD
     [[ $IDIOMA1 = 2 ]] && IDIOMA1="ESP" && ElimAudio=2 && AUD
-    [[ $IDIOMA1 = 3 ]] && IDIOMA1="SUB" && ElimAudio=3 && AUD
+    # [[ $IDIOMA1 = 3 ]] && IDIOMA1="SUB" && ElimAudio=3 && AUD
 
     if [[ $IDIOMA1 = 3 ]];then
         IDIOMA1="SUB"; ElimAudio=3; AUD
@@ -1424,9 +1424,9 @@ function aguaMarca()
 
         Numtrack=$(mkvinfo "${m}" | grep "Track number" | wc -l)
         EXT=${m##*.}
-        if [[ $EXT == "mkv" || $Numtrack -eq 2 ]]; then
+        if [[ $EXT == "mkv" || $Numtrack -ge 2 ]]; then
 
-            for (( i = 1; i < Numtrack; i++ )); do 
+            for (( i = 1; i < $Numtrack; i++ )); do 
                 mkvpropedit "${m}" --edit info --set "title=${VALOR}";
                 # sleep 0.5s
                 mkvpropedit "${m}" --edit info --edit track:a$i --set name=${VALOR}; 
@@ -1440,7 +1440,7 @@ function aguaMarca()
             [[ -e "M.${m}" ]] && rm "${m}"
             mv "M.${m}" "${m}"
         fi
-    done 2>/dev/null
+    done
 }
 
 function EscogerAudio(){
@@ -1605,6 +1605,7 @@ function PegarSubtitulos(){
 # ffmpeg -i cobra.mkv -ss 00:15:03 -t 00:00:30 -c:v copy -c:a copy nuerte60.mp4
 if [[ $EXTRASUB ]]; then
 	echo "EXTRALLENDO SUBS"
+    echo -e $barraAzul
 	for f in * ; do mv "$f" "${f// /_}" ; done 2>/dev/null
 	for g in * ; do mv "$g" "${g/"Copia de "/}" ; done 2>/dev/null
 	for i in * ; do mv -- "${i}" "${i//['][!”#$%&’ ()*+,/:;<=>?@\^`{\|}~-']/_}" ; done 2>/dev/null
