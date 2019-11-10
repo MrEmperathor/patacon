@@ -130,24 +130,27 @@ function validar_cuenta(){
             fi
             ;;
         -jetload)
+            VALORUSEROPEN=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"JetloadKey\"\]" | cut -d "\"" -f4)
+            echo -e "\033[1;33mKEY ACTUAL: \033[1;37m \033[1;35m$VALORUSEROPEN \033[1;37m"; 
             read -p "KEY: " JET_KEY
             if [[ $JET_KEY ]];then
-                VALORUSEROPEN=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"JetloadKey\"\]" | cut -d "\"" -f4)
                 sed -i "s/${VALORUSEROPEN}/${JET_KEY}/g" $CONFIGGLOBAL
             fi
             ;;
         -uptobox)
+            VALLU=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"UptoboxSses\"\]" | cut -d "\"" -f4)
+            echo -e "\033[1;33mSESS_ID ACTUAL: \033[1;37m \033[1;35m${VALLU} \033[1;37m"; 
             read -p "SESS_ID: " JET_KEY
             if [[ $JET_KEY ]];then
-                VALL=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"UptoboxSses\"\]" | cut -d "\"" -f4)
-                sed -i "s/${VALL}/${JET_KEY}/g" $CONFIGGLOBAL
+                sed -i "s/${VALLU}/${JET_KEY}/g" $CONFIGGLOBAL
             fi
             ;;
         -gounlimited)
-            read -p "KEY : " JET_KEY
-            if [[ $JET_KEY ]];then
-                VALL=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"Gounlimited\"\]" | cut -d "\"" -f4)
-                sed -i "s/${VALL}/${JET_KEY}/g" $CONFIGGLOBAL
+            VALL=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"Gounlimited\"\]" | cut -d "\"" -f4)
+            echo -e "\033[1;33mKEY ACTUAL: \033[1;37m \033[1;35m${VALL} \033[1;37m"; 
+            read -p "KEY : " JET_KEYY
+            if [[ $JET_KEYY ]];then
+                sed -i "s/${VALL}/${JET_KEYY}/g" $CONFIGGLOBAL
             fi
             ;;
         -Mega)
@@ -1367,7 +1370,7 @@ function aguaMarca()
 
         Numtrack=$(mkvinfo "${m}" | grep "Track number" | wc -l)
         EXT=${m##*.}
-        if [[ $EXT == "mkv" || $Numtrack -eq 2 ]]; then
+        if [[ $EXT == "mkv" || $Numtrack -ge 2 ]]; then
 
             for (( i = 1; i < Numtrack; i++ )); do 
                 mkvpropedit "${m}" --edit info --set "title=${VALOR}";
@@ -1840,6 +1843,7 @@ function MostarEnlaces()
     
 function SubidaDriveFREE()
 {   
+    unset nombres; unset enlaces_free; unset ID; unset enlaces_vip; unset ID_VIP; unset enlaces_free1
     RD="${1}"; R_SERIE="${2}";
     DRIVER="${DRIVE3}"
     
@@ -1879,6 +1883,7 @@ function SubidaDriveFREE()
 
 function SubidaDriveVIP()
 {   
+    unset nombres; unset enlaces_vip; unset ID_VIP; 
     RD=$1; R_SERIE=$2;
     DRIVER=${DRIVE2}
     rclone copy ${RD}/${R_SERIE} -P ${DRIVER}:/${FOLDER_SERIE_VIP}/${R_SERIE}
@@ -1903,30 +1908,10 @@ function mul()
 {
     b=$(expr $i + 5)
 }
-function Verystream()
-{
-    vvery=$($Rvery $MiPeli) 
-    errorVery=$?
-    echo $vvery > $fifo
-
-    MostarEnlaces "Verystream" $vvery $errorVery
-}
-
-function fembed()
-{
-   for MiPeli in `ls *.mp4 *.mkv *.avi *.mpg` ; do echo $MiPeli; done 2>/dev/null
-   for im in `ls *.mp4 *.mkv *.avi *.mpg`; do echo $im ; done 2>/dev/null
-   ruu=$(pwd)
-   script_F=$($SFembed $ruu $im)
-   errorFembed=$?
-#    Fembed_Link=$(echo $script_F | awk -F "\) \) " '{print $2}')
-   echo $script_F > $fifo1
-
-   MostarEnlaces "Fembed" $script_F $errorFembed
-}
 
 function netu()
 {
+    unset netuarray; unset netuTV;
     i=1
     netuarray=(`ls ${RD}/${R_CARPETA_SERIE}`)
     mul; ProgressBar
@@ -1942,11 +1927,12 @@ function netu()
 }
 function jetload()
 {
+    unset jetname; unset JetTV
     i=1
     jetname=(`ls ${RD}/${R_CARPETA_SERIE}`)
     mul; ProgressBar
     for (( i = 0; i < "${#jetname[@]}"; i++ )); do
-        JetTV[$i]=$($SJetload ${RD}/${R_CARPETA_SERIE}/"${jetname[$i]}")
+        JetTV[$i]=$($SJetload ${R_CARPETA_SERIE}/"${jetname[$i]}")
         errorJl=$?
         MostarEnlaces "Jetload" ${JetTV[$i]} $errorJl "${jetname[$i]}" 
         sleep 3
@@ -1957,6 +1943,7 @@ function jetload()
 }
 function Uptobox1()
 {
+    unset upName; unset UptTV
     i=1
     upName=(`ls ${RD}/${R_CARPETA_SERIE}`)
     mul; ProgressBar
@@ -1972,6 +1959,7 @@ function Uptobox1()
 }
 function MegaSerie()
 {
+    unset MegaName; unset MEGAENLACES
     i=1
     MegaName=(`ls ${RD}/${R_CARPETA_SERIE}`)
     mul; ProgressBar
@@ -1989,8 +1977,8 @@ function MegaSerie()
 
 function Acortadorr()
 {
+    unset EnlacesO; unset __resultadovar; unset OuoTV; 
     i=1
-    
     declare -a EnlacesO=("${!1}")
     SCRIPTA=${2}
     declare -a __resultadovar=("${3}")
@@ -2015,6 +2003,7 @@ function Acortadorr()
 }
 function Gounlimited()
 {
+    unset upName; unset gouTV
     i=1; ruu=$(pwd)
     upName=(`ls ${RD}/${R_CARPETA_SERIE}`)
     mul; ProgressBar

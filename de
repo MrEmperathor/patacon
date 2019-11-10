@@ -115,6 +115,7 @@ function validar_cuenta(){
             ;;
         -netu)
             IDAPINETU=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"NetuApi\"\]" | cut -d "\"" -f4)
+            echo -e "\033[1;33mAPI ACTUAL: \033[1;37m \033[1;35m$IDAPINETU \033[1;37m";
             read -p "ID API: " API_NETU
             sed -i "s/${IDAPINETU}/${API_NETU}/g" $CONFIGGLOBAL
             ;;
@@ -131,24 +132,27 @@ function validar_cuenta(){
             fi
             ;;
         -jetload)
+            VALORUSEROPEN=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"JetloadKey\"\]" | cut -d "\"" -f4)
+            echo -e "\033[1;33mKEY ACTUAL: \033[1;37m \033[1;35m$VALORUSEROPEN \033[1;37m"; 
             read -p "KEY: " JET_KEY
             if [[ $JET_KEY ]];then
-                VALORUSEROPEN=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"JetloadKey\"\]" | cut -d "\"" -f4)
                 sed -i "s/${VALORUSEROPEN}/${JET_KEY}/g" $CONFIGGLOBAL
             fi
             ;;
         -uptobox)
-            VALL=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"Gounlimited\"\]" | cut -d "\"" -f4)
+            VALLU=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"UptoboxSses\"\]" | cut -d "\"" -f4)
+            echo -e "\033[1;33mSESS_ID ACTUAL: \033[1;37m \033[1;35m${VALLU} \033[1;37m"; 
             read -p "SESS_ID: " JET_KEY
             if [[ $JET_KEY ]];then
-                sed -i "s/${VALL}/${JET_KEY}/g" $CONFIGGLOBAL
+                sed -i "s/${VALLU}/${JET_KEY}/g" $CONFIGGLOBAL
             fi
             ;;
         -gounlimited)
-            read -p "KEY : " JET_KEY
-            if [[ $JET_KEY ]];then
-                VALL=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"Gounlimited\"\]" | cut -d "\"" -f4)
-                sed -i "s/${VALL}/${JET_KEY}/g" $CONFIGGLOBAL
+            VALL=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"Gounlimited\"\]" | cut -d "\"" -f4)
+            echo -e "\033[1;33mKEY ACTUAL: \033[1;37m \033[1;35m${VALL} \033[1;37m"; 
+            read -p "KEY : " JET_KEYY
+            if [[ $JET_KEYY ]];then
+                sed -i "s/${VALL}/${JET_KEYY}/g" $CONFIGGLOBAL
             fi
             ;;
 
