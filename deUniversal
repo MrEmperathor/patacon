@@ -3,14 +3,18 @@ link=$1
 volverxd=$(pwd)
 rutaDir=$(cat /etc/apache2/sites-enabled/000-default.conf | grep "DocumentRoot" | cut -d" " -f2) #var/www/html
 
-cd ${rutaDir}/panel/dom && ./index1.php "$link" > /tmp/desUniversal.txt; cd $volverxd
-error=$?
-    linkR=$(cat /tmp/desUniversal.txt | grep "name='link'" | cut -d"'" -f6)
-    nameR=$(cat /tmp/desUniversal.txt | grep "delimitador=" | cut -d"=" -f2)
+if [[ $rutaDir ]];then
+    cd ${rutaDir}/panel/dom && ./index1.php "$link" > /tmp/desUniversal.txt; cd $volverxd
+else
+    echo "no se pudo encontrar la ruta"
+fi
 
-    echo "el enlaces es $linkR"
-    echo "el nombre es $nameR"
-    wget "${linkR}" -O "${nameR}"
+linkR=$(cat /tmp/desUniversal.txt | grep "name='link'" | cut -d"'" -f6)
+nameR=$(cat /tmp/desUniversal.txt | grep "delimitador=" | cut -d"=" -f2)
+
+# echo "el enlaces es $linkR"
+# echo "el nombre es $nameR"
+wget "${linkR}" -O "${nameR}"
 
 
 

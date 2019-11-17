@@ -4,7 +4,32 @@ BLANCOF='\033[47m'; RED='\033[0;31m'; REDCLARO='\033[1;31m'; AZUL='\033[0;34m'; 
 source $CONFIG
 PSW6=$PASSRAR
 
+function EspacioTrabajo(){
 
+
+    echo "PRECAUCION!! ESTO ELIMINARA TODOS LOS ESPACIOS DE TRABAJOS QUE TENGA ACTUALMENTE Y CREARA NUEVOS."
+    read -p "PRECIONE 1 PARA CONTINUA: " CONTB
+
+    if [[ $CONTB ]];then
+        cd; killall screen
+        rs=$(screen -ls | grep -e "Socket in" -e "Sockets in" | cut -d" " -f4 | cut -d"." -f1);  #/var/run/screen/S-root.
+        rm -rf ${rs}/*
+        # screen -S patacon; screen -x -r patacon
+    
+        directorios=$(ls /var/www/html/de/file | wc -l)
+        
+        if [[ $directorios -lt $SPTRV ]]; then
+
+            for (( i = 1; i <= ${SPTRV}; i++ )); do mkdir -p /var/www/html/de/file/$i; done
+            for (( i = 1; i <= ${SPTRV}; i++ )); do cd /var/www/html/de/file/$i; screen -t "Ventana #${i}"; done
+
+        else
+            for (( i = 1; i <= ${SPTRV}; i++ )); do cd /var/www/html/de/file/$i; screen -t "Ventana #${i}"; done
+
+        fi
+    fi
+    
+}
 function ActivarEnlaces()
 {
     [[ $ESTADOOPENLOAD == true ]] && _OPACT=$(echo -e "\033[1;32m● [ON]") || _OPACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
@@ -184,6 +209,13 @@ function validar_cuenta(){
                 read -p "INGRESE MARCA DE AGUA: " VAL
                 [[ $VAL ]] && sed -i "s/\"${VALOR}\"/\"${VAL}\"/g" $CONFIG
                 source $CONFIG
+            ;;
+            -espacio_t)
+                echo -e "\033[1;33m# DE ESPACIOS ABIERTOS: \033[1;37m \033[1;35m$SPTRV \033[1;37m";
+                read -p "INGRESE LA CANTIDAD DE ESPACIOS: " VALl
+                [[ $VALl ]] && sed -i "s/SPTRV=${SPTRV}/SPTRV=${VALl}/g" $CONFIG
+                source $CONFIG; EspacioTrabajo
+            ;;
     esac
     echo $raya; echo "Datos actualizados."
 
@@ -607,7 +639,7 @@ function tst(){
     echo ""
     echo -e "\033[1;37m[\033[1;31m01\033[1;37m] • \033[1;33mOPENLOAD \033[1;37m                              [\033[1;31m12\033[1;37m] • \033[1;33mACTIVAR O DESACTIVAR SERVICIOS \033[1;37m
 [\033[1;31m02\033[1;37m] • \033[1;33mVERYSTREAM \033[1;37m                            [\033[1;31m13\033[1;37m] • \033[1;33mMARCA DE AGUA \033[1;37m
-[\033[1;31m03\033[1;37m] • \033[1;33mNETU \033[1;37m
+[\033[1;31m03\033[1;37m] • \033[1;33mNETU \033[1;37m                                  [\033[1;31m14\033[1;37m] • \033[1;33mVENTANAS DE TRABAJO \033[1;37m
 [\033[1;31m04\033[1;37m] • \033[1;33mJETLOAD \033[1;37m
 [\033[1;31m05\033[1;37m] • \033[1;33mUPTOBOX \033[1;37m
 [\033[1;31m06\033[1;37m] • \033[1;33mGOUNLIMITED \033[1;37m
@@ -643,6 +675,7 @@ function tst(){
     fi
     [[ $TST1 = 12 ]] && ActivarEnlaces
     [[ $TST1 = 13 ]] && echo -e "$barraAzul" && validar_cuenta -marca
+    [[ $TST1 = 14 ]] && echo -e "$barraAzul" && validar_cuenta -espacio_t
     
     
 }
@@ -707,22 +740,7 @@ function TArchivo(){
     
 }
 
-function EspacioTrabajo(){
 
-    echo "PRECAUCION!! ESTO ELIMINARA TODOS LOS ESPACIOS DE TRABAJOS QUE TENGA ACTUALMENTE Y CREARA NUEVOS."
-    read -p "ENTER PARA CONTINUA..."
-    directorios=$(ls /var/www/html/de/file | wc -l)
-
-    if [[ $directorios -gt 0 ]]; then
-        for (( i = 1; i <= 30; i++ )); do mkdir /var/www/html/de/file/$i; done
-        for (( i = 1; i <= 30; i++ )); do cd /var/www/html/de/file/$i; screen -t $i; done
-
-        else
-            for (( i = 1; i <= 30; i++ )); do cd /var/www/html/de/file/$i; screen -t $i; done
-
-    fi
-    
-}
 
 function menu_principall() {
 
@@ -730,33 +748,30 @@ function menu_principall() {
     rutascren=$(echo $RD | awk -F "file" '{print $1}')
     escr=$(screen -ls | grep "patacon" | awk -F "." '{print $2}' | awk '{print $1}')
         if [[ $escr != "patacon" ]]; then
+            cd
+            rs=$(screen -ls | grep -e "Socket in" -e "Sockets in" | cut -d" " -f4 | cut -d"." -f1);  #/var/run/screen/S-root.
+            [[ $rs ]] && rm -rf ${rs}/*
             screen -S patacon
-
         else
             if [[ $rutascren != "/var/www/html/de/" ]]; then
                 screen -x -r patacon
             fi
-            
-
         fi
-
     clear
     if [[ $RD = "/root" ]]; then
-        printf "${CYANCLARO}";
-        echo "NO ESTA PERMITIDO USAR ESTA RUTA, DEME MOVERSE A UNA RUTA DE TRABAJO..."
+        msg -verm "NO ESTA PERMITIDO USAR ESTA RUTA, DEME MOVERSE A UNA RUTA DE TRABAJO..."
         sleep 2
-        echo "SERA REDIRIGIDO A UNO QUE ALLA ESTABLECIDO..."
-        sleep 2
-        echo "SI NO TIENE UNO CREADO, DEBERA CREAR UNO EN LA OPCION 6"
+        msg -verm "REDIRIGIENDO..."
         sleep 2
         screen -x -r patacon
         destino=$(pwd | awk -F "file" '{print $1}')
 
-            if [[ $destino != "/var/www/html/de/" ]]; then
-                echo "NO ES EL DESTINO"
-                sleep 2
-                for (( i = 1; i <= 30; i++ )); do cd /var/www/html/de/file/$i; screen -t ter$i; done
-            fi
+        if [[ $destino != "/var/www/html/de/" ]]; then
+            # echo "NO ES EL DESTINO"
+            sleep 2
+            for (( i = 1; i <= ${SPTRV}; i++ )); do mkdir -p /var/www/html/de/file/$i; done
+            for (( i = 1; i <= "${SPTRV}"; i++ )); do cd /var/www/html/de/file/$i; screen -t "Ventana#${i}"; done
+        fi
         exit
     fi
 
@@ -1608,6 +1623,7 @@ function PegarSubtitulos(){
     
 # ffmpeg -i cobra.mkv -ss 00:15:03 -t 00:00:30 -c:v copy -c:a copy nuerte60.mp4
 if [[ $EXTRASUB ]]; then
+    
 	echo "EXTRALLENDO SUBS"
     echo -e $barraAzul
 	for f in * ; do mv "$f" "${f// /_}" ; done 2>/dev/null
@@ -2769,8 +2785,6 @@ ruta_drive=$(pwd)
 
                 # enlaces_pre=$(/var/www/html/panel/inc/include/./file.php "${array[@]}")
                 descarga=$(/var/www/html/panel/inc/include/./file.php "${arraydescarga[@]}")
-
-
 
 
                 enlaces_pre=$(/var/www/html/panel/inc/include/./serializar.php "${array[@]}")

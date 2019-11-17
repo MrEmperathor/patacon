@@ -1,7 +1,7 @@
 #!/bin/bash
-IKEY6=/var/local/Key6.txt
-PSW6=$(cat $IKEY6)
-
+# IKEY6=/var/local/Key6.txt
+# PSW6=$(cat $IKEY6)
+source /usr/local/bin/config.ini
 
 # extract the protocol
 proto="$(echo $1 | grep :// | sed -e's,^\(.*://\).*,\1,g')"
@@ -22,14 +22,15 @@ function GoogleDriveDescarga()
 {
     FILEID=$1
     # FILEID="$(echo $FILEID | sed -n 's#.*\https\:\/\/drive\.google\.com/file/d/\([^.]*\)\/view.*#\1#;p')";
-    FILEID="$(echo $FILEID | sed -n 's#.*\https\:\/\/drive\.google\.com/file/d/\([^.]*\)\/view.*#\1#;p')";
+    # FILEID="$(echo $FILEID | sed -n 's#.*\https\:\/\/drive\.google\.com/file/d/\([^.]*\)\/view.*#\1#;p')";
     # FILENAME="$(wget -q --show-progress -O - "https://drive.google.com/file/d/$FILEID/view" | sed -n -e 's!.*<title>\(.*\)\ \-\ Dysk\ Google</title>.*!\1!p')";
     FILENAME="$(wget -q --show-progress -O - "https://drive.google.com/file/d/$FILEID/view" | sed -n -e 's!.*<title>\(.*\)\ \-\ Google\ Drive</title>.*!\1!p')";
     FILENAME1=$(echo "$FILENAME")
     wget -q --show-progress --save-cookies /tmp/cookies.txt --no-check-certificate "https://docs.google.com/uc?export=download&id=$FILEID" -O $FILENAME
 
     FILENAME2=$(echo "$FILENAME" | awk '{print $1}')
-    msg () {
+    msg()
+    {
     BRAN='\033[1;37m' && VERMELHO='\e[31m' && VERDE='\e[32m' && AMARELO='\e[33m'
     AZUL='\e[34m' && MAGENTA='\e[35m' && MAG='\033[1;36m' && NEGRITO='\e[1m' && SEMCOR='\e[0m'
     case $1 in
@@ -67,9 +68,9 @@ function GoogleDriveDescarga()
                 msg -ama "GENERANDO NUEVO ENLACE..."
 
                 RD1=$(pwd)
-                cd /root/.Mydrive && drive copy -id "$FILEID" ddd; sleep 10s
-                drive pub ddd/"$FILENAME"
-                newlink=$(drive pub ddd/"$FILENAME" | awk  -F "published on" '{print $2}')
+                cd $RCOPY2 && drive copy -id "$FILEID" ${NAMEBINDERCOPY}; sleep 6s
+                drive pub ${NAMEBINDERCOPY}/"${FILENAME}"
+                newlink=$(drive pub ${NAMEBINDERCOPY}/"${FILENAME}" | awk  -F "published on" '{print $2}')
                 newlinkID=$(echo $newlink | awk -F "=" '{print $2}')
                 FILEID=${newlinkID}
                 cd $RD1
@@ -111,9 +112,9 @@ function GoogleDriveDescarga()
         msg -ama "GENERANDO NUEVO ENLACE..."
 
         RD1=$(pwd)
-        cd /root/.Mydrive && drive copy -id "$FILEID" ddd; sleep 6s
-        drive pub ddd/"$FILENAME"
-        newlink=$(drive pub ddd/"$FILENAME" | awk  -F "published on" '{print $2}')
+        cd $RCOPY2 && drive copy -id "$FILEID" ${NAMEBINDERCOPY}; sleep 6s
+        drive pub ${NAMEBINDERCOPY}/"$FILENAME"
+        newlink=$(drive pub ${NAMEBINDERCOPY}/"$FILENAME" | awk  -F "published on" '{print $2}')
         newlinkID=$(echo $newlink | awk -F "=" '{print $2}')
         FILEID=${newlinkID}
         cd $RD1
@@ -258,12 +259,12 @@ function GoogleDriveDescarga()
     fi
 
     RD1=$(pwd)
-    cd /root/.Mydrive && drive unpub -id "$FILEID" 2>/dev/null
+    cd $RCOPY2 && drive unpub -id "${FILEID}" 2>/dev/null
     cd $RD1
 }
 
 
-if [[ $host == "drive.google.com" ]]; then
+if [[ $host == "drive.google.com" || $host == "docs.drive.com" ]]; then
     id=$(php /var/www/html/panel/inc/comp/parse_url.php "${1}")
     GoogleDriveDescarga $id
 elif [[ $host == "www.mediafire.com" ]]; then
