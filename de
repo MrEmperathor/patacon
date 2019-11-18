@@ -6,27 +6,29 @@ PSW6=$PASSRAR
 
 function EspacioTrabajo(){
 
-
-    echo "PRECAUCION!! ESTO ELIMINARA TODOS LOS ESPACIOS DE TRABAJOS QUE TENGA ACTUALMENTE Y CREARA NUEVOS."
+    echo " "
+    echo -e "\033[1;33mPRECAUCION!! ESTO ELIMINARA TODOS LOS ESPACIOS DE TRABAJOS QUE TENGA ACTUALMENTE Y CREARA NUEVOS. \033[1;37m";
+    echo " "
+    echo -e "\033[1;33mA CONTINUACION DEBERA CERRAR LA TERMINAL Y ABIR UNA NUEVA, EJECUTE NUEVAMENTE EL SCRIPT (de) Y AUTOMATICAMENTE TENDRA LOS ESPACIOS DE TRABAJO PREESTABLECIDOS: \033[1;37m \033[1;35m$SPTRV \033[1;37m";
     read -p "PRECIONE 1 PARA CONTINUA: " CONTB
-
+    
     if [[ $CONTB ]];then
-        cd; killall screen
-        rs=$(screen -ls | grep -e "Socket in" -e "Sockets in" | cut -d" " -f4 | cut -d"." -f1);  #/var/run/screen/S-root.
-        rm -rf ${rs}/*
+        killall screen
+        # rs=$(screen -ls | grep -e "Socket in" -e "Sockets in" | cut -d" " -f4 | cut -d"." -f1);  #/var/run/screen/S-root.
+        # rm -rf ${rs}/*
         # screen -S patacon; screen -x -r patacon
     
-        directorios=$(ls /var/www/html/de/file | wc -l)
+        # directorios=$(ls /var/www/html/de/file | wc -l)
         
-        if [[ $directorios -lt $SPTRV ]]; then
+        # if [[ $directorios -lt $SPTRV ]]; then
 
-            for (( i = 1; i <= ${SPTRV}; i++ )); do mkdir -p /var/www/html/de/file/$i; done
-            for (( i = 1; i <= ${SPTRV}; i++ )); do cd /var/www/html/de/file/$i; screen -t "Ventana #${i}"; done
+        #     for (( i = 1; i <= ${SPTRV}; i++ )); do mkdir -p /var/www/html/de/file/$i; done
+        #     for (( i = 1; i <= ${SPTRV}; i++ )); do cd /var/www/html/de/file/$i; screen -t "Ventana #${i}"; done
 
-        else
-            for (( i = 1; i <= ${SPTRV}; i++ )); do cd /var/www/html/de/file/$i; screen -t "Ventana #${i}"; done
+        # else
+        #     for (( i = 1; i <= ${SPTRV}; i++ )); do cd /var/www/html/de/file/$i; screen -t "Ventana #${i}"; done
 
-        fi
+        # fi
     fi
     
 }
@@ -721,11 +723,11 @@ function CrearCuentaMega(){
 }
 function TArchivo(){
     rr=$(pwd)
-    for i in * ; do mv -- "${i}" "${i//['][!”#$%&’()*+, /:;<=>?@\^`{\|}~-']/_}" ; done
-    for i in * ; do mv -- "${i}" "${i//"____"/_}" ; done
-    for i in * ; do mv -- "${i}" "${i//"___"/_}" ; done
-    for i in * ; do mv -- "${i}" "${i//"__"/_}" ; done
-    for i in * ; do mv -- "${i}" "${i//"_"/_}" ; done
+    for i in * ; do mv -- "${i}" "${i//['][!”#$%&’()*+, /:;<=>?@\^`{\|}~-']/_}" ; done 2>/dev/null
+    for i in * ; do mv -- "${i}" "${i//"____"/_}" ; done 2>/dev/null
+    for i in * ; do mv -- "${i}" "${i//"___"/_}" ; done 2>/dev/null
+    for i in * ; do mv -- "${i}" "${i//"__"/_}" ; done 2>/dev/null
+    for i in * ; do mv -- "${i}" "${i//"_"/_}" ; done 2>/dev/null
     for TArchivo1 in `ls *` ; do
         echo -e "\033[1;36mTAMAÑO \033[1;35m$TArchivo1\033[0m \033[0m"
         ls -alh $TArchivo1 | awk -F " " '{printf $5}' ; echo
@@ -747,11 +749,11 @@ function menu_principall() {
 
     rutascren=$(echo $RD | awk -F "file" '{print $1}')
     escr=$(screen -ls | grep "patacon" | awk -F "." '{print $2}' | awk '{print $1}')
-        if [[ $escr != "patacon" && $escr ]]; then
-            cd
+        if [[ $escr != "patacon" ]]; then
+            cd; 
             rs=$(screen -ls | grep -e "Socket in" -e "Sockets in" | cut -d" " -f4 | cut -d"." -f1);  #/var/run/screen/S-root.
-            echo "ruta a borrar $rs"; read
-            [[ $rs ]] && rm ${rs}/*
+            # echo "ruta a borrar $rs";
+            [[ $rs ]] &&  rm ${rs}/*
             screen -S patacon
         else
             if [[ $rutascren != "/var/www/html/de/" ]]; then
@@ -760,10 +762,7 @@ function menu_principall() {
         fi
     clear
     if [[ $RD = "/root" ]]; then
-        msg -verm "NO ESTA PERMITIDO USAR ESTA RUTA, DEME MOVERSE A UNA RUTA DE TRABAJO..."
-        sleep 2
-        msg -verm "REDIRIGIENDO..."
-        read
+        echo -e "\033[1;36mESPACIOS DE TRABAJOS ESTABLECIDOS \033[1;35m$SPTRV\033[0m \033[0m"
         sleep 2
         screen -x -r patacon
         destino=$(pwd | awk -F "file" '{print $1}')
