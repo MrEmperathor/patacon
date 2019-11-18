@@ -636,11 +636,11 @@ function CrearCuentaMega(){
 }
 function TArchivo(){
     rr=$(pwd)
-    for i in * ; do mv -- "${i}" "${i//['][!”#$%&’()*+, /:;<=>?@\^`{\|}~-']/_}" ; done
-    for i in * ; do mv -- "${i}" "${i//"____"/_}" ; done
-    for i in * ; do mv -- "${i}" "${i//"___"/_}" ; done
-    for i in * ; do mv -- "${i}" "${i//"__"/_}" ; done
-    for i in * ; do mv -- "${i}" "${i//"_"/_}" ; done
+    for i in * ; do mv -- "${i}" "${i//['][!”#$%&’()*+, /:;<=>?@\^`{\|}~-']/_}" ; done 2>/dev/null
+    for i in * ; do mv -- "${i}" "${i//"____"/_}" ; done 2>/dev/null
+    for i in * ; do mv -- "${i}" "${i//"___"/_}" ; done 2>/dev/null
+    for i in * ; do mv -- "${i}" "${i//"__"/_}" ; done 2>/dev/null
+    for i in * ; do mv -- "${i}" "${i//"_"/_}" ; done 2>/dev/null
     for TArchivo1 in `ls *` ; do
         echo -e "\033[1;36mTAMAÑO \033[1;35m$TArchivo1\033[0m \033[0m"
         ls -alh $TArchivo1 | awk -F " " '{printf $5}' ; echo
@@ -2008,7 +2008,7 @@ function Gounlimited()
     upName=(`ls ${RD}/${R_CARPETA_SERIE}`)
     mul; ProgressBar
     for (( i = 0; i < "${#upName[@]}"; i++ )); do
-        gouTV[$i]=$($Sgoun "$ruu" "${R_CARPETA_SERIE}/${upName[$i]}")
+        gouTV[$i]=$($Sgoun "${R_CARPETA_SERIE}/${upName[$i]}")
         errorGu=$?
         MostarEnlaces "Gounlimited" ${gouTV[$i]} $errorUP "${upName[$i]}" 
         sleep 3
@@ -2412,7 +2412,7 @@ function mostrar() {
     echo ------------------------------------
 
     echo ------------------------------------
-    echo "Nombre de archivo: $FICHERO1"
+    echo "Nombre de archivo: $MiPeli"
     echo ------------------------------------
 
     echo ------------------------------------
@@ -2484,8 +2484,6 @@ function comprobar1() {
 
 function descompri() {
 
-    IKEY6=/var/local/Key6.txt
-    PSW6=$(cat $IKEY6)
     for FILE in *.rar ; do NEWFILE=`echo $FILE | sed 's/ /_/g'` ; mv "$FILE" $NEWFILE ; done > /dev/null 2>> /root/log.txt
     for FILE in *.zip ; do NEWFILE=`echo $FILE | sed 's/ /_/g'` ; mv "$FILE" $NEWFILE ; done > /dev/null 2>> /root/log.txt
     for RAR in `ls *.rar *.zip`

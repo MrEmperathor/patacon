@@ -2152,7 +2152,7 @@ function mostrar() {
     echo ------------------------------------
 
     echo ------------------------------------
-    echo "Nombre de archivo: $FICHERO1"
+    echo "Nombre de archivo: $MiPeli"
     echo ------------------------------------
 
     echo ------------------------------------
