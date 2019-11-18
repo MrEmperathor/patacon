@@ -1,5 +1,5 @@
 #!/bin/bash
-BLANCOF='\033[47m'; RED='\033[0;31m'; REDCLARO='\033[1;31m'; AZUL='\033[0;34m'; AZULCLARO='\033[1;34m'; VERDE='\033[0;32m'; VERDECLARO='\033[1;32m'; CYAN='\033[0;36m'; CYANCLARO='\033[1;36m'; PURPURA='\033[0;35m'; PURPURAC='\033[1;35m'; CAFE='\033[1;37m'; AMARILLO='\033[1;33m'; NC='\033[0m'; RFembed="/var/www/html/panel/inc/include/fembed.php"; RNetu="/var/www/html/panel/inc/include/netu1.php"; SFembed="/var/www/html/panel/inc/include/./fembed.php"; SNetu="/var/www/html/panel/inc/include/./netu1.php"; Rvery="/var/www/html/panel/inc/include/./very.php"; SJetload="/var/www/html/panel/inc/include/./jetload.php"; Uptoboxx="/var/www/html/panel/inc/include/./uptobox.php"; SSHORT="/var/www/html/panel/inc/include/./short.php"; SOUO="/var/www/html/panel/inc/include/./ouo.php"; Sgoun="/var/www/html/panel/inc/include/./gounlimited.php"; CONFIG="/usr/local/bin/configS.ini"; CONFIGGLOBAL="/var/www/html/panel/inc/config.php"; barraAzul="\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"; ruta_drive=$(pwd)
+BLANCOF='\033[47m'; RED='\033[0;31m'; REDCLARO='\033[1;31m'; AZUL='\033[0;34m'; AZULCLARO='\033[1;34m'; VERDE='\033[0;32m'; VERDECLARO='\033[1;32m'; CYAN='\033[0;36m'; CYANCLARO='\033[1;36m'; PURPURA='\033[0;35m'; PURPURAC='\033[1;35m'; CAFE='\033[1;37m'; AMARILLO='\033[1;33m'; NC='\033[0m'; RFembed="/var/www/html/panel/inc/include/fembed.php"; RNetu="/var/www/html/panel/inc/include/netu1.php"; SFembed="/var/www/html/panel/inc/include/./fembed.php"; SNetu="/var/www/html/panel/inc/include/./netu1.php"; Rvery="/var/www/html/panel/inc/include/./very.php"; SJetload="/var/www/html/panel/inc/include/./jetload.php"; Uptoboxx="/var/www/html/panel/inc/include/./uptobox.php"; SSHORT="/var/www/html/panel/inc/include/./short.php"; SOUO="/var/www/html/panel/inc/include/./ouo.php"; Sgoun="/var/www/html/panel/inc/include/./gounlimited.php"; CONFIG="/usr/local/bin/configS.ini"; CONFIGGLOBAL="/var/www/html/panel/inc/config.php"; barraAzul="\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"; barraRed="\033[0;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"; ruta_drive=$(pwd)
 
 source $CONFIG
 PSW6=$PASSRAR
@@ -389,7 +389,7 @@ function plantilla2() {
     
 #sed -i "s%https://%\nhttps://%g" .LinkOpenSerie.$DD.Temp.$NT
 #sed -i "s%https://%\nhttps://%g" .LinkMangoSerie.$DD.Temp.$NT
-IP=$(cat "/var/local/IP")
+IP=$(cat "/var/local/IP" 2>/dev/null)
 # DD2=${DD}
 # FTPLOG1=.ftplogfileCherry
 # RUTA2="/var/www/html/de/.enlaces"
@@ -1821,13 +1821,13 @@ function MostarEnlaces()
 
     if [[ $ERRORS -eq 0 ]]; then
         echo -e "\n "
-        echo -e "\033[1;36mSubido correctamente a\033[0m \033[1;34m$SERVIDOR\033[0m"
+        echo -e "\033[1;32mSubido correctamente a\033[0m \033[1;35m$SERVIDOR\033[0m"
         echo -e "$NAME"
         echo -e "$LINKS"
-        echo -e "\033[1;31m=====================================\033[0m"
+        echo -e $barraRed
     else
         echo -e "\n "
-        echo -e "\033[1;36mVIDA TRISTE NO SE SUBIO\033[0m \033[1;34m$SERVIDOR\033[0m :("
+        echo -e "\033[1;31mVIDA TRISTE NO SE SUBIO\033[0m \033[1;36m$SERVIDOR\033[0m :("
 
     fi
 }
@@ -1854,16 +1854,16 @@ function SubidaDriveFREE()
     for i in "${nombres[@]}"
     do
         echo $i
-        echo $barraAzul
+        echo -e $barraAzul
         enlaces_free[$a]=$(rclone link ${DRIVER}:/"${FOLDER_SERIE}/${R_SERIE}/${i}")
         ID[$a]=$(echo ${enlaces_free[$a]} | awk -F "=" '{printf $2}')
 
-            # if [[ $ESTADODRIVEFREE == true && $ESTADODRIVEVIP == true ]];then
+            if [[ $ESTADODRIVEFREE == true && $ESTADODRIVEVIP == true ]];then
                 echo "Subiendo vip # $i"; echo ${FOLDER_SERIE_VIP}/${R_SERIE}/
                 cd $RCOPY2 && drive copy -id "${ID[$a]}" "${FOLDER_SERIE_VIP}/${R_SERIE}/"; sleep 2s
                 enlaces_vip[$a]=$(drive pub "${FOLDER_SERIE_VIP}/${R_SERIE}/${i}" | awk  -F "published on " '{print $2}')
                 ID_VIP[$a]=$(echo ${enlaces_vip[$a]} | awk -F "=" '{printf $2}'); drive unpub -id "${ID_VIP[$a]}"
-            # fi
+            fi
         ((a++))
     done
     cd $RD
@@ -2397,7 +2397,7 @@ function LiimiteGD() {
                     # plantilla2 > "$RUTA4/SERI.$DD2.Temp.$NT.php"
                     plantilla2 
                     sleep 5
-                    # rm -rf *
+                    rm -rf *
                     #done
                 fi
                 done
@@ -2668,7 +2668,7 @@ function renom()
             echo $MiPeli; mv "$MiPeli" "${NAMESERI^^} S${cero2}${NT}E${cero}${EPI}.${en}"
 
             ((EPI++))
-        done
+        done 2>/dev/null
         EPI=1
         msg -ama "archivos renombrados"; ls
         FILEE=${FILEE^^}
@@ -2708,20 +2708,21 @@ function sudmenu() {
         echo -e "\033[1;34m=================================================\033[0m"
         read borrarr
         case $borrarr in
-            1) enlacesMG; sleep 30s; exit ;; 
-            2) subida_o_s_s_todos ;; 
-            3) subida_o_s_s_todos1 ;;
-            4) subida_o_s_s_todos2 ;;
-            5) subida_o_s_s_todos3 ;;
-            6) subida_drive_todos ;;
-            7) rm -rf * > 2 /dev/null; exit ;;
-            8) pwd; ls -ls ;;
-            9) gdtxt ;;
-            10) subi14 ;;
-            11) megadf --human;;
-            12) linkmega ;;
-            13) megals -e ;;
-            14) exit 1 ;;
+            1) exit ;; 
+            # 1) enlacesMG; sleep 30s; exit ;; 
+            # 2) subida_o_s_s_todos ;; 
+            # 3) subida_o_s_s_todos1 ;;
+            # 4) subida_o_s_s_todos2 ;;
+            # 5) subida_o_s_s_todos3 ;;
+            # 6) subida_drive_todos ;;
+            # 7) rm -rf * > 2 /dev/null; exit ;;
+            # 8) pwd; ls -ls ;;
+            # 9) gdtxt ;;
+            # 10) subi14 ;;
+            # 11) megadf --human;;
+            # 12) linkmega ;;
+            # 13) megals -e ;;
+            # 14) exit 1 ;;
             *) echo "OPCION INVALIDAD.";
             echo "Presiona una tecla para continuar...";
             read foo;;

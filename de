@@ -747,10 +747,11 @@ function menu_principall() {
 
     rutascren=$(echo $RD | awk -F "file" '{print $1}')
     escr=$(screen -ls | grep "patacon" | awk -F "." '{print $2}' | awk '{print $1}')
-        if [[ $escr != "patacon" ]]; then
+        if [[ $escr != "patacon" && $escr ]]; then
             cd
             rs=$(screen -ls | grep -e "Socket in" -e "Sockets in" | cut -d" " -f4 | cut -d"." -f1);  #/var/run/screen/S-root.
-            [[ $rs ]] && rm -rf ${rs}/*
+            echo "ruta a borrar $rs"; read
+            [[ $rs ]] && rm ${rs}/*
             screen -S patacon
         else
             if [[ $rutascren != "/var/www/html/de/" ]]; then
@@ -762,6 +763,7 @@ function menu_principall() {
         msg -verm "NO ESTA PERMITIDO USAR ESTA RUTA, DEME MOVERSE A UNA RUTA DE TRABAJO..."
         sleep 2
         msg -verm "REDIRIGIENDO..."
+        read
         sleep 2
         screen -x -r patacon
         destino=$(pwd | awk -F "file" '{print $1}')
@@ -770,7 +772,7 @@ function menu_principall() {
             # echo "NO ES EL DESTINO"
             sleep 2
             for (( i = 1; i <= ${SPTRV}; i++ )); do mkdir -p /var/www/html/de/file/$i; done
-            for (( i = 1; i <= "${SPTRV}"; i++ )); do cd /var/www/html/de/file/$i; screen -t "Ventana#${i}"; done
+            for (( i = 1; i <= ${SPTRV}; i++ )); do cd /var/www/html/de/file/$i; screen -t "Ventana#${i}"; done
         fi
         exit
     fi
