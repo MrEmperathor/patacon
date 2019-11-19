@@ -1820,7 +1820,6 @@ function MostarEnlaces()
     SERVIDOR=$1; LINKS=$2; ERRORS=$3; NAME=$4
 
     if [[ $ERRORS -eq 0 ]]; then
-        echo -e "\n "
         echo -e "\033[1;32mSubido correctamente a\033[0m \033[1;35m$SERVIDOR\033[0m"
         echo -e "$NAME"
         echo -e "$LINKS"
@@ -1828,6 +1827,7 @@ function MostarEnlaces()
     else
         echo -e "\n "
         echo -e "\033[1;31mVIDA TRISTE NO SE SUBIO\033[0m \033[1;36m$SERVIDOR\033[0m :("
+        echo -e "\n"
 
     fi
 }
@@ -2048,57 +2048,67 @@ function subida_o_s_s()
     PP=1
 
     if [[ $ESTADOOPENLOAD == true ]];then
+        echo -e "\n"
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mOPENLOAD\033[0m"
         subi1 &
         sleep 2
     fi
     
     if [[ $ESTADOVERYSTREAM == true ]];then
+        echo -e "\n"
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mVERYSTREAM\033[0m"
         Verystream &
         sleep 2
     fi
 
     if [[ $ESTADOFEMBED == true ]];then
+        echo -e "\n"
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mFEMBED\033[0m"
         fembed &
         sleep 2
     fi
     
     if [[ $ESTADONETU == true ]];then
+        echo -e "\n"
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mNETU\033[0m"
         netu
         sleep 2
     fi
 
     if [[ $ESTADOJETLOAD == true ]];then
+        echo -e "\n"
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mJETLOAD\033[0m"
         jetload
         sleep 2
     fi
     if [[ $ESTADOUPTOBOX == true ]];then
+        echo -e "\n"
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mUPTOBOX\033[0m"
         Uptobox1
         sleep 2
     fi
 
     if [[ $ESTADOGOUNLIMTED == true ]];then
+        echo -e "\n"
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGOUNLIMITED\033[0m"
         Gounlimited
         sleep 2
     fi
 
     if [[ $ESTADODRIVEFREE = true ]];then
+        echo -e "\n"
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD FREE\033[0m" 
         SubidaDriveFREE $RD $R_CARPETA_SERIE
     fi
 
     if [[ $ESTADODRIVEFREE == false && $ESTADODRIVEVIP == true ]];then
+        echo -e "\n"
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD VIP\033[0m"
         SubidaDriveVIP $RD $R_CARPETA_SERIE
     fi
 
     if [[ $ESTADOMEGA == true ]];then
+        echo -e "\n"
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mMEGA\033[0m" 
         MegaSerie
     fi

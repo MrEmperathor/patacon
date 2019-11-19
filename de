@@ -912,8 +912,8 @@ function EstruDes(){
     #--------------------GOOGLE DRIVE--------------#
     if [ $opcion -eq 2 -o $opcion -eq 5 ]; then
 
-     FARRAY[$i]="$(echo ${link[$i]} | sed -n 's#.*\https\:\/\/drive\.google\.com/file/d/\([^.]*\)\/view.*#\1#;p')";
-
+        # FARRAY[$i]="$(echo ${link[$i]} | sed -n 's#.*\https\:\/\/drive\.google\.com/file/d/\([^.]*\)\/view.*#\1#;p')";
+        FARRAY[$i]=$(echo "${link[$i]}")
     fi
     [[ $opcion != 2 ]] && FARRAY[$i]=$(echo "${link[$i]}")
     done
@@ -2014,7 +2014,7 @@ function Uptobox1()
 function Gounlimited()
 {
     ruu=$(pwd)
-    gouTV=$($Sgoun "$ruu" "$MiPeli")
+    gouTV=$($Sgoun "$MiPeli")
     errorGu=$?
 
     echo $gouTV > $fifo5
