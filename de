@@ -479,8 +479,8 @@ function accion() {
     echo -e "\033[0;35m[2]\033[0m \033[1;31m>\033[0m DESCARGA DE GDRIVE"
     echo -e "\033[0;35m[3]\033[0m \033[1;31m>\033[0m DESCARGA DE MEGA"
     echo -e "\033[0;35m[4]\033[0m \033[1;31m>\033[0m DESCARGA TORRENT"
-    echo -e "\033[0;35m[5]\033[0m \033[1;31m>\033[0m DESCARGAR Y SUBIR EN 720P"
-    echo -e "\033[0;35m[6]\033[0m \033[1;31m>\033[0m DESCARGAR > SUBIR A MEGA"
+    # echo -e "\033[0;35m[5]\033[0m \033[1;31m>\033[0m DESCARGAR Y SUBIR EN 720P"
+    # echo -e "\033[0;35m[6]\033[0m \033[1;31m>\033[0m DESCARGAR > SUBIR A MEGA"
     # echo -e "\033[0;35m[8]\033[0m \033[1;31m>\033[0m SOLO SUBIR A GDRIVE"
     # echo -e "\033[0;35m[9]\033[0m \033[1;31m>\033[0m SOLO SUBIR A MEGA"
     # echo -e "\033[0;35m[10]\033[0m \033[1;31m>\033[0m SOLO SUBIR A VIP"
@@ -1420,8 +1420,8 @@ if [[ $CONVERPELI = 1 ]]; then
 fi
 
 for MiPeli in `ls *.mp4 *.avi *.mkv *.mpg` ; do
-    echo $MiPeli
-done 2>/dev/null
+    echo $MiPeli 
+done &>/dev/null
 
 for TPE in `ls -alh $MiPeli | awk -F " " '{print $5}'` ; do TPE1=`echo $TPE | sed 's/G/ Gigas/g' | sed 's/M/ Megas/g'` ; mv "$TPE" $TPE1 ; done 2>/dev/null
 
@@ -1454,13 +1454,13 @@ function aguaMarca()
                 mkvpropedit "${m}" --edit info --edit track:v$i --set name=${VALOR};
                 # sleep 0.5s;
                 mkvpropedit "${m}" --edit info --edit track:s$i --set name=${VALOR};
-            done
+            done 2>/dev/null
         else
             ffmpeg -i "${m}" -acodec copy -vcodec copy -metadata "title=${VALOR}" "M.${m}"
             [[ -e "M.${m}" ]] && rm "${m}"
             mv "M.${m}" "${m}"
         fi
-    done
+    done 2>/dev/null
 }
 
 function EscogerAudio(){
@@ -1987,8 +1987,8 @@ function fembed()
 }
 function netu()
 {
-    for MiPeli in `ls *.mp4 *.mkv *.avi *.mpg` ; do echo $MiPeli; done 2>/dev/null
-    for im in `ls *.mp4 *.mkv *.avi *.mpg`; do echo $im ; done 2>/dev/null
+    for MiPeli in `ls *.mp4 *.mkv *.avi *.mpg` ; do echo $MiPeli; done &>/dev/null
+    for im in `ls *.mp4 *.mkv *.avi *.mpg`; do echo $im ; done &>/dev/null
     netuTV=$($SNetu "$im" 2>/dev/null)
         errornetu=$?
        echo $netuTV > $fifo2
@@ -2146,17 +2146,19 @@ function LimiteM()
 
 
 function mostrar() {
-
+    amaMiPeli=$(msg -ama "$MiPeli")
+    amacanti=$(msg -ama "$canti")
+    amaf=$(msg -ama "$f")
     echo ------------------------------------
-    echo "Tipo de archivo: $f "
-    echo ------------------------------------
-
-    echo ------------------------------------
-    echo "Nombre de archivo: $MiPeli"
+    echo "Tipo de archivo: $amaf "
     echo ------------------------------------
 
     echo ------------------------------------
-    echo "Cantidad de archivos: $canti"
+    echo "Nombre de archivo: $amaMiPeli"
+    echo ------------------------------------
+
+    echo ------------------------------------
+    echo "Cantidad de archivos: $amacanti"
     echo ------------------------------------
 
 }
@@ -2224,8 +2226,8 @@ function comprobar1() {
 
 function descompri() {
 
-    IKEY6=/var/local/Key6.txt
-    PSW6=$(cat $IKEY6)
+    # IKEY6=/var/local/Key6.txt
+    # PSW6=$(cat $IKEY6)
     for FILE in *.rar ; do NEWFILE=`echo $FILE | sed 's/ /_/g'` ; mv "$FILE" $NEWFILE ; done > /dev/null 2>> /root/log.txt
     for FILE in *.zip ; do NEWFILE=`echo $FILE | sed 's/ /_/g'` ; mv "$FILE" $NEWFILE ; done > /dev/null 2>> /root/log.txt
     for RAR in `ls *.rar *.zip`
@@ -2281,7 +2283,7 @@ function descompri() {
 #         fi
 #     done 2>/dev/null
 # done
-Fmkv=$(ls *.mkv 2>/dev/null)
+Fmkv=$(ls *.mkv &>/dev/null)
 if [[ $AUDIO = 1 ]]; then
     #if [[ -n $Fmkv ]]; then
         valor=1

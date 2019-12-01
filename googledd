@@ -137,6 +137,7 @@ function GoogleDriveDescarga()
     echo $error
     NAMEFILEE=$(msg -verd "$FILENAME")
     echo "file $NAMEFILEE DESCARGADO"
+    echo -e "\n"
 
     }
 
@@ -151,10 +152,10 @@ function GoogleDriveDescarga()
             *) msg -azu "NO ES UN VIDEO";;
         esac
 
-        if [[ $ext = $EXTVIDEO && -f "$FILENAME" ]]; then
+        if [[ $ext == $EXTVIDEO && -f "$FILENAME" ]]; then
 
             ORIFILENAME=${extv}
-            mv -- "${extv}" "${extv//['][!”#$%&’()*+,/ :;<=>?@\^_`{\|}~-']/_}";
+            mv -- "${extv}" "${extv//['][!”#$%&’()*+,/ :;<=>?@\^_`{\|}~-']/_}" 2>/dev/null;
             extv=${extv//['][!”#$%&’()*+,/ :;<=>?@\^_`{\|}~-']/_}
             vi=$(ffprobe "$extv" 2>&1 | grep -i "stream" | wc -l)
             if [[ $vi -le 1 ]]; then
@@ -164,7 +165,7 @@ function GoogleDriveDescarga()
                     sleep 8
                     rm -rf "$FILENAME"
                     googleDescarga
-                    mv -- "${ORIFILENAME}" "${ORIFILENAME//['][!”#$%&’()*+,/ :;<=>?@\^_`{\|}~-']/_}";
+                    mv -- "${ORIFILENAME}" "${ORIFILENAME//['][!”#$%&’()*+,/ :;<=>?@\^_`{\|}~-']/_}" 2>/dev/null;
                     extv=${ORIFILENAME//['][!”#$%&’()*+,/ :;<=>?@\^_`{\|}~-']/_}
                     vi=$(ffprobe "$extv" 2>&1 | grep -i "stream" | wc -l)
                 done
@@ -172,7 +173,7 @@ function GoogleDriveDescarga()
             else
                 msg -ama "$ORIFILENAME SALUDABLE"
             fi
-            mv -- "${extv}" "$ORIFILENAME"
+            mv -- "${extv}" "$ORIFILENAME" 2>/dev/null
         elif [[ $ext = "rar" ]]; then
 
                 unrar t -p$PSW6 $1
@@ -217,7 +218,7 @@ function GoogleDriveDescarga()
 
     compro
     googleDescarga
-    echo "$FILENAME"
+    # echo "$FILENAME"
 
     sta=$(stat -c %s "$FILENAME")
     if [[ -d "$FILENAME" || $sta -eq 0 ]]; then
@@ -229,7 +230,7 @@ function GoogleDriveDescarga()
 
     if [[ ${FILENAME##*.} != "srt" && -f "$FILENAME" ]]; then
         pesodelarchi=$(stat -c %s "$FILENAME" | wc -L)
-        echo "ES UN FICHEROOOOO"
+        # echo "ES UN FICHEROOOOO"
     fi
 
     e=1

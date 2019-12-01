@@ -1920,7 +1920,7 @@ function netu()
         errornetu=$?
         MostarEnlaces "Netu" ${netuTV[$i]} $errornetu "${netuarray[$i]}" 
         sleep 3
-        [[ $i = $b ]] && sleep 10 && mul
+        [[ $i -eq $b ]] && sleep 10 && mul
     done
     kill $!
     for i in "${netuTV[@]}"; do echo $i; done
@@ -1936,7 +1936,7 @@ function jetload()
         errorJl=$?
         MostarEnlaces "Jetload" ${JetTV[$i]} $errorJl "${jetname[$i]}" 
         sleep 3
-        [[ $i = $b ]] && sleep 10 && mul
+        [[ $i -eq $b ]] && sleep 10 && mul
     done
     kill $!
     for i in "${JetTV[@]}"; do echo $i; done
@@ -1952,7 +1952,7 @@ function Uptobox1()
         errorUP=$?
         MostarEnlaces "Uptobox" ${UptTV[$i]} $errorUP "${upName[$i]}" 
         sleep 3
-        [[ $i = $b ]] && sleep 10 && mul
+        [[ $i -eq $b ]] && sleep 10 && mul
     done
     kill $!
     for i in "${UptTV[@]}"; do echo $i; done
@@ -1969,7 +1969,7 @@ function MegaSerie()
         errorUP=$?
         MostarEnlaces "MEGA" ${MEGAENLACES[$i]} $errorUP "${MegaName[$i]}" 
         sleep 3
-        [[ $i = $b ]] && sleep 10 && mul
+        [[ $i -eq $b ]] && sleep 10 && mul
     done
     kill $!
     for i in "${MEGAENLACES[@]}"; do echo $i; done
@@ -1990,7 +1990,7 @@ function Acortadorr()
         errorUP=$?
         MostarEnlaces "$name" ${OuoTV[$i]} $errorUP "${EnlacesO[$i]}" 
         sleep 3
-        [[ $i = $b ]] && sleep 10 && mul
+        [[ $i -eq $b ]] && sleep 10 && mul
     done
     kill $!
 
@@ -2012,7 +2012,7 @@ function Gounlimited()
         errorGu=$?
         MostarEnlaces "Gounlimited" ${gouTV[$i]} $errorUP "${upName[$i]}" 
         sleep 3
-        [[ $i = $b ]] && sleep 10 && mul
+        [[ $i -eq $b ]] && sleep 10 && mul
     done
     kill $!
     for i in "${gouTV[@]}"; do echo $i; done
@@ -2113,12 +2113,12 @@ function subida_o_s_s()
         MegaSerie
     fi
 
-    if [[ $ESTADOOUO == true ]];then
+    if [[ $ESTADOOUO == true && $ESTADODRIVEFREE == true ]];then
         echo -e "\033[1;36mOBTENIENDO ENLACES DE \033[0m \033[1;33mOUO\033[0m"
         Acortadorr enlaces_free1[@] $SOUO ENLACESOUO "OUO"
     fi
 
-    if [[ $ESTADOSHORT == true ]];then
+    if [[ $ESTADOSHORT == true && $ESTADOMEGA == true ]];then
         echo -e "\033[1;36mOBTENIENDO ENLACES DE \033[0m \033[1;33mSHORT\033[0m"
         Acortadorr MEGAENLACES[@] $SSHORT ENLACESSHORT "SHORT"
     fi
