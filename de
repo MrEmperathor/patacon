@@ -1,5 +1,5 @@
 #!/bin/bash
-BLANCOF='\033[47m'; RED='\033[0;31m'; REDCLARO='\033[1;31m'; AZUL='\033[0;34m'; AZULCLARO='\033[1;34m'; VERDE='\033[0;32m'; VERDECLARO='\033[1;32m'; CYAN='\033[0;36m'; CYANCLARO='\033[1;36m'; PURPURA='\033[0;35m'; PURPURAC='\033[1;35m'; CAFE='\033[1;37m'; AMARILLO='\033[1;33m'; NC='\033[0m'; RFembed="/var/www/html/panel/inc/include/fembed.php"; RNetu="/var/www/html/panel/inc/include/netu1.php"; SFembed="/var/www/html/panel/inc/include/./fembed.php"; SNetu="/var/www/html/panel/inc/include/./netu1.php"; Rvery="/var/www/html/panel/inc/include/./very.php"; SJetload="/var/www/html/panel/inc/include/./jetload.php"; Uptoboxx="/var/www/html/panel/inc/include/./uptobox.php"; Sgoun="/var/www/html/panel/inc/include/./gounlimited.php"; CONFIG="/usr/local/bin/config.ini"; CONFIGGLOBAL="/var/www/html/panel/inc/config.php"; barraAzul="\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"; ruta_drive=$(pwd)
+BLANCOF='\033[47m'; RED='\033[0;31m'; REDCLARO='\033[1;31m'; AZUL='\033[0;34m'; AZULCLARO='\033[1;34m'; VERDE='\033[0;32m'; VERDECLARO='\033[1;32m'; CYAN='\033[0;36m'; CYANCLARO='\033[1;36m'; PURPURA='\033[0;35m'; PURPURAC='\033[1;35m'; CAFE='\033[1;37m'; AMARILLO='\033[1;33m'; NC='\033[0m'; RFembed="/var/www/html/panel/inc/include/fembed.php"; RNetu="/var/www/html/panel/inc/include/netu1.php"; SFembed="/var/www/html/panel/inc/include/./fembed.php"; SNetu="/var/www/html/panel/inc/include/./netu1.php"; Rvery="/var/www/html/panel/inc/include/./very.php"; SJetload="/var/www/html/panel/inc/include/./jetload.php"; Uptoboxx="/var/www/html/panel/inc/include/./uptobox.php"; Sgoun="/var/www/html/panel/inc/include/./gounlimited.php"; Sclicknupload="/var/www/html/panel/inc/include/./clicknupload.php"; Sdropapk="/var/www/html/panel/inc/include/./dropapk.php"; Sprostream="/var/www/html/panel/inc/include/./prostream.php"; Supstream="/var/www/html/panel/inc/include/./upstream.php"; CONFIG="/usr/local/bin/config.ini"; CONFIGGLOBAL="/var/www/html/panel/inc/config.php"; barraAzul="\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"; ruta_drive=$(pwd)
 
 source $CONFIG
 PSW6=$PASSRAR
@@ -45,6 +45,10 @@ function ActivarEnlaces()
     [[ $ESTADODRIVEFREE == true ]] && _DFREEACT=$(echo -e "\033[1;32m● [ON]") || _DFREEACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
     [[ $ELIMI_SUB == true ]] && _ELSUB=$(echo -e "\033[1;32m● [ON]") || _ELSUB=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
     [[ $ESTADOGOUNLIMTED == true ]] && _GLACT=$(echo -e "\033[1;32m● [ON]") || _GLACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
+    [[ $ESTADOClicknupload == true ]] && _GLACTa=$(echo -e "\033[1;32m● [ON]") || _GLACTa=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
+    [[ $ESTADODropapk == true ]] && _GLACTb=$(echo -e "\033[1;32m● [ON]") || _GLACTb=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
+    [[ $ESTADOProstream == true ]] && _GLACTc=$(echo -e "\033[1;32m● [ON]") || _GLACTc=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
+    [[ $ESTADOUpstream == true ]] && _GLACTd=$(echo -e "\033[1;32m● [ON]") || _GLACTd=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
 
     echo -e "\033[1;37m[\033[1;31m01\033[1;37m] • \033[1;33mOPENLOAD \033[1;37m    $_OPACT
 [\033[1;31m02\033[1;37m] • \033[1;33mVERYSTREAM \033[1;37m  $_VSACT
@@ -56,7 +60,11 @@ function ActivarEnlaces()
 [\033[1;31m08\033[1;37m] • \033[1;33mMEGA \033[1;37m        $_MGACT
 [\033[1;31m09\033[1;37m] • \033[1;33mGD VIP \033[1;37m      $_DVIPACT
 [\033[1;31m10\033[1;37m] • \033[1;33mGD FREE \033[1;37m     $_DFREEACT
-[\033[1;31m11\033[1;37m] • \033[1;33mELIMINAR SUB\033[1;37m $_ELSUB"
+[\033[1;31m11\033[1;37m] • \033[1;33mCLICKNUPLOAD \033[1;37m$_GLACTa
+[\033[1;31m12\033[1;37m] • \033[1;33mDROPAPK \033[1;37m     $_GLACTb
+[\033[1;31m13\033[1;37m] • \033[1;33mPROSTREAM \033[1;37m   $_GLACTc
+[\033[1;31m14\033[1;37m] • \033[1;33mUPSTREAM \033[1;37m    $_GLACTd
+[\033[1;31m15\033[1;37m] • \033[1;33mELIMINAR SUB\033[1;37m $_ELSUB"
     echo -e "$barraAzul"
     read -p "NUMERO DEL SERVICIO ACTIVAR/DESACTIVAR: " NSER
     case $NSER in
@@ -99,6 +107,22 @@ function ActivarEnlaces()
             source $CONFIG
             ;;
         11)
+            [[ $ESTADOClicknupload == true ]] && sed -i "s/ESTADOClicknupload=true/ESTADOClicknupload=false/g" $CONFIG || sed -i "s/ESTADOClicknupload=false/ESTADOClicknupload=true/g" $CONFIG
+            source $CONFIG
+            ;;
+        12)
+            [[ $ESTADODropapk == true ]] && sed -i "s/ESTADODropapk=true/ESTADODropapk=false/g" $CONFIG || sed -i "s/ESTADODropapk=false/ESTADODropapk=true/g" $CONFIG
+            source $CONFIG
+            ;;
+        13)
+            [[ $ESTADOProstream == true ]] && sed -i "s/ESTADOProstream=true/ESTADOProstream=false/g" $CONFIG || sed -i "s/ESTADOProstream=false/ESTADOProstream=true/g" $CONFIG
+            source $CONFIG
+            ;;
+        14)
+            [[ $ESTADOUpstream == true ]] && sed -i "s/ESTADOUpstream=true/ESTADOUpstream=false/g" $CONFIG || sed -i "s/ESTADOUpstream=false/ESTADOUpstream=true/g" $CONFIG
+            source $CONFIG
+            ;;
+        15)
             [[ $ELIMI_SUB == true ]] && sed -i "s/ELIMI_SUB=true/ELIMI_SUB=false/g" $CONFIG || sed -i "s/ELIMI_SUB=false/ELIMI_SUB=true/g" $CONFIG
             source $CONFIG
             ;;
@@ -182,7 +206,38 @@ function validar_cuenta(){
                 sed -i "s/${VALL}/${JET_KEYY}/g" $CONFIGGLOBAL
             fi
             ;;
-
+        -clicknupload)
+            VALL=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"clicknupload\"\]" | cut -d "\"" -f4)
+            echo -e "\033[1;33mKEY ACTUAL: \033[1;37m \033[1;35m${VALL} \033[1;37m"; 
+            read -p "KEY : " JET_KEYY
+            if [[ $JET_KEYY ]];then
+                sed -i "s/${VALL}/${JET_KEYY}/g" $CONFIGGLOBAL
+            fi
+            ;;
+        -upstream)
+            VALL=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"upstream\"\]" | cut -d "\"" -f4)
+            echo -e "\033[1;33mKEY ACTUAL: \033[1;37m \033[1;35m${VALL} \033[1;37m"; 
+            read -p "KEY : " JET_KEYY
+            if [[ $JET_KEYY ]];then
+                sed -i "s/${VALL}/${JET_KEYY}/g" $CONFIGGLOBAL
+            fi
+            ;;
+        -dropapk)
+            VALL=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"dropapk\"\]" | cut -d "\"" -f4)
+            echo -e "\033[1;33mKEY ACTUAL: \033[1;37m \033[1;35m${VALL} \033[1;37m"; 
+            read -p "KEY : " JET_KEYY
+            if [[ $JET_KEYY ]];then
+                sed -i "s/${VALL}/${JET_KEYY}/g" $CONFIGGLOBAL
+            fi
+            ;;
+        -prostream)
+            VALL=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"prostream\"\]" | cut -d "\"" -f4)
+            echo -e "\033[1;33mKEY ACTUAL: \033[1;37m \033[1;35m${VALL} \033[1;37m"; 
+            read -p "KEY : " JET_KEYY
+            if [[ $JET_KEYY ]];then
+                sed -i "s/${VALL}/${JET_KEYY}/g" $CONFIGGLOBAL
+            fi
+            ;;
         -Mega)
             echo -e "\033[1;37m[\033[1;31m01\033[1;37m] • \033[1;33mAGREGAR LISTADO DE CUENTAS \033[1;37m
 [\033[1;31m02\033[1;37m] • \033[1;33mCUENTA INDIVIDUAL \033[1;37m
@@ -479,8 +534,8 @@ function accion() {
     echo -e "\033[0;35m[2]\033[0m \033[1;31m>\033[0m DESCARGA DE GDRIVE"
     echo -e "\033[0;35m[3]\033[0m \033[1;31m>\033[0m DESCARGA DE MEGA"
     echo -e "\033[0;35m[4]\033[0m \033[1;31m>\033[0m DESCARGA TORRENT"
-    # echo -e "\033[0;35m[5]\033[0m \033[1;31m>\033[0m DESCARGAR Y SUBIR EN 720P"
-    # echo -e "\033[0;35m[6]\033[0m \033[1;31m>\033[0m DESCARGAR > SUBIR A MEGA"
+    echo -e "\033[0;35m[5]\033[0m \033[1;31m>\033[0m DESCARGAR Y SUBIR EN 720P"
+    echo -e "\033[0;35m[6]\033[0m \033[1;31m>\033[0m DESCARGAR > SUBIR A MEGA"
     # echo -e "\033[0;35m[8]\033[0m \033[1;31m>\033[0m SOLO SUBIR A GDRIVE"
     # echo -e "\033[0;35m[9]\033[0m \033[1;31m>\033[0m SOLO SUBIR A MEGA"
     # echo -e "\033[0;35m[10]\033[0m \033[1;31m>\033[0m SOLO SUBIR A VIP"
@@ -649,7 +704,11 @@ function tst(){
 [\033[1;31m08\033[1;37m] • \033[1;33mMEGA \033[1;37m
 [\033[1;31m09\033[1;37m] • \033[1;33mOUO \033[1;37m
 [\033[1;31m10\033[1;37m] • \033[1;33mSHORT \033[1;37m
-[\033[1;31m11\033[1;37m] • \033[1;33mCONTRASEÑA PARA DESCOMPRIMIR RAR \033[1;37m"
+[\033[1;31m11\033[1;37m] • \033[1;33mCLICKNUPLOAD \033[1;37m
+[\033[1;31m12\033[1;37m] • \033[1;33mUPSTREAM \033[1;37m
+[\033[1;31m13\033[1;37m] • \033[1;33mDROPAPK \033[1;37m
+[\033[1;31m14\033[1;37m] • \033[1;33mPROSTREAM \033[1;37m
+[\033[1;31m15\033[1;37m] • \033[1;33mCONTRASEÑA PARA DESCOMPRIMIR RAR \033[1;37m"
 
     printf "${VERDECLARO}";
     read -p "Seleccionar una opcion: " TST1
@@ -664,10 +723,14 @@ function tst(){
     [[ $TST1 = 8 ]] && echo -e "$barraAzul" && validar_cuenta -Mega
     [[ $TST1 = 9 ]] && echo -e "$barraAzul" && validar_cuenta -ouo
     [[ $TST1 = 10 ]] && echo -e "$barraAzul" && validar_cuenta -short
+    [[ $TST1 = 11 ]] && echo -e "$barraAzul" && validar_cuenta -clicknupload
+    [[ $TST1 = 12 ]] && echo -e "$barraAzul" && validar_cuenta -upstream
+    [[ $TST1 = 13 ]] && echo -e "$barraAzul" && validar_cuenta -dropapk
+    [[ $TST1 = 14 ]] && echo -e "$barraAzul" && validar_cuenta -prostream
 
     
 
-    if [[ $TST1 = 11 ]];then
+    if [[ $TST1 = 15 ]];then
         echo -e "$barraAzul"
         echo -e "\033[1;33mCONTTRASEÑA ACTUAL: \033[1;37m \033[1;35m$PASSRAR \033[1;37m"; 
         read -p "INGRESAR NUEVA CONTRASEÑA: " PASS_RAR
@@ -675,9 +738,9 @@ function tst(){
         source $CONFIG
         PSW6=$PASSRAR
     fi
-    [[ $TST1 = 12 ]] && ActivarEnlaces
-    [[ $TST1 = 13 ]] && echo -e "$barraAzul" && validar_cuenta -marca
-    [[ $TST1 = 14 ]] && echo -e "$barraAzul" && validar_cuenta -espacio_t
+    [[ $TST1 = 16 ]] && ActivarEnlaces
+    [[ $TST1 = 17 ]] && echo -e "$barraAzul" && validar_cuenta -marca
+    [[ $TST1 = 18 ]] && echo -e "$barraAzul" && validar_cuenta -espacio_t
     
     
 }
@@ -2021,6 +2084,43 @@ function Gounlimited()
     MostarEnlaces "Gounlimited" $gouTV $errorGu
 }
 
+function Clicknupload()
+{
+    ruu=$(pwd)
+    gouTV=$($Sclicknupload "$MiPeli")
+    errorGu=$?
+
+    echo $gouTV > $fifo6
+    MostarEnlaces "Clicknupload" $gouTV $errorGu
+}
+function Dropapk()
+{
+    ruu=$(pwd)
+    gouTV=$($Sdropapk "$MiPeli")
+    errorGu=$?
+
+    echo $gouTV > $fifo7
+    MostarEnlaces "Dropapk" $gouTV $errorGu
+}
+function Prostream()
+{
+    ruu=$(pwd)
+    gouTV=$($Sprostream "$ruu" "$MiPeli")
+    errorGu=$?
+
+    echo $gouTV > $fifo8
+    MostarEnlaces "Prostream" $gouTV $errorGu
+}
+function Upstream()
+{
+    ruu=$(pwd)
+    gouTV=$($Supstream "$MiPeli")
+    errorGu=$?
+
+    echo $gouTV > $fifo9
+    MostarEnlaces "Upstream" $gouTV $errorGu
+}
+
 function EnlacesMostar()
 {
     UrlVerystream=$(< $fifo)
@@ -2035,6 +2135,14 @@ function EnlacesMostar()
     echo $UrlUotobox
     UrlGounlimited=$(< $fifo5)
     echo $UrlGounlimited
+    UrlClicknupload=$(< $fifo6)
+    echo $UrlClicknupload
+    UrlDropapk=$(< $fifo7)
+    echo $UrlDropapk
+    UrlProstream=$(< $fifo8)
+    echo $UrlProstream
+    UrlUpstream=$(< $fifo9)
+    echo $UrlUpstream
 }
 function subida_o_s_s() 
 {
@@ -2051,6 +2159,14 @@ function subida_o_s_s()
     [[ -e $fifo4 ]] && rm $fifo4
     fifo5="/tmp/fifo${puesto}gounlimited"
     [[ -e $fifo5 ]] && rm $fifo5
+    fifo5="/tmp/fifo${puesto}Clicknupload"
+    [[ -e $fifo5 ]] && rm $fifo6
+    fifo5="/tmp/fifo${puesto}Dropapk"
+    [[ -e $fifo5 ]] && rm $fifo7
+    fifo5="/tmp/fifo${puesto}Prostream"
+    [[ -e $fifo5 ]] && rm $fifo8
+    fifo5="/tmp/fifo${puesto}Upstream"
+    [[ -e $fifo5 ]] && rm $fifo9
 
     PP=1
 
@@ -2109,6 +2225,30 @@ function subida_o_s_s()
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mMEGA\033[0m" 
         subida_mega .megallin.txt
     fi
+    
+    if [[ $ESTADOClicknupload == true ]];then
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mCLICKNUPLOAD\033[0m" 
+        Clicknupload
+    fi
+
+    if [[ ESTADODropapk == true ]];then
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mDROPAPK\033[0m"
+        Dropapk
+    fi
+
+    if [[ ESTADOProstream == true ]];then
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mPROSTREAM\033[0m"
+        Prostream
+    fi
+
+    if [[ ESTADOUpstream == true ]];then
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mUPSTREAM\033[0m"
+        Upstream
+    fi
+    
+    
+    
+    
 
     
 }
@@ -2783,7 +2923,7 @@ ruta_drive=$(pwd)
                 # drive2=$(/var/www/html/panel/inc/include/linkdrivevip.php $drivecri2 2>/dev/null)
                 # drive3=$(/var/www/html/panel/inc/include/linkdrive2.php $drivecri3 2>/dev/null)
 
-                array=($UrlVerystream $UrlNetu $LGDVIPPHP $LGDPHP $MEGALPHP $MEGALPHP1 $LGDPHP1 $UrlJetload $UrlFembed $UrlUotobox $UrlGounlimited)
+                array=($UrlVerystream $UrlNetu $LGDVIPPHP $LGDPHP $MEGALPHP $MEGALPHP1 $LGDPHP1 $UrlJetload $UrlFembed $UrlUotobox $UrlGounlimited $UrlClicknupload $UrlDropapk $UrlProstream $UrlUpstream)
                 arraydescarga=($UrlVerystream $MEGALPHP $LGDPHP $MEGALPHP1 $LGDPHP1)
 
                 # enlaces_pre=$(/var/www/html/panel/inc/include/./file.php "${array[@]}")
