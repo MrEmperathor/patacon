@@ -694,9 +694,9 @@ function tst(){
     echo -e "\E[41;1;37m❖ OPCIONES DE CONFIGURACION Y DATOS DE SERVIDORES ❖\E[0m"
     echo -e "\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
     echo ""
-    echo -e "\033[1;37m[\033[1;31m01\033[1;37m] • \033[1;33mOPENLOAD \033[1;37m                              [\033[1;31m12\033[1;37m] • \033[1;33mACTIVAR O DESACTIVAR SERVICIOS \033[1;37m
-[\033[1;31m02\033[1;37m] • \033[1;33mVERYSTREAM \033[1;37m                            [\033[1;31m13\033[1;37m] • \033[1;33mMARCA DE AGUA \033[1;37m
-[\033[1;31m03\033[1;37m] • \033[1;33mNETU \033[1;37m                                  [\033[1;31m14\033[1;37m] • \033[1;33mVENTANAS DE TRABAJO \033[1;37m
+    echo -e "\033[1;37m[\033[1;31m01\033[1;37m] • \033[1;33mOPENLOAD \033[1;37m                              [\033[1;31m16\033[1;37m] • \033[1;33mACTIVAR O DESACTIVAR SERVICIOS \033[1;37m
+[\033[1;31m02\033[1;37m] • \033[1;33mVERYSTREAM \033[1;37m                            [\033[1;31m17\033[1;37m] • \033[1;33mMARCA DE AGUA \033[1;37m
+[\033[1;31m03\033[1;37m] • \033[1;33mNETU \033[1;37m                                  [\033[1;31m18\033[1;37m] • \033[1;33mVENTANAS DE TRABAJO \033[1;37m
 [\033[1;31m04\033[1;37m] • \033[1;33mJETLOAD \033[1;37m
 [\033[1;31m05\033[1;37m] • \033[1;33mUPTOBOX \033[1;37m
 [\033[1;31m06\033[1;37m] • \033[1;33mGOUNLIMITED \033[1;37m
@@ -2087,38 +2087,38 @@ function Gounlimited()
 function Clicknupload()
 {
     ruu=$(pwd)
-    gouTV=$($Sclicknupload "$MiPeli")
+    clicTV=$($Sclicknupload "$MiPeli")
     errorGu=$?
 
-    echo $gouTV > $fifo6
-    MostarEnlaces "Clicknupload" $gouTV $errorGu
+    echo $clicTV > $fifo6
+    MostarEnlaces "Clicknupload" $clicTV $errorGu
 }
 function Dropapk()
 {
     ruu=$(pwd)
-    gouTV=$($Sdropapk "$MiPeli")
+    droTV=$($Sdropapk "$MiPeli")
     errorGu=$?
 
-    echo $gouTV > $fifo7
-    MostarEnlaces "Dropapk" $gouTV $errorGu
+    echo $droTV > $fifo7
+    MostarEnlaces "Dropapk" $droTV $errorGu
 }
 function Prostream()
 {
     ruu=$(pwd)
-    gouTV=$($Sprostream "$ruu" "$MiPeli")
+    proTV=$($Sprostream "$ruu" "$MiPeli")
     errorGu=$?
 
-    echo $gouTV > $fifo8
-    MostarEnlaces "Prostream" $gouTV $errorGu
+    echo $proTV > $fifo8
+    MostarEnlaces "Prostream" $proTV $errorGu
 }
 function Upstream()
 {
     ruu=$(pwd)
-    gouTV=$($Supstream "$MiPeli")
+    upsTV=$($Supstream "$MiPeli")
     errorGu=$?
 
-    echo $gouTV > $fifo9
-    MostarEnlaces "Upstream" $gouTV $errorGu
+    echo $upsTV > $fifo9
+    MostarEnlaces "Upstream" $upsTV $errorGu
 }
 
 function EnlacesMostar()
@@ -2159,14 +2159,14 @@ function subida_o_s_s()
     [[ -e $fifo4 ]] && rm $fifo4
     fifo5="/tmp/fifo${puesto}gounlimited"
     [[ -e $fifo5 ]] && rm $fifo5
-    fifo5="/tmp/fifo${puesto}Clicknupload"
-    [[ -e $fifo5 ]] && rm $fifo6
-    fifo5="/tmp/fifo${puesto}Dropapk"
-    [[ -e $fifo5 ]] && rm $fifo7
-    fifo5="/tmp/fifo${puesto}Prostream"
-    [[ -e $fifo5 ]] && rm $fifo8
-    fifo5="/tmp/fifo${puesto}Upstream"
-    [[ -e $fifo5 ]] && rm $fifo9
+    fifo6="/tmp/fifo${puesto}Clicknupload"
+    [[ -e $fifo6 ]] && rm $fifo6
+    fifo7="/tmp/fifo${puesto}Dropapk"
+    [[ -e $fifo7 ]] && rm $fifo7
+    fifo8="/tmp/fifo${puesto}Prostream"
+    [[ -e $fifo8 ]] && rm $fifo8
+    fifo9="/tmp/fifo${puesto}Upstream"
+    [[ -e $fifo9 ]] && rm $fifo9
 
     PP=1
 
@@ -2211,6 +2211,30 @@ function subida_o_s_s()
         sleep 2
     fi
 
+    if [[ $ESTADOClicknupload == true ]];then
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mCLICKNUPLOAD\033[0m" 
+        Clicknupload &
+        sleep 2
+    fi
+
+    if [[ $ESTADODropapk == true ]];then
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mDROPAPK\033[0m"
+        Dropapk &
+        sleep 2
+    fi
+
+    if [[ $ESTADOProstream == true ]];then
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mPROSTREAM\033[0m"
+        Prostream &
+        sleep 2
+    fi
+
+    if [[ $ESTADOUpstream == true ]];then
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mUPSTREAM\033[0m"
+        Upstream &
+        sleep 2
+    fi
+
     if [[ $ESTADODRIVEVIP == true ]];then
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD-VIP\033[0m"
         drive22
@@ -2225,31 +2249,6 @@ function subida_o_s_s()
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mMEGA\033[0m" 
         subida_mega .megallin.txt
     fi
-    
-    if [[ $ESTADOClicknupload == true ]];then
-        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mCLICKNUPLOAD\033[0m" 
-        Clicknupload
-    fi
-
-    if [[ ESTADODropapk == true ]];then
-        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mDROPAPK\033[0m"
-        Dropapk
-    fi
-
-    if [[ ESTADOProstream == true ]];then
-        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mPROSTREAM\033[0m"
-        Prostream
-    fi
-
-    if [[ ESTADOUpstream == true ]];then
-        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mUPSTREAM\033[0m"
-        Upstream
-    fi
-    
-    
-    
-    
-
     
 }
 
@@ -2913,8 +2912,8 @@ ruta_drive=$(pwd)
 
                    # BASE DE DATOS TEST
 
-                MEGALPHP1=$(/var/www/html/panel/inc/include/./short.php $MEGALPHP)
-                LGDPHP1=$(/var/www/html/panel/inc/include/./ouo.php $LGDPHP)
+                [[ $MEGALPHP ]] && MEGALPHP1=$(/var/www/html/panel/inc/include/./short.php $MEGALPHP)
+                [[ $LGDPHP ]] && LGDPHP1=$(/var/www/html/panel/inc/include/./ouo.php $LGDPHP)
 
             
                 # pastepelis=$(/var/www/html/panel/inc/include/./pastepelis.php 0 "$nombresinespacio $CALIDA2 $IDIOMA2" "$IDIOMA3 | $CALIDA2" $MEGALPHP1 $LGDPHP1 $UrlVerystream "$TPE1" "$TPE2")
