@@ -1884,13 +1884,23 @@ function SubidaDriveFREE()
 function SubidaDriveVIP()
 {   
     unset nombres; unset enlaces_vip; unset ID_VIP; 
-    RD=$1; R_SERIE=$2;
+    RD="${1}"; R_SERIE="${2}";
     DRIVER=${DRIVE2}
     rclone copy ${RD}/${R_SERIE} -P ${DRIVER}:/${FOLDER_SERIE_VIP}/${R_SERIE}
-    nombres=($(rclone ls ${DRIVER}:/${FOLDER_SERIE_VIP}/${R_SERIE} | cut -d" " -f2-))
+    nombres=($(rclone ls ${DRIVER}:/${FOLDER_SERIE_VIP}/${R_SERIE}))
     a=0
 
-    for i in "${nombres[@]}"
+    for ((i=0;i<"${#nombres[@]}";i++));
+    do
+        _name=$(echo "${nombres[$i]}" | cut -d' ' -f1)
+
+        if [[ $_name ]];then
+            _namef[$i]=$(echo "${nombres[0]}" | cut -d' ' -f2-)
+        else
+            _namef[$i]=$(echo "${nombres[0]}" | cut -d' ' -f3-)
+        fi
+    done
+    for i in "${_namef[@]}"
     do
         echo $i
         enlaces_vip[$a]=$(rclone link ${DRIVER}:/"${FOLDER_SERIE_VIP}/${R_SERIE}/${i}") #resivo los enlaces

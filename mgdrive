@@ -1,0 +1,52 @@
+#!/bin/bash
+
+read -p "cantidad de enlaces: " link
+read -p "nombre de carpeta receptora: " carpeta
+
+ruta=$(pwd)
+
+function megad()
+{
+    megadl "${1}" 2>&1 | tee $ruta/.megaloog
+}
+
+function dsubi()
+{
+    rclone copy ${ruta}/ midrive:/"${carpeta}" -P
+}
+
+if [[ $link ]];then
+
+    declare -a enlace[link]
+    for ((i=0;i<"${link}";i++));
+    do
+        read -p "ingrear enlaces #$i: " enlace[$i]
+    done
+    
+    echo "se ingresaron ${#enlace[@]} enlaces"
+
+    for VAR in "${enlace[@]}"; do
+        megad "$VAR"
+        if fgrep 'Server returned 509' $ruta/.megaloog ;then
+
+                for s in ´ls *´
+                do
+                    [[ -f $s || -d $s ]] && verdadero=true
+                    break
+                done
+
+                [[ $verdadero ]] && dsubi
+                error=$?
+                [[ $error -eq 0 ]] && rm -rf *
+                echo "esperando 7 horas"
+                sleep 7h
+                rm -rf ${ruta}/.megaloog
+        else
+            echo "ENLACE $VAR DESCARGADO SIN PROBLEMAS"
+        fi
+    done
+    dsubi
+    
+else
+    echo "no se ingreso ningun enlace"
+fi

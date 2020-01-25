@@ -17,6 +17,23 @@ host="$(echo $hostport | sed -e 's,:.*,,g')"
 port="$(echo $hostport | sed -e 's,^.*:,:,g' -e 's,.*:\([0-9]*\).*,\1,g' -e 's,[^0-9],,g')"
 # extract the path (if any)
 path="$(echo $url | grep / | cut -d/ -f2-)"
+msg()
+{
+    BRAN='\033[1;37m' && VERMELHO='\e[31m' && VERDE='\e[32m' && AMARELO='\e[33m'
+    AZUL='\e[34m' && MAGENTA='\e[35m' && MAG='\033[1;36m' && NEGRITO='\e[1m' && SEMCOR='\e[0m'
+    case $1 in
+    -ne) cor="${VERMELHO}${NEGRITO}" && echo -ne "${cor}${2}${SEMCOR}";;
+    -pur) cor="${MAGENTA}${NEGRITO}" && echo -e "${cor}${2}${SEMCOR}";;
+    -ama) cor="${AMARELO}${NEGRITO}" && echo -e "${cor}${2}${SEMCOR}";;
+    -verm) cor="${AMARELO}${NEGRITO}[!] ${VERMELHO}" && echo -e "${cor}${2}${SEMCOR}";;
+    -azu) cor="${MAG}${NEGRITO}" && echo -e "${cor}${2}${SEMCOR}";;
+    -verd) cor="${VERDE}${NEGRITO}" && echo -e "${cor}${2}${SEMCOR}";;
+    -red) cor="${VERMELHO}${NEGRITO}" && echo -e "${cor}${2}${SEMCOR}";;
+    -bla) cor="${BRAN}${NEGRITO}" && echo -ne "${cor}${2}${SEMCOR}";;
+    -bar2) cor="${AZUL}${NEGRITO}======================================================" && echo -e "${cor}${SEMCOR}";;
+    -bar) cor="${AZUL}${NEGRITO}========================================" && echo -e "${cor}${SEMCOR}";;
+    esac
+}
 
 function GoogleDriveDescarga()
 {
@@ -29,23 +46,7 @@ function GoogleDriveDescarga()
     wget -q --show-progress --save-cookies /tmp/cookies.txt --no-check-certificate "https://docs.google.com/uc?export=download&id=$FILEID" -O $FILENAME
 
     FILENAME2=$(echo "$FILENAME" | awk '{print $1}')
-    msg()
-    {
-    BRAN='\033[1;37m' && VERMELHO='\e[31m' && VERDE='\e[32m' && AMARELO='\e[33m'
-    AZUL='\e[34m' && MAGENTA='\e[35m' && MAG='\033[1;36m' && NEGRITO='\e[1m' && SEMCOR='\e[0m'
-    case $1 in
-    -ne)cor="${VERMELHO}${NEGRITO}" && echo -ne "${cor}${2}${SEMCOR}";;
-    -pur)cor="${MAGENTA}${NEGRITO}" && echo -e "${cor}${2}${SEMCOR}";;
-    -ama)cor="${AMARELO}${NEGRITO}" && echo -e "${cor}${2}${SEMCOR}";;
-    -verm)cor="${AMARELO}${NEGRITO}[!] ${VERMELHO}" && echo -e "${cor}${2}${SEMCOR}";;
-    -azu)cor="${MAG}${NEGRITO}" && echo -e "${cor}${2}${SEMCOR}";;
-    -verd)cor="${VERDE}${NEGRITO}" && echo -e "${cor}${2}${SEMCOR}";;
-    -red)cor="${VERMELHO}${NEGRITO}" && echo -e "${cor}${2}${SEMCOR}";;
-    -bla)cor="${BRAN}${NEGRITO}" && echo -ne "${cor}${2}${SEMCOR}";;
-    -bar2)cor="${AZUL}${NEGRITO}======================================================" && echo -e "${cor}${SEMCOR}";;
-    -bar)cor="${AZUL}${NEGRITO}========================================" && echo -e "${cor}${SEMCOR}";;
-    esac
-    }
+    
     function ProgressBar(){
     chars="/-\|" 
     while :; do 
