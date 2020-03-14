@@ -1,8 +1,7 @@
 #!/bin/bash
-# IKEY6=/var/local/Key6.txt
-# PSW6=$(cat $IKEY6)
 source /usr/local/bin/config.ini
-
+# source /usr/local/bin/configS.ini
+datosDescarga=".datosdescarga.log"
 # extract the protocol
 proto="$(echo $1 | grep :// | sed -e's,^\(.*://\).*,\1,g')"
 # remove the protocol
@@ -17,6 +16,7 @@ host="$(echo $hostport | sed -e 's,:.*,,g')"
 port="$(echo $hostport | sed -e 's,^.*:,:,g' -e 's,.*:\([0-9]*\).*,\1,g' -e 's,[^0-9],,g')"
 # extract the path (if any)
 path="$(echo $url | grep / | cut -d/ -f2-)"
+
 msg()
 {
     BRAN='\033[1;37m' && VERMELHO='\e[31m' && VERDE='\e[32m' && AMARELO='\e[33m'
@@ -34,18 +34,52 @@ msg()
     -bar) cor="${AZUL}${NEGRITO}========================================" && echo -e "${cor}${SEMCOR}";;
     esac
 }
+function QuitarLimite()
+{
+    FILEID="${id}"
+    if grep -q "Permission denied" "$datosDescarga"; then
+        echo -e "\n"
+        echo -e "\033[1;31mEnlace descargado demaciadas veces (Quota Exceeded)\033[0m"
+        echo -e "\n"
+        RD1=$(pwd)
+        msg -ama "Generando nuevo enlace..."
+        echo -e "\n"
+        cd $RUTACOPYLIMITE && drive copy -id "$FILEID" ${NAMEBINDERCOPY};
+        FILENAME=$(wget -q --show-progress -O - "https://drive.google.com/file/d/${FILEID}/view" | sed -n -e 's!.*<title>\(.*\)\ \-\ Google\ Drive</title>.*!\1!p')
+        drive pub ${NAMEBINDERCOPY}/"${FILENAME}"
+        newlink=$(drive pub ${NAMEBINDERCOPY}/"${FILENAME}" | awk  -F "published on" '{print $2}')
+        newlinkID=$(echo $newlink | awk -F "=" '{print $2}')
+        FILEID=${newlinkID}
+        cd $RD1
+        echo "$newlinkID"
+    fi
+}
+
+function quitarPermiso()
+{
+    RD1=$(pwd)
+    miIde=${1}
+    cd $RUTACOPYLIMITE && drive unpub -id "${miIde}" 2>/dev/null
+    cd $RD1
+}
+
 
 function GoogleDriveDescarga()
 {
-    FILEID=$1
+    # FILEID=$1
+    # drive pull -id $FILEID
+    # FILEID=$1
     # FILEID="$(echo $FILEID | sed -n 's#.*\https\:\/\/drive\.google\.com/file/d/\([^.]*\)\/view.*#\1#;p')";
     # FILEID="$(echo $FILEID | sed -n 's#.*\https\:\/\/drive\.google\.com/file/d/\([^.]*\)\/view.*#\1#;p')";
     # FILENAME="$(wget -q --show-progress -O - "https://drive.google.com/file/d/$FILEID/view" | sed -n -e 's!.*<title>\(.*\)\ \-\ Dysk\ Google</title>.*!\1!p')";
-    FILENAME="$(wget -q --show-progress -O - "https://drive.google.com/file/d/$FILEID/view" | sed -n -e 's!.*<title>\(.*\)\ \-\ Google\ Drive</title>.*!\1!p')";
-    FILENAME1=$(echo "$FILENAME")
-    wget -q --show-progress --save-cookies /tmp/cookies.txt --no-check-certificate "https://docs.google.com/uc?export=download&id=$FILEID" -O $FILENAME
+    # FILENAME="$(wget -q --show-progress -O - "https://drive.google.com/file/d/$FILEID/view" | sed -n -e 's!.*<title>\(.*\)\ \-\ Google\ Drive</title>.*!\1!p')";
+    # FILENAME1=$(echo "$FILENAME")
+    # wget -q --show-progress --save-cookies /tmp/cookies.txt --no-check-certificate "https://docs.google.com/uc?export=download&id=$FILEID" -O $FILENAME
+    # # read -p "salirrrr"
 
-    FILENAME2=$(echo "$FILENAME" | awk '{print $1}')
+    # FILENAME2=$(echo "$FILENAME" | awk '{print $1}')
+    # echo $FILENAME2
+    # read -p "nombre rriva"
     
     function ProgressBar(){
     chars="/-\|" 
@@ -57,63 +91,68 @@ function GoogleDriveDescarga()
     done & trap 'kill $!' SIGTERM SIGKILL
 
     }
+
+
     function compro(){
 
         if grep -q "Quota exceeded" "$FILENAME2"; then
+            rm "$FILENAME" && \
+            echo -e "\033[1;31mEnlace descargado demaciadas veces (Quota Exceeded)\033[0m" && \
+            echo "https://drive.google.com/file/d/$FILEID/view"
+            echo -e "\033[1;33mFile \033[1;31m$FILENAME\033[0m \033[1;33mNO se puede DESCARGAR\033[0m" 
+            echo -e "\n"
+            echo -e "\n"
+            msg -ama "GENERANDO NUEVO ENLACE..."
+
+            RD1=$(pwd)
+            cd $RUTACOPYLIMITE && drive copy -id "$FILEID" ${NAMEBINDERCOPY};
+            drive pub ${NAMEBINDERCOPY}/"${FILENAME}"
+            newlink=$(drive pub ${NAMEBINDERCOPY}/"${FILENAME}" | awk  -F "published on" '{print $2}')
+            newlinkID=$(echo $newlink | awk -F "=" '{print $2}')
+            FILEID=${newlinkID}
+            cd $RD1
+            ProgressBar
+            msg -ama "Por favor, espere..."
+            sleep 7s
+            kill $!
+            FILENAME=$(wget -q --show-progress -O - "https://drive.google.com/file/d/$FILEID/view" | sed -n -e 's!.*<title>\(.*\)\ \-\ Google\ Drive</title>.*!\1!p')
+            FILENAME1=$(echo "$FILENAME")
+            wget -q --show-progress --save-cookies /tmp/cookies.txt --no-check-certificate "https://docs.google.com/uc?export=download&id=$FILEID" -O $FILENAME
+
+            FILENAME2=$(echo "$FILENAME" | awk '{print $1}')
+
+            if grep -q "Quota exceeded" "$FILENAME2"; then
                 rm "$FILENAME" && \
                 echo -e "\033[1;31mEnlace descargado demaciadas veces (Quota Exceeded)\033[0m" && \
                 echo "https://drive.google.com/file/d/$FILEID/view"
                 echo -e "\033[1;33mFile \033[1;31m$FILENAME\033[0m \033[1;33mNO se puede DESCARGAR\033[0m" 
-                echo -e "\n"
-                echo -e "\n"
-                msg -ama "GENERANDO NUEVO ENLACE..."
-
-                RD1=$(pwd)
-                cd $RCOPY2 && drive copy -id "$FILEID" ${NAMEBINDERCOPY}; sleep 6s
-                drive pub ${NAMEBINDERCOPY}/"${FILENAME}"
-                newlink=$(drive pub ${NAMEBINDERCOPY}/"${FILENAME}" | awk  -F "published on" '{print $2}')
-                newlinkID=$(echo $newlink | awk -F "=" '{print $2}')
-                FILEID=${newlinkID}
-                cd $RD1
-                ProgressBar
-                msg -ama "Por favor, espere..."
-                sleep 7s
-                kill $!
-                FILENAME=$(wget -q --show-progress -O - "https://drive.google.com/file/d/$FILEID/view" | sed -n -e 's!.*<title>\(.*\)\ \-\ Google\ Drive</title>.*!\1!p')
-                FILENAME1=$(echo "$FILENAME")
-                wget -q --show-progress --save-cookies /tmp/cookies.txt --no-check-certificate "https://docs.google.com/uc?export=download&id=$FILEID" -O $FILENAME
-
-                FILENAME2=$(echo "$FILENAME" | awk '{print $1}')
-
-                    if grep -q "Quota exceeded" "$FILENAME2"; then
-                        rm "$FILENAME" && \
-                        echo -e "\033[1;31mEnlace descargado demaciadas veces (Quota Exceeded)\033[0m" && \
-                        echo "https://drive.google.com/file/d/$FILEID/view"
-                        echo -e "\033[1;33mFile \033[1;31m$FILENAME\033[0m \033[1;33mNO se puede DESCARGAR\033[0m" 
-                        else
-                            echo -e "\033[1;33mFile \033[1;36m$FILENAME1\033[0m \033[1;33mONLINE\033[0m"
-                            sleep 2
-                            rm "$FILENAME" 2>/dev/null
-                            rm "$FILENAME2" 2>/dev/null
-                            # ONLINE=$(echo "$FILENAME")
-                            # ENLACESVIVOS[$i]=$(echo "$FILEID")
-                    fi
-
             else
-
                 echo -e "\033[1;33mFile \033[1;36m$FILENAME1\033[0m \033[1;33mONLINE\033[0m"
-                rm "$FILENAME2" && \
-                ONLINE=$(echo "$FILENAME")
-                ENLACESVIVOS=$(echo "$FILEID")
+                sleep 2
+                rm "$FILENAME" 2>/dev/null
+                rm "$FILENAME2" 2>/dev/null
+                # ONLINE=$(echo "$FILENAME")
+                # ENLACESVIVOS[$i]=$(echo "$FILEID")
             fi
+
+        else
+
+            echo -e "\033[1;33mFile \033[1;36m$FILENAME1\033[0m \033[1;33mONLINE\033[0m"
+            rm "$FILENAME2" && \
+            ONLINE=$(echo "$FILENAME")
+            ENLACESVIVOS=$(echo "$FILEID")
+        fi
     }
 
-    function newEnlace(){
+
+
+    function newEnlace()
+    {
 
         msg -ama "GENERANDO NUEVO ENLACE..."
 
         RD1=$(pwd)
-        cd $RCOPY2 && drive copy -id "$FILEID" ${NAMEBINDERCOPY}; sleep 6s
+        cd $RUTACOPYLIMITE && drive copy -id "$FILEID" ${NAMEBINDERCOPY}; 
         drive pub ${NAMEBINDERCOPY}/"$FILENAME"
         newlink=$(drive pub ${NAMEBINDERCOPY}/"$FILENAME" | awk  -F "published on" '{print $2}')
         newlinkID=$(echo $newlink | awk -F "=" '{print $2}')
@@ -127,23 +166,25 @@ function GoogleDriveDescarga()
     }
 
 
-    function googleDescarga () {
+    function googleDescarga () 
+    {
+        CONFIRM_CODE=$(wget -q --show-progress --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate "https://docs.google.com/uc?export=download&id=$FILEID" -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')
+        wget -q --show-progress --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$CONFIRM_CODE&id=$FILEID" -c -O "$FILENAME" && rm -rf /tmp/cookies.txt;
+        error=$?
+        echo $error
+        NAMEFILEE=$(msg -verd "$FILENAME")
+        echo "file $NAMEFILEE DESCARGADO"
+        ls -alh
+        echo -e "\n"
+        # read -p "paradooo"
 
-
-    # wget -q --show-progress --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget -q --show-progress --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate "https://docs.google.com/uc?export=download&id=$FILEID" -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=$FILEID" -c -O "$FILENAME" && rm -rf /tmp/cookies.txt;
-    # echo "file $FILENAME has been downloaded"
-    CONFIRM_CODE=$(wget -q --show-progress --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate "https://docs.google.com/uc?export=download&id=$FILEID" -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')
-    wget -q --show-progress --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$CONFIRM_CODE&id=$FILEID" -c -O "$FILENAME" && rm -rf /tmp/cookies.txt;
-    error=$?
-    echo $error
-    NAMEFILEE=$(msg -verd "$FILENAME")
-    echo "file $NAMEFILEE DESCARGADO"
-    echo -e "\n"
 
     }
 
-    function CompVideo(){
 
+
+    function CompVideo()
+    {
         extv="$1"; ext=${extv##*.}
         case $ext in
             mkv ) EXTVIDEO="mkv";;
@@ -175,9 +216,9 @@ function GoogleDriveDescarga()
                 msg -ama "$ORIFILENAME SALUDABLE"
             fi
             mv -- "${extv}" "$ORIFILENAME" 2>/dev/null
-        elif [[ $ext = "rar" ]]; then
 
-                unrar t -p$PSW6 $1
+        elif [[ $ext = "rar" ]]; then
+                unrar t -p$PASSRAR $1
                 err=$?
                 echo $err
                 numerr='[1-2]'
@@ -186,19 +227,22 @@ function GoogleDriveDescarga()
                         msg -ama "RAR DAÑADO. REITENTANDO..."
                         rm -rf "$FILENAME"
                         googleDescarga
-                        unrar t -p$PSW6 "$FILENAME"
+                        unrar t -p$PASSRAR "$FILENAME"
                         err=$?
-                        if [[ $err != $numerr ]]; then
-                            break
-                        fi
+                        [[ $err != $numerr ]] && break;
+                        # if [[ $err != $numerr ]]; then
+                        #     break
+                        # fi
                     done
                 fi
         fi
 
     }
 
-    function drivego(){
 
+
+    function drivego()
+    {
         msg -pur "DESCARGANDO CARPETA"
         compro
         s=$(pwd)
@@ -217,8 +261,32 @@ function GoogleDriveDescarga()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
     compro
     googleDescarga
+    inte=1
+
+    until [[ -s $FILENAME ]]; do
+
+        googleDescarga
+        echo "reitentando..."
+        ls -alh "$FILENAME"
+        sleep 2;
+
+    done
+    
+    
     # echo "$FILENAME"
 
     sta=$(stat -c %s "$FILENAME")
@@ -261,14 +329,41 @@ function GoogleDriveDescarga()
     fi
 
     RD1=$(pwd)
-    cd $RCOPY2 && drive unpub -id "${FILEID}" 2>/dev/null
+    cd $RUTACOPYLIMITE && drive unpub -id "${FILEID}" 2>/dev/null
     cd $RD1
 }
 
 
+
+
+
+
+
+
+
+
+
+
 if [[ $host == "drive.google.com" || $host == "docs.drive.com" ]]; then
     id=$(php /var/www/html/panel/inc/comp/parse_url.php "${1}")
-    GoogleDriveDescarga $id
+    # GoogleDriveDescarga $id
+    gdown --id $id 2>&1 | tee $datosDescarga
+    QuitarLimite      #https://drive.google.com/open?id=$newlinkID
+    # [[ $newlinkID ]] && msg -verd "Nuevo enlace generado: " && msg -pur "https://drive.google.com/open?id=$newlinkID"
+
+    if [[ $newlinkID ]]; then
+        msg -verd "Nuevo enlace generado: " && msg -pur "https://drive.google.com/open?id=$newlinkID" && rm $datosDescarga
+        gdown --id $newlinkID 2>&1 | tee $datosDescarga
+        quitarPermiso "$newlinkID"
+    fi
+
+    if grep -q "Permission denied" "$datosDescarga"; then
+        msg -red "ENLACE CON LIMTE!!... NO SE PUEDE DESCARGAR"
+        exit
+    fi
+
 elif [[ $host == "www.mediafire.com" ]]; then
     deUniversal $1
+else
+        wget "${1}"
 fi

@@ -1,5 +1,6 @@
 #!/bin/bash
-BLANCOF='\033[47m'; RED='\033[0;31m'; REDCLARO='\033[1;31m'; AZUL='\033[0;34m'; AZULCLARO='\033[1;34m'; VERDE='\033[0;32m'; VERDECLARO='\033[1;32m'; CYAN='\033[0;36m'; CYANCLARO='\033[1;36m'; PURPURA='\033[0;35m'; PURPURAC='\033[1;35m'; CAFE='\033[1;37m'; AMARILLO='\033[1;33m'; NC='\033[0m'; RFembed="/var/www/html/panel/inc/include/fembed.php"; RNetu="/var/www/html/panel/inc/include/netu1.php"; SFembed="/var/www/html/panel/inc/include/./fembed.php"; SNetu="/var/www/html/panel/inc/include/./netu1.php"; Rvery="/var/www/html/panel/inc/include/./very.php"; SJetload="/var/www/html/panel/inc/include/./jetload.php"; Uptoboxx="/var/www/html/panel/inc/include/./uptobox.php"; Sgoun="/var/www/html/panel/inc/include/./gounlimited.php"; Sclicknupload="/var/www/html/panel/inc/include/./clicknupload.php"; Sdropapk="/var/www/html/panel/inc/include/./dropapk.php"; Sprostream="/var/www/html/panel/inc/include/./prostream.php"; Supstream="/var/www/html/panel/inc/include/./upstream.php"; SSHORT="/var/www/html/panel/inc/include/./short.php"; SOUO="/var/www/html/panel/inc/include/./ouo.php"; CONFIG="/usr/local/bin/config.ini"; CONFIGGLOBAL="/var/www/html/panel/inc/config.php"; barraAzul="\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"; ruta_drive=$(pwd)
+includeRuta='/var/www/html/panel/inc/include/';
+BLANCOF='\033[47m'; RED='\033[0;31m'; REDCLARO='\033[1;31m'; AZUL='\033[0;34m'; AZULCLARO='\033[1;34m'; VERDE='\033[0;32m'; VERDECLARO='\033[1;32m'; CYAN='\033[0;36m'; CYANCLARO='\033[1;36m'; PURPURA='\033[0;35m'; PURPURAC='\033[1;35m'; CAFE='\033[1;37m'; AMARILLO='\033[1;33m'; NC='\033[0m'; RFembed="${includeRuta}fembed.php"; RNetu="${includeRuta}netu1.php"; SFembed="${includeRuta}./fembed.php"; SNetu="${includeRuta}./netu1.php"; Rvery="${includeRuta}./very.php"; SJetload="${includeRuta}./jetload.php"; Uptoboxx="${includeRuta}./uptobox.php"; Sgoun="${includeRuta}./gounlimited.php"; Sclicknupload="${includeRuta}./clicknupload.php"; Sdropapk="${includeRuta}./dropapk.php"; Sprostream="${includeRuta}./prostream.php"; Supstream="${includeRuta}./upstream.php"; SSHORT="${includeRuta}./short.php"; SOUO="${includeRuta}./ouo.php"; CONFIG="/usr/local/bin/config.ini"; CONFIGGLOBAL="/var/www/html/panel/inc/config.php"; barraAzul="\033[0;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"; ruta_drive=$(pwd)
 
 source $CONFIG
 PSW6=$PASSRAR
@@ -492,20 +493,20 @@ URLVIP="/var/www/html/de/.enlaces/VIP.$DD.Temp.$NT.txt"
 TodosLosEnlaces3 > /dev/null
 TodosLosEnlaces4 > /dev/null
 
-pastepelis=$(/var/www/html/panel/inc/include/./pasteserie.php 1 "$FILEE" "TEMPORADA $NT | $IDIOMA1 | $CALIDA1" "${enlaVIP[@]}" "${D_D[@]}")
+pastepelis=$(${includeRuta}./pasteserie.php 1 "$FILEE" "TEMPORADA $NT | $IDIOMA1 | $CALIDA1" "${enlaVIP[@]}" "${D_D[@]}")
 
-enlaces_pre=$(/var/www/html/panel/inc/include/./file.php "${EnlacesOpenT[@]}")
-enlaces_pre1=$(/var/www/html/panel/inc/include/./file.php "${EnlacesOpenT2[@]}")
-enlaces_pre2=$(/var/www/html/panel/inc/include/./file.php "${VIP_LINK[@]}")
-enlaces_pre3=$(/var/www/html/panel/inc/include/./file.php "${D_STREAM2[@]}")
-enlaces_pre4=$(/var/www/html/panel/inc/include/./file.php "${Vnetu[@]}")
-enlaces_pre5=$(/var/www/html/panel/inc/include/./file.php "${ouuo[@]}")
-enlaces_pre6=$(/var/www/html/panel/inc/include/./file.php "${enlaVIP[@]}")
-enlaces_pre7=$(/var/www/html/panel/inc/include/./file.php "${D_D[@]}")
-enlaces_pre8=$(/var/www/html/panel/inc/include/./file.php "$pastepelis")
+enlaces_pre=$(${includeRuta}./file.php "${EnlacesOpenT[@]}")
+enlaces_pre1=$(${includeRuta}./file.php "${EnlacesOpenT2[@]}")
+enlaces_pre2=$(${includeRuta}./file.php "${VIP_LINK[@]}")
+enlaces_pre3=$(${includeRuta}./file.php "${D_STREAM2[@]}")
+enlaces_pre4=$(${includeRuta}./file.php "${Vnetu[@]}")
+enlaces_pre5=$(${includeRuta}./file.php "${ouuo[@]}")
+enlaces_pre6=$(${includeRuta}./file.php "${enlaVIP[@]}")
+enlaces_pre7=$(${includeRuta}./file.php "${D_D[@]}")
+enlaces_pre8=$(${includeRuta}./file.php "$pastepelis")
 
 
-cadena_array=$(/var/www/html/panel/inc/include/./file2.php "$enlaces_pre" "$enlaces_pre1" "$enlaces_pre2" "$enlaces_pre3" "$enlaces_pre4" "$enlaces_pre5" "$enlaces_pre6" "$enlaces_pre7" "$enlaces_pre8")
+cadena_array=$(${includeRuta}./file2.php "$enlaces_pre" "$enlaces_pre1" "$enlaces_pre2" "$enlaces_pre3" "$enlaces_pre4" "$enlaces_pre5" "$enlaces_pre6" "$enlaces_pre7" "$enlaces_pre8")
 
 /var/www/html/panel/inc/xion/./insertarserie.php $IDSERIE "$FILEE" $NT $CALIDA1 $IDIOMA1 "$cadena_array"
 }
@@ -994,7 +995,7 @@ function EstruDes(){
     res=$(repetir $IDPELICULA)
     [[ $res ]] && IDPELICULA=${res}
 
-    pelinew=$(/var/www/html/panel/inc/include/./validar.php $IDPELICULA)
+    pelinew=$(${includeRuta}./validar.php $IDPELICULA "admin2")
     if [[ ! $pelinew ]]; then
         msg -pur "PELI NUEVA!!"
     else
@@ -2628,7 +2629,7 @@ if [[ $menu_principall = 1 ]]; then
         else
             if [[ $pesodelarchi || $pesodelarchi2 ]]; then
                     echo "creando platilla"
-                    bid=$(/var/www/html/panel/inc/xion/./insertar.php "$IDPELI" "$nombresinespacio" $CALIDA2 $IDIOMA2)
+                    bid=$(/var/www/html/panel/inc/xion/./insertar.php "$IDPELI" "$nombresinespacio" $CALIDA2 $IDIOMA2 "admin2")
             else
                 echo "no hay pelicula"
             fi
@@ -3043,27 +3044,27 @@ ruta_drive=$(pwd)
 
                    # BASE DE DATOS TEST
 
-                # [[ $MEGALPHP ]] && MEGALPHP1=$(/var/www/html/panel/inc/include/./short.php $MEGALPHP)
-                # [[ $LGDPHP ]] && LGDPHP1=$(/var/www/html/panel/inc/include/./ouo.php $LGDPHP)
+                # [[ $MEGALPHP ]] && MEGALPHP1=$(${includeRuta}./short.php $MEGALPHP)
+                # [[ $LGDPHP ]] && LGDPHP1=$(${includeRuta}./ouo.php $LGDPHP)
 
             
-                # pastepelis=$(/var/www/html/panel/inc/include/./pastepelis.php 0 "$nombresinespacio $CALIDA2 $IDIOMA2" "$IDIOMA3 | $CALIDA2" $MEGALPHP1 $LGDPHP1 $UrlVerystream "$TPE1" "$TPE2")
-                # pastepelisvip=$(/var/www/html/panel/inc/include/./pastepelis.php 1 "$nombresinespacio $CALIDA2 $IDIOMA2" "$IDIOMA3 | $CALIDA2" $MEGALPHP $LGDPHP $UrlVerystream "$TPE1" "$TPE2")
-                # drive1=$(/var/www/html/panel/inc/include/linkdrive.php $drivecri 2>/dev/null)
-                # drive2=$(/var/www/html/panel/inc/include/linkdrivevip.php $drivecri2 2>/dev/null)
-                # drive3=$(/var/www/html/panel/inc/include/linkdrive2.php $drivecri3 2>/dev/null)
+                # pastepelis=$(${includeRuta}./pastepelis.php 0 "$nombresinespacio $CALIDA2 $IDIOMA2" "$IDIOMA3 | $CALIDA2" $MEGALPHP1 $LGDPHP1 $UrlVerystream "$TPE1" "$TPE2")
+                # pastepelisvip=$(${includeRuta}./pastepelis.php 1 "$nombresinespacio $CALIDA2 $IDIOMA2" "$IDIOMA3 | $CALIDA2" $MEGALPHP $LGDPHP $UrlVerystream "$TPE1" "$TPE2")
+                # drive1=$(${includeRuta}linkdrive.php $drivecri 2>/dev/null)
+                # drive2=$(${includeRuta}linkdrivevip.php $drivecri2 2>/dev/null)
+                # drive3=$(${includeRuta}linkdrive2.php $drivecri3 2>/dev/null)
 
                 array=($UrlVerystream $UrlNetu $LGDVIPPHP $LGDPHP $MEGALPHP $MEGALPHP1 $LGDPHP1 $UrlJetload $UrlFembed $UrlUotobox $UrlGounlimited $UrlClicknupload $UrlDropapk $UrlProstream $UrlUpstream)
                 arraydescarga=($UrlVerystream $MEGALPHP $LGDPHP $MEGALPHP1 $LGDPHP1)
 
-                # enlaces_pre=$(/var/www/html/panel/inc/include/./file.php "${array[@]}")
-                descarga=$(/var/www/html/panel/inc/include/./file.php "${arraydescarga[@]}")
+                # enlaces_pre=$(${includeRuta}./file.php "${array[@]}")
+                descarga=$(${includeRuta}./file.php "${arraydescarga[@]}")
 
 
-                enlaces_pre=$(/var/www/html/panel/inc/include/./serializar.php "${array[@]}")
+                enlaces_pre=$(${includeRuta}./serializar.php "${array[@]}")
 
                 # /var/www/html/panel/inc/xion/./agregar.php $IDPELI "$nombresinespacio" $CALIDA2 $IDIOMA2 $enlaces_pre $descarga "$lvip" "$lfree" 
-                /var/www/html/panel/inc/xion/./agregar.php $enlaces_pre $bid
+                /var/www/html/panel/inc/xion/./agregar.php $enlaces_pre $bid "admin2"
             }
             function enlacesMG(){
 

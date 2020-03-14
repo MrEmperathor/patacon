@@ -1,0 +1,34 @@
+#!/bin/bash
+
+read -p "CANTIDAD: " CAN_CURSO
+# read -p "NOMBRE DEL CURSO: " NOMBRE_CURSO
+# read -p "URL DEL CURSO: " URL_CURSO
+
+declare -a NOMBRE_CURSO[CAN_CURSO];
+declare -a URL_CURSO[CAN_CURSO];
+
+for ((i=0;i<=CAN_CURSO;i++));
+do
+    read -p "NOMBRE CURSO #${i}: " NOMBRE_CURSO[$i];
+    read -p "URL DEL CURSO #${i}: " URL_CURSO[$i];
+done
+
+for ((i=0;i<=CAN_CURSO;i++));
+do
+    python /root/.coc/udemy-dl/udemy-dl.py "${URL_CURSO[$i]}" -u "emperador0003@gmail.com" -p "95072027460a"
+
+    CARPETA_ENTRADA=$(ls -F | grep /)
+    [[ $CARPETA_ENTRADA ]] && echo "$CARPETA_ENTRADA ---se ah descargado correctamente---"
+
+    if [[ $CARPETA_ENTRADA ]];then
+        mv "${CARPETA_ENTRADA}" "${NOMBRE_CURSO[$i]}"
+        rar a -r -s -v912000 "${NOMBRE_CURSO[$i]}.rar" "${NOMBRE_CURSO[$i]}"
+        rm -rf "${NOMBRE_CURSO[$i]}" && mkdir "${NOMBRE_CURSO[$i]}" && mv *.rar "${NOMBRE_CURSO[$i]}"
+
+        RUTA=$(pwd)
+        rclone copy "${RUTA}/${NOMBRE_CURSO[$i]}" midrive:/"${NOMBRE_CURSO[$i]}" -P
+        rm -rf *
+        clear
+    fi
+done
+

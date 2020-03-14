@@ -7,29 +7,72 @@ PSW6=$PASSRAR
 
 function ActivarEnlaces()
 {
-    [[ $ESTADOOPENLOAD == true ]] && _OPACT=$(echo -e "\033[1;32m● [ON]") || _OPACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
-    [[ $ESTADOVERYSTREAM == true ]] && _VSACT=$(echo -e "\033[1;32m● [ON]") || _VSACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
-    [[ $ESTADONETU == true ]] && _NTACT=$(echo -e "\033[1;32m● [ON]") || _NTACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
-    [[ $ESTADOJETLOAD == true ]] && _JLACT=$(echo -e "\033[1;32m● [ON]") || _JLACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
-    [[ $ESTADOUPTOBOX == true ]] && _UPACT=$(echo -e "\033[1;32m● [ON]") || _UPACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
-    [[ $ESTADOFEMBED == true ]] && _FBACT=$(echo -e "\033[1;32m● [ON]") || _FBACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
-    [[ $ESTADOMEGA == true ]] && _MGACT=$(echo -e "\033[1;32m● [ON]") || _MGACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
-    [[ $ESTADODRIVEVIP == true ]] && _DVIPACT=$(echo -e "\033[1;32m● [ON]") || _DVIPACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
-    [[ $ESTADODRIVEFREE == true ]] && _DFREEACT=$(echo -e "\033[1;32m● [ON]") || _DFREEACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
-    [[ $ELIMI_SUB == true ]] && _ELSUB=$(echo -e "\033[1;32m● [ON]") || _ELSUB=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
-    [[ $ESTADOGOUNLIMTED == true ]] && _GLACT=$(echo -e "\033[1;32m● [ON]") || _GLACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
+    # [[ $ESTADOOPENLOAD == true ]] && _OPACT=$(echo -e "\033[1;32m● [ON]") || _OPACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
+    # [[ $ESTADOVERYSTREAM == true ]] && _VSACT=$(echo -e "\033[1;32m● [ON]") || _VSACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
+    # [[ $ESTADONETU == true ]] && _NTACT=$(echo -e "\033[1;32m● [ON]") || _NTACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
+    # [[ $ESTADOJETLOAD == true ]] && _JLACT=$(echo -e "\033[1;32m● [ON]") || _JLACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
+    # [[ $ESTADOUPTOBOX == true ]] && _UPACT=$(echo -e "\033[1;32m● [ON]") || _UPACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
+    # [[ $ESTADOFEMBED == true ]] && _FBACT=$(echo -e "\033[1;32m● [ON]") || _FBACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
+    # [[ $ESTADOMEGA == true ]] && _MGACT=$(echo -e "\033[1;32m● [ON]") || _MGACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
+    # [[ $ESTADODRIVEVIP == true ]] && _DVIPACT=$(echo -e "\033[1;32m● [ON]") || _DVIPACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
+    # [[ $ESTADODRIVEFREE == true ]] && _DFREEACT=$(echo -e "\033[1;32m● [ON]") || _DFREEACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
+    # [[ $ELIMI_SUB == true ]] && _ELSUB=$(echo -e "\033[1;32m● [ON]") || _ELSUB=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
+    # [[ $ESTADOGOUNLIMTED == true ]] && _GLACT=$(echo -e "\033[1;32m● [ON]") || _GLACT=$(echo -e "\033[1;31m● [OFF] \033[1;37m")
 
-    echo -e "\033[1;37m[\033[1;31m01\033[1;37m] • \033[1;33mOPENLOAD \033[1;37m    $_OPACT
-[\033[1;31m02\033[1;37m] • \033[1;33mVERYSTREAM \033[1;37m  $_VSACT
-[\033[1;31m03\033[1;37m] • \033[1;33mNETU \033[1;37m        $_NTACT
-[\033[1;31m04\033[1;37m] • \033[1;33mJETLOAD \033[1;37m     $_JLACT
-[\033[1;31m05\033[1;37m] • \033[1;33mUPTOBOX \033[1;37m     $_UPACT
-[\033[1;31m06\033[1;37m] • \033[1;33mGOUNLIMITED \033[1;37m $_GLACT
-[\033[1;31m07\033[1;37m] • \033[1;33mFEMBED \033[1;37m      $_FBACT
-[\033[1;31m08\033[1;37m] • \033[1;33mMEGA \033[1;37m        $_MGACT
-[\033[1;31m09\033[1;37m] • \033[1;33mGD VIP \033[1;37m      $_DVIPACT
-[\033[1;31m10\033[1;37m] • \033[1;33mGD FREE \033[1;37m     $_DFREEACT
-[\033[1;31m11\033[1;37m] • \033[1;33mELIMINAR SUB\033[1;37m $_ELSUB"
+    function print_servidor()
+    {
+        ESTADO_GENERAL=${1}; _SERVIDOR=${2}; _SALIDA_ABC=${3}; local _NUM=${4}
+        N_CARACTERES=$(echo $_SERVIDOR | wc -L); let NUM_RES=16-$N_CARACTERES
+
+        _space=" "
+        for ((i=0;i<${NUM_RES};i++));do 
+        spai=" "; _space=$_space$spai;
+        done
+        
+        if [[ $ESTADO_GENERAL == true ]];then
+            _TEXT="\033[1;37m[\033[1;31m${_NUM}\033[1;37m] • \033[1;33m${_SERVIDOR} \033[1;37m${_space}\033[1;32m● [ON] \033[1;37m"
+        else
+            _TEXT="\033[1;37m[\033[1;31m${_NUM}\033[1;37m] • \033[1;33m${_SERVIDOR} \033[1;37m${_space}\033[1;31m● [OFF] \033[1;37m"
+        fi
+
+        eval $_SALIDA_ABC="'$_TEXT'"
+    }
+print_servidor $ESTADOOPENLOAD OPENLOAD _OPACT 01
+print_servidor $ESTADOVERYSTREAM VERYSTREAM _VSACT 02
+print_servidor $ESTADONETU NETU _NTACT 03
+print_servidor $ESTADOJETLOAD JETLOAD _JLACT 04
+print_servidor $ESTADOUPTOBOX UPTOBOX _UPACT 05
+print_servidor $ESTADOGOUNLIMTED GOUNLIMITED _GLACT 06
+print_servidor $ESTADOFEMBED FEMBED _FBACT 07
+print_servidor $ESTADOMEGA MEGA _MGACT 08
+print_servidor $ESTADODRIVEVIP "GDRIVE VIP" _DVIPACT 09
+print_servidor $ESTADODRIVEFREE "GDRIVE FREE" _DFREEACT 10
+print_servidor $ELIMI_SUB "ELIMINAR SUB" _ELSUB 11
+
+echo -e "$_OPACT             
+$_VSACT             
+$_NTACT
+$_JLACT
+$_UPACT
+$_GLACT
+$_FBACT
+$_MGACT
+$_DVIPACT
+$_DFREEACT
+$_ELSUB
+"
+
+#     echo -e "\033[1;37m[\033[1;31m01\033[1;37m] • \033[1;33mOPENLOAD \033[1;37m    $_OPACT
+# [\033[1;31m02\033[1;37m] • \033[1;33mVERYSTREAM \033[1;37m  $_VSACT
+# [\033[1;31m03\033[1;37m] • \033[1;33mNETU \033[1;37m        $_NTACT
+# [\033[1;31m04\033[1;37m] • \033[1;33mJETLOAD \033[1;37m     $_JLACT
+# [\033[1;31m05\033[1;37m] • \033[1;33mUPTOBOX \033[1;37m     $_UPACT
+# [\033[1;31m06\033[1;37m] • \033[1;33mGOUNLIMITED \033[1;37m $_GLACT
+# [\033[1;31m07\033[1;37m] • \033[1;33mFEMBED \033[1;37m      $_FBACT
+# [\033[1;31m08\033[1;37m] • \033[1;33mMEGA \033[1;37m        $_MGACT
+# [\033[1;31m09\033[1;37m] • \033[1;33mGD VIP \033[1;37m      $_DVIPACT
+# [\033[1;31m10\033[1;37m] • \033[1;33mGD FREE \033[1;37m     $_DFREEACT
+# [\033[1;31m11\033[1;37m] • \033[1;33mELIMINAR SUB\033[1;37m $_ELSUB"
     echo -e "$barraAzul"
     read -p "NUMERO DEL SERVICIO ACTIVAR/DESACTIVAR: " NSER
     case $NSER in
@@ -453,8 +496,11 @@ function accion1() {
     echo ------------------------------
     echo "1) SERIES -Todos los servidores"
     echo ------------------------------
-    echo ------------------------------
     echo "2) SERIES -Solo Google drive"
+    echo ------------------------------
+    echo "3) SERIES -Solo 1080"
+    echo ------------------------------
+    echo "4) SERIES -Solo 720"
     echo ------------------------------
     # echo "2) DESCARGAR DE GDRIVE"
     # echo ------------------------------
@@ -486,9 +532,9 @@ function accion1() {
 
         2) drive3; sudmenu ;;
 
-        3) megad; renom; descompri; subida_o_s_s_todos; subida_drive_todos; sudmenu ;;
+        3) drive3; sudmenu ;;
 
-        4) ariad; renom; descompri; subida_o_s_s_todos; subida_drive_todos; sudmenu ;;
+        4) drive3; sudmenu ;;
 
         5) CARP; subida_o_s_s_todos1; subida_o_s_s_todos2; subida_o_s_s_todos3; sudmenu ;;
 
@@ -1848,10 +1894,22 @@ function SubidaDriveFREE()
     DRIVER="${DRIVE3}"
     
     rclone copy "${RD}/${R_SERIE}" -P ${DRIVER}:/"${FOLDER_SERIE}/${R_SERIE}"
-    nombres=($(rclone ls ${DRIVER}:/"${FOLDER_SERIE}/${R_SERIE}" | cut -d" " -f2-))
+    nombres=($(rclone ls ${DRIVER}:/"${FOLDER_SERIE}/${R_SERIE}"))
+    # nombres=($(rclone ls ${DRIVER}:/"${FOLDER_SERIE}/${R_SERIE}" | cut -d" " -f2-))
     a=0
     volverxD=$(pwd); cd $RCOPY2 && drive new -folder "${FOLDER_SERIE_VIP}/${R_SERIE}"; cd $volverxD
-    for i in "${nombres[@]}"
+
+    for ((i=0;i<"${#nombres[@]}";i++));
+    do
+        _name=$(echo "${nombres[$i]}" | cut -d' ' -f1)
+
+        if [[ $_name ]];then
+            _namef[$i]=$(echo "${nombres[$i]}" | cut -d' ' -f2-)
+        else
+            _namef[$i]=$(echo "${nombres[$i]}" | cut -d' ' -f3-)
+        fi
+    done
+    for i in "${_namef[@]}"
     do
         echo $i
         echo -e $barraAzul
@@ -1860,7 +1918,7 @@ function SubidaDriveFREE()
 
             if [[ $ESTADODRIVEFREE == true && $ESTADODRIVEVIP == true ]];then
                 echo "Subiendo vip # $i"; echo ${FOLDER_SERIE_VIP}/${R_SERIE}/
-                cd $RCOPY2 && drive copy -id "${ID[$a]}" "${FOLDER_SERIE_VIP}/${R_SERIE}/"; sleep 2s
+                cd $RCOPY2 && drive copy -id "${ID[$a]}" "${FOLDER_SERIE_VIP}/${R_SERIE}/";
                 enlaces_vip[$a]=$(drive pub "${FOLDER_SERIE_VIP}/${R_SERIE}/${i}" | awk  -F "published on " '{print $2}')
                 ID_VIP[$a]=$(echo ${enlaces_vip[$a]} | awk -F "=" '{printf $2}'); drive unpub -id "${ID_VIP[$a]}"
             fi
@@ -1895,9 +1953,13 @@ function SubidaDriveVIP()
         _name=$(echo "${nombres[$i]}" | cut -d' ' -f1)
 
         if [[ $_name ]];then
-            _namef[$i]=$(echo "${nombres[0]}" | cut -d' ' -f2-)
+            _namef[$i]=$(echo "${nombres[$i]}" | cut -d' ' -f2-)
+            echo "entro al primero"
+            read
         else
-            _namef[$i]=$(echo "${nombres[0]}" | cut -d' ' -f3-)
+            _namef[$i]=$(echo "${nombres[$i]}" | cut -d' ' -f3-)
+            echo "entro al segundo"
+            read
         fi
     done
     for i in "${_namef[@]}"
@@ -2129,6 +2191,105 @@ function subida_o_s_s()
     fi
 
     if [[ $ESTADOSHORT == true && $ESTADOMEGA == true ]];then
+        echo -e "\033[1;36mOBTENIENDO ENLACES DE \033[0m \033[1;33mSHORT\033[0m"
+        Acortadorr MEGAENLACES[@] $SSHORT ENLACESSHORT "SHORT"
+    fi
+}
+function subida_o_s_s_1080() 
+{
+    puesto=$(pwd | cut -d "/" -f7)
+    fifo="/tmp/fifo${puesto}very"
+    [[ -e $fifo ]] && rm $fifo
+    fifo1="/tmp/fifo${puesto}fembed"
+    [[ -e $fifo1 ]] && rm $fifo1
+    fifo2="/tmp/fifo${puesto}netu"
+    [[ -e $fifo2 ]] && rm $fifo2
+    fifo3="/tmp/fifo${puesto}jetload"
+    [[ -e $fifo3 ]] && rm $fifo3
+    fifo4="/tmp/fifo${puesto}uptobox"
+    [[ -e $fifo4 ]] && rm $fifo4
+
+    PP=1
+    
+        echo -e "\n"
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mNETU\033[0m"
+        netu
+        sleep 2
+
+        echo -e "\n"
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD FREE\033[0m" 
+        SubidaDriveFREE $RD $R_CARPETA_SERIE
+
+        # echo -e "\n"
+        # echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD VIP\033[0m"
+        # SubidaDriveVIP $RD $R_CARPETA_SERIE
+
+        echo -e "\n"
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mMEGA\033[0m" 
+        MegaSerie
+
+    if [[ $enlaces_free1 ]];then
+        echo -e "\033[1;36mOBTENIENDO ENLACES DE \033[0m \033[1;33mOUO\033[0m"
+        Acortadorr enlaces_free1[@] $SOUO ENLACESOUO "OUO"
+        Acortadorr ENLACESOUO[@] $SOUO ENLACESOUO "OUO"
+    fi
+
+    if [[ $MEGAENLACES ]];then
+        echo -e "\033[1;36mOBTENIENDO ENLACES DE \033[0m \033[1;33mSHORT\033[0m"
+        Acortadorr MEGAENLACES[@] $SSHORT ENLACESSHORT "SHORT"
+    fi
+}
+function subida_o_s_s_720() 
+{
+    puesto=$(pwd | cut -d "/" -f7)
+    fifo="/tmp/fifo${puesto}very"
+    [[ -e $fifo ]] && rm $fifo
+    fifo1="/tmp/fifo${puesto}fembed"
+    [[ -e $fifo1 ]] && rm $fifo1
+    fifo2="/tmp/fifo${puesto}netu"
+    [[ -e $fifo2 ]] && rm $fifo2
+    fifo3="/tmp/fifo${puesto}jetload"
+    [[ -e $fifo3 ]] && rm $fifo3
+    fifo4="/tmp/fifo${puesto}uptobox"
+    [[ -e $fifo4 ]] && rm $fifo4
+
+    PP=1
+
+        echo -e "\n"
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mJETLOAD\033[0m"
+        jetload
+        sleep 2
+
+        echo -e "\n"
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mUPTOBOX\033[0m"
+        Uptobox1
+        sleep 2
+
+        echo -e "\n"
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGOUNLIMITED\033[0m"
+        Gounlimited
+        sleep 2
+
+        echo -e "\n"
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD FREE\033[0m" 
+        SubidaDriveFREE $RD $R_CARPETA_SERIE
+
+    # if [[ $ESTADODRIVEFREE == false && $ESTADODRIVEVIP == true ]];then
+    #     echo -e "\n"
+    #     echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD VIP\033[0m"
+    #     SubidaDriveVIP $RD $R_CARPETA_SERIE
+    # fi
+
+        echo -e "\n"
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mMEGA\033[0m" 
+        MegaSerie
+
+    if [[ $enlaces_free1 ]];then
+        echo -e "\033[1;36mOBTENIENDO ENLACES DE \033[0m \033[1;33mOUO\033[0m"
+        Acortadorr enlaces_free1[@] $SOUO ENLACESOUO "OUO"
+    fi
+
+    if [[ $MEGAENLACES ]];then
         echo -e "\033[1;36mOBTENIENDO ENLACES DE \033[0m \033[1;33mSHORT\033[0m"
         Acortadorr MEGAENLACES[@] $SSHORT ENLACESSHORT "SHORT"
     fi
@@ -2381,23 +2542,37 @@ function LiimiteGD() {
                 echo -e "\033[0;36mTEMPORADA $NT DESCARGADA CORRECTAMENTE!!\033[0m" 
                 #for z in `ls *.mp4 *.mkv *.avi *.mpg *.rar *.zip`; do
                     #echo $z
+                case $opcion1 in
+                    1) PutoPunto; echo $DD; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; TArchivo; SAVEIFS=${IFS}; IFS=$(echo -en "\n\b"); renom; echo "Subiendo temporada $C"; subida_o_s_s; IFS=$SAVEIFS
+                    ;;
+                    2) PutoPunto; echo $DD; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; TArchivo; SAVEIFS=${IFS}; IFS=$(echo -en "\n\b"); renom; echo "Subiendo temporada $C"; subida_o_s_s; IFS=$SAVEIFS
+                    ;;
+                    3) PutoPunto; echo $DD; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; TArchivo; SAVEIFS=${IFS}; IFS=$(echo -en "\n\b"); renom; echo "Subiendo temporada $C"; subida_o_s_s_1080; IFS=$SAVEIFS
+                    ;;
+                    4) PutoPunto; echo $DD; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; TArchivo; SAVEIFS=${IFS}; IFS=$(echo -en "\n\b"); renom; echo "Subiendo temporada $C"; subida_o_s_s_720; IFS=$SAVEIFS
+                    ;;
+                    *) echo "Debe seleccionar una opcion validad"; exit
+                    ;;
+                esac
+                
 
-                    PutoPunto
-                    echo $DD
-                    descompri
-                    aguaMarca
-                    EscogerAudio
-                    PegarSubtitulos
-                    TArchivo
-                    SAVEIFS=${IFS}
-                    IFS=$(echo -en "\n\b")
-                    renom
-                    #MoverArchivos
-                    echo "Subiendo temporada $C"
-                    echo 
-                    echo $ruta
-                    subida_o_s_s
-                    IFS=$SAVEIFS
+
+                    # PutoPunto
+                    # echo $DD
+                    # descompri
+                    # aguaMarca
+                    # EscogerAudio
+                    # PegarSubtitulos
+                    # TArchivo
+                    # SAVEIFS=${IFS}
+                    # IFS=$(echo -en "\n\b")
+                    # renom
+                    # #MoverArchivos
+                    # echo "Subiendo temporada $C"
+                    # echo 
+                    # echo $ruta
+                    # subida_o_s_s
+                    # IFS=$SAVEIFS
 
 
                     t=$(jobs -l)
@@ -2519,7 +2694,7 @@ function descompri() {
     case $descomprimir in
 
         *rar)
-        unrar x -p$PSW6 $RAR -y 
+        unrar x -p$PSW6 '*.rar' -y 
         error=$?
         comprobar1
         printf "${CYANCLARO}";
