@@ -387,3 +387,5 @@ enlaces_pre=$(/var/www/html/panel/inc/include/./serializar.php "${array[@]}")
 # /var/www/html/panel/inc/xion/./insertar.php $enlaces_pre $bid
 /var/www/html/panel/inc/xion/./insertar720.php "$IDPELI" "$nombresinespacio" "(720)" $IDIOMA2 $enlaces_pre "admin2"
 IFS=$SAVEIFS
+# rm $LOG
+# rm .logAria

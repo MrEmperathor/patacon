@@ -1198,7 +1198,12 @@ function subir720(){
 # ------------------------------------>DESCARGAR DE GOOGLE DRIVE<-------------------------------------------
 function drived() {
 
-    EstruDes
+    if [[ $menu_principall == 1 ]];then
+        echo "ENTTRANDO AL LA ESTRUCTURA"
+        EstruDes
+    fi
+    
+    
     # read -p "SACAR VERCION 720P [1-SI]: " V720
     echo
 ##############################
@@ -1276,7 +1281,7 @@ function drived() {
 
             for e in `ls *.mp4 *.mkv *.avi *.mpg *.rar *.zip` ; do
                echo "$e"    
-           done 2>/dev/null
+            done 2>/dev/null
 
            EXT=${e##*.}
 
@@ -2615,7 +2620,7 @@ RUTA2="/var/www/html/de/.enlaces"
 
 MiPeli=$(ls *.mp4 *.mkv *.avi *.mpg 2>/dev/null)
 
-if [[ $menu_principall = 1 ]]; then
+# if [[ $menu_principall = 1 ]]; then
 
         pesodelarchi=$(ls -alh "$MiPeli"| awk '{print $5}' | grep "G")
         pesodelarchi2=$(ls -alh "$MiPeli"| awk '{print $5}' | grep "M")
@@ -2637,7 +2642,7 @@ if [[ $menu_principall = 1 ]]; then
         echo "EL ARCHIVO ESTA DAÑADO!"
         exit
     fi
-fi
+# fi
 for TPE in `ls -alh $MiPeli | awk -F " " '{print $5}'` ; do TPE1=`echo $TPE | sed 's/G/ Gigas/g' | sed 's/M/ Megas/g'` ; mv "$TPE" $TPE1 ; done 2>/dev/null
 
 DEFINIR_TPE1=$(echo $TPE1 | awk '{print $2}')
@@ -2840,12 +2845,12 @@ fi
 
         MiPeli=$(ls *.mp4 *.mkv *.avi *.mpg 2>/dev/null)
 
-    if [[ $menu_principall = 1 ]]; then
+    # if [[ $menu_principall = 1 ]]; then
         IFS=$(echo -en "\n\b")
 
         pelisinex=${MiPeli%.*}
         for f in * ; do mv "$f" "${f/"$pelisinex"/"${nombresinespacio} ${CALIDA2} $IDIOMA2"}" ; done > /dev/null 2>> /root/log.txt  
-    fi
+    # fi
 
     if [[ $menu_principall = 2 ]]; then
 
@@ -2884,6 +2889,7 @@ if [[ $V720 = 1 ]]; then
     sleep 4
 fi
 MiPeli=$(ls *.mp4 *.mkv *.avi *.mpg 2>/dev/null)
+msg -pur $MiPeli
 ruta_drive=$(pwd)
 }
 
@@ -3129,8 +3135,11 @@ ruta_drive=$(pwd)
                   fi
                   #plantilla > $RUTA3/ADD:_$MiPeli.txt.php
                   #rclone copy $RUTA3/ADD:_$MiPeli.txt.php driveEnlaces:/ -P
-              else
+                  elif [[ $activarPlantilla ]];then
+                      plantilla
+                else
                 echo "ERROR CON LAS PLANTILLAS"
+                echo "$@";
                 fi
                 while :
                 do
@@ -3189,5 +3198,9 @@ while :
 do
     apt clean
     apt-get clean
-    menu_principall
+    if [[ $@ ]];then
+        source /usr/local/bin/defast "$@"
+    else
+        menu_principall
+    fi
 done

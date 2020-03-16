@@ -1,0 +1,56 @@
+#!/bin/bash
+
+echo "OPTIND inicia en $OPTIND"
+v=1
+while getopts "c:t:n:e:i:" optname
+  do
+    case "$optname" in
+        "c")
+            CALIDA1=$OPTARG;
+            echo "Se ha especificado la opción $optname y su valor es $CALIDA1"
+            ;;
+        "e")
+            FARRAY[0]=$OPTARG
+            echo "La opción $optname tiene el valor ${FARRAY[0]}"
+            ;;
+        "n")
+            nameori=${OPTARG^^}
+            echo "La opción $optname tiene el valor $nameori"
+            ;;
+        "t")
+            IDPELICULA=$OPTARG
+            echo "La opción $optname tiene el valor $IDPELICULA"
+            ;;
+        "i")
+            IDIOMA1=${OPTARG^^}
+            echo "La opción $optname tiene el valor $IDIOMA1"
+            ;;
+        "?")
+            echo "Opción desconocida $OPTARG"
+            ;;
+        ":")
+            echo "Sin valor de argumentos para la opción $OPTARG"
+            ;;
+        *)
+        # Should not occur
+            echo "Error desconocido mientras se procesaban las opciones"
+            ;;
+        esac
+        echo "OPTIND ahora es $OPTIND"
+        echo "----VUELTA # $v -------"
+        ((v++))
+  done
+
+# PARAMETRO DEFINIDO PARA PODER DESCARGAR
+opcion=7
+activarPlantilla=true #Activar la creacion de la plantilla en el panel web
+case "$CALIDA1" in
+    1080) CALIDA1="(1080)"; 
+    drived; TArchivo; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_1080; IFS=$SAVEIFS; sudmenu 2>/dev/null 
+    ;;
+    720) CALIDA1="(720)";
+    drived; TArchivo; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_720; IFS=$SAVEIFS; sudmenu 2>/dev/null
+    ;;
+    *) echo default; exit
+    ;;
+esac
