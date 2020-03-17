@@ -3119,8 +3119,16 @@ ruta_drive=$(pwd)
                 EnlacesMostar
                 echo $MiPeli
                 if [[ $ERRORM1 = 0 ]]; then
-                    rm -rf $MiPeli 2>/dev/null
+                    
                     echo "Eliminado"
+                    SAVEIFS=$IFS
+                    IFS=$(echo -en "\n\b")
+                    for VAR in `ls *.mp4 *.mkv *.mpg *.avi *.srt *.vtt *.sbv *.ass`
+                    do
+                        rm "${VAR}"
+                        echo "${VAR}"
+                    done 2>/dev/null
+                    IFS=$SAVEIFS
                 else
                     echo "No se borro nada xD"
 
@@ -3156,6 +3164,7 @@ ruta_drive=$(pwd)
                         echo -e "\033[1;34m=================================================\033[0m"
                         # echo -e "\033[0;35m[1]\033[0m \033[1;31m>\033[0m VER ENLACES"
                         echo -e "\033[0;35m[1]\033[0m \033[1;31m>\033[0m SALIR!!"
+                        exit
                         # echo -e "\033[0;35m[2]\033[0m \033[1;31m>\033[0m VOLVER A SUBIR A OPENLOAD, STREAMANGO, STREAMCHERRY"
                         # echo -e "\033[0;35m[3]\033[0m \033[1;31m>\033[0m VOLVER A SUBIR A OPENLOAD"
                         # echo -e "\033[0;35m[4]\033[0m \033[1;31m>\033[0m VOLVER A SUBIR A STREANMANGO"

@@ -63,6 +63,23 @@ function quitarPermiso()
     cd $RD1
 }
 
+function limite2()
+{
+    ruta=$(pwd)
+    id=${1}
+    mg -verm "SEGUNDO INTENTO"
+    cd /root/.Mydrive3 && drive copy -id ${id} peli;
+    FILENAME=$(wget -q --show-progress -O - "https://drive.google.com/file/d/${id}/view" | sed -n -e 's!.*<title>\(.*\)\ \-\ Google\ Drive</title>.*!\1!p')
+    rclone move copi1:/${FILENAME} drive5:/Movies/ -P
+    link=$(rclone link drive5:/Movies/${FILENAME});
+    link=$(echo $link | awk -F "=" '{print $2}')
+    echo ${link};
+    rclone cleanup copi1:/
+    cd $ruta;
+
+
+}
+
 
 function GoogleDriveDescarga()
 {
@@ -341,9 +358,6 @@ function GoogleDriveDescarga()
 
 
 
-
-
-
 if [[ $host == "drive.google.com" || $host == "docs.drive.com" ]]; then
     id=$(php /var/www/html/panel/inc/comp/parse_url.php "${1}")
     # GoogleDriveDescarga $id
@@ -354,12 +368,14 @@ if [[ $host == "drive.google.com" || $host == "docs.drive.com" ]]; then
     if [[ $newlinkID ]]; then
         msg -verd "Nuevo enlace generado: " && msg -pur "https://drive.google.com/open?id=$newlinkID" && rm $datosDescarga
         gdown --id $newlinkID 2>&1 | tee $datosDescarga
-        quitarPermiso "$newlinkID"
-    fi
 
-    if grep -q "Permission denied" "$datosDescarga"; then
-        msg -red "ENLACE CON LIMTE!!... NO SE PUEDE DESCARGAR"
-        exit
+        if grep -q "Permission denied" "$datosDescarga"; then
+            msg -red "ENLACE CON LIMTE!!... NO SE PUEDE DESCARGAR"
+            limite2 ${newlinkID};
+            gdown --id ${link} 2>&1 | tee $datosDescarga
+        fi
+
+        quitarPermiso "$newlinkID"
     fi
 
 elif [[ $host == "www.mediafire.com" ]]; then

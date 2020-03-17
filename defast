@@ -1,29 +1,38 @@
 #!/bin/bash
 
-echo "OPTIND inicia en $OPTIND"
+# echo "OPTIND inicia en $OPTIND"
 v=1
-while getopts "c:t:n:e:i:" optname
+while getopts "c:t:n:e:i:s:" optname
   do
     case "$optname" in
         "c")
             CALIDA1=$OPTARG;
-            echo "Se ha especificado la opción $optname y su valor es $CALIDA1"
+            # echo "Se ha especificado la opción $optname y su valor es $CALIDA1"
             ;;
         "e")
             FARRAY[0]=$OPTARG
-            echo "La opción $optname tiene el valor ${FARRAY[0]}"
+            # echo "La opción $optname tiene el valor ${FARRAY[0]}"
             ;;
         "n")
             nameori=${OPTARG^^}
-            echo "La opción $optname tiene el valor $nameori"
+            # echo "La opción $optname tiene el valor $nameori"
             ;;
         "t")
             IDPELICULA=$OPTARG
-            echo "La opción $optname tiene el valor $IDPELICULA"
+            # echo "La opción $optname tiene el valor $IDPELICULA"
             ;;
         "i")
             IDIOMA1=${OPTARG^^}
-            echo "La opción $optname tiene el valor $IDIOMA1"
+            # echo "La opción $optname tiene el valor $IDIOMA1"
+            ;;
+        "s")
+            if [[ $OPTARG == "mkv" ]];then
+                EXTRASUB=true
+            else
+                LSUB="${OPTARG}"
+                CSUB=1
+            fi
+            # echo "La opción $optname tiene el valor $IDIOMA1"
             ;;
         "?")
             echo "Opción desconocida $OPTARG"
@@ -36,9 +45,9 @@ while getopts "c:t:n:e:i:" optname
             echo "Error desconocido mientras se procesaban las opciones"
             ;;
         esac
-        echo "OPTIND ahora es $OPTIND"
-        echo "----VUELTA # $v -------"
-        ((v++))
+        # echo "OPTIND ahora es $OPTIND"
+        # echo "----VUELTA # $v -------"
+        # ((v++))
   done
 
 # PARAMETRO DEFINIDO PARA PODER DESCARGAR
