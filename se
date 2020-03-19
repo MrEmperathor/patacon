@@ -286,16 +286,16 @@ function subida_mega() {
     MEGA_Links=${2}
     FICHERO_mega=${1}
     FICHERO_mega1=${3}
+
     function LinkMegaDOWN() {
 
         megals -e "/Root/$FICHERO_mega1" -u "$CMEGA" -p "$PMEGA" > $MEGA_Links ; #echo -e "\n " >> $RUTA2/GD_$MiPeli.txt
-            if [[ $MEGA_Links == ".megallin.txt" ]]; then
-                MEGALPHP=$(cat $MEGA_Links | awk -F " " '{printf $1}')
-            fi
-            if [[ $MEGA_Links == ".linkmega720.txt" ]]; then
-                MEGALPHP720=$(cat $MEGA_Links | awk -F " " '{printf $1}')
-            fi
-        
+        if [[ $MEGA_Links == ".megallin.txt" ]]; then
+            MEGALPHP=$(cat $MEGA_Links | awk -F " " '{printf $1}')
+        fi
+        if [[ $MEGA_Links == ".linkmega720.txt" ]]; then
+            MEGALPHP720=$(cat $MEGA_Links | awk -F " " '{printf $1}')
+        fi
     }
 
     if [[ -e "$FICHERO_mega" ]]; then
@@ -314,41 +314,41 @@ function subida_mega() {
 
         if fgrep "$CUENTALIMITE" $RUTAMEGA/.megalog ;then
         #if [[ $MEGALOG = $CUENTALIMITE ]]; then
-                    MEGAESP1="Free:  0 bytes"
-                    MEGAESP=$(megadf --human | sed -n '3p')
-                    
-                        while [[ $MEGAESP = $MEGAESP1 ]]; do
-                            
-                            MEGAESP=$(megadf --human | sed -n '3p')
-                                while read line 
-                                do
-                                    
-                                    echo "$line" > "$listamega$A"; CUENTAMEGA=$(cat "$listamega$A")
-                                    let A++
-                                    echo
-                                    echo -e "\033[1;32mCUENTA LLENA...PASAREMOS A LA CUENTA $CUENTAMEGA EN UN MOMENTO!! :)\033[0m"
-                                    sleep 3
+            MEGAESP1="Free:  0 bytes"
+            MEGAESP=$(megadf --human | sed -n '3p')
+            
+            while [[ $MEGAESP = $MEGAESP1 ]]; do
+                
+                MEGAESP=$(megadf --human | sed -n '3p')
+                    while read line 
+                    do
+                        
+                        echo "$line" > "$listamega$A"; CUENTAMEGA=$(cat "$listamega$A")
+                        let A++
+                        echo
+                        echo -e "\033[1;32mCUENTA LLENA...PASAREMOS A LA CUENTA $CUENTAMEGA EN UN MOMENTO!! :)\033[0m"
+                        sleep 3
 
-                                    sed '2d' $MEGARC > $MEGARC2; sed -i "2i Username = $CUENTAMEGA" $MEGARC2; rm -rf $MEGARC; mv $MEGARC2 $MEGARC
-                                    sleep 1
-                                    UPDATECUENTA=$(cat $MEGARC | sed -n '2p' | awk -F " " '{printf $3}')
-                                    MEGAESP=$(megadf --human | sed -n '3p')
-                                        if [[ $MEGAESP != $MEGAESP1 ]]; then
-                                            echo -e "\033[1;36mPERFECTO LA CUENTA \033[1;31m$UPDATECUENTA\033[0m ESTA DISPONIBLE!\033[0m"
-                                            break
-                                        fi
+                        sed '2d' $MEGARC > $MEGARC2; sed -i "2i Username = $CUENTAMEGA" $MEGARC2; rm -rf $MEGARC; mv $MEGARC2 $MEGARC
+                        sleep 1
+                        UPDATECUENTA=$(cat $MEGARC | sed -n '2p' | awk -F " " '{printf $3}')
+                        MEGAESP=$(megadf --human | sed -n '3p')
+                            if [[ $MEGAESP != $MEGAESP1 ]]; then
+                                echo -e "\033[1;36mPERFECTO LA CUENTA \033[1;31m$UPDATECUENTA\033[0m ESTA DISPONIBLE!\033[0m"
+                                break
+                            fi
 
-                                done < "$listamega"
-                            #sed -n "$Ap" $listamega > $listamega1; CUENTAMEGA=$(cat "$listamega1")
-                            sleep 3
-                            CMEGA=$(cat /root/.megarc | sed -n '2p' | awk -F " " '{printf $3}')
-                            PMEGA=$(cat /root/.megarc | sed -n '3p' | awk -F " " '{printf $3}')
-                            megaput $FICHERO_mega --debug 2>&1 | tee .megalog; MEGALOG=$(grep "EOVERQUOTA" $RUTAMEGA/.megalog)
-                            LinkMegaDOWN
-                            ERRORM1=$?
-                            ERRORM=$(cat .megalog | grep "Uploaded" | wc -l)
-                            #sed '1d' $listamega > $lismega; rm -rf $listamega; mv $lismega $listamega
-                        done
+                    done < "$listamega"
+                #sed -n "$Ap" $listamega > $listamega1; CUENTAMEGA=$(cat "$listamega1")
+                sleep 3
+                CMEGA=$(cat /root/.megarc | sed -n '2p' | awk -F " " '{printf $3}')
+                PMEGA=$(cat /root/.megarc | sed -n '3p' | awk -F " " '{printf $3}')
+                megaput $FICHERO_mega --debug 2>&1 | tee .megalog; MEGALOG=$(grep "EOVERQUOTA" $RUTAMEGA/.megalog)
+                LinkMegaDOWN
+                ERRORM1=$?
+                ERRORM=$(cat .megalog | grep "Uploaded" | wc -l)
+                #sed '1d' $listamega > $lismega; rm -rf $listamega; mv $lismega $listamega
+            done
         fi
         if fgrep "$MEGALIMIT" $RUTAMEGA/.megalog ;then
             until [[ $SUBIDO = $MEGASUB ]]; do
@@ -357,13 +357,13 @@ function subida_mega() {
                 megaput $FICHERO_mega --debug 2>&1 | tee $RUTAMEGA/.megalog
                 LinkMegaDOWN
                 if fgrep "$SUBIDO" $RUTAMEGA/.megalog ;then
-                        MEGASUB=${SUBIDO}
-                        echo "$MEGASUB"
-                        break
+                    MEGASUB=${SUBIDO}
+                    echo "$MEGASUB"
+                    break
                 elif fgrep "$MEGALIMIT3" $RUTAMEGA/.megalog ;then
-                        MEGASUB=${SUBIDO}
-                        echo "$MEGASUB"
-                        break
+                    MEGASUB=${SUBIDO}
+                    echo "$MEGASUB"
+                    break
 
                 fi
             done
@@ -375,9 +375,9 @@ function subida_mega() {
                 megaput $FICHERO_mega --debug 2>&1 | tee $RUTAMEGA/.megalog
                 LinkMegaDOWN
                 if fgrep "$SUBIDO" $RUTAMEGA/.megalog ;then
-                        MEGASUB=${SUBIDO}
-                        echo "$MEGASUB"
-                        break
+                    MEGASUB=${SUBIDO}
+                    echo "$MEGASUB"
+                    break
                 fi
             done
         fi      
@@ -404,8 +404,8 @@ function subida_mega() {
                         while true ; do
                             megaput $FICHERO_mega --debug 2>&1 | tee .megalog
                             sleep 2s
-                            COMPROBAR=$(megals -e /Root/$FICHERO_mega | awk '{print $2}')
-                            if [[ $COMPROBAR = "/Root/$FICHERO_mega" ]]; then
+                            COMPROBAR=$(megals -e "/Root/${FICHERO_mega}" | awk '{print $2}')
+                            if [[ $COMPROBAR = "/Root/${FICHERO_mega}" ]]; then
                                 break
                             fi
                         done
@@ -414,7 +414,6 @@ function subida_mega() {
                 sed -i '2d' /root/.megarc
 
             done < "$listamega"
-
         fi
 
         [[ $ERRORM = 1 ]] && echo $MEGALPHP
@@ -1954,12 +1953,10 @@ function SubidaDriveVIP()
 
         if [[ $_name ]];then
             _namef[$i]=$(echo "${nombres[$i]}" | cut -d' ' -f2-)
-            echo "entro al primero"
-            read
+            # echo "entro al primero"
         else
             _namef[$i]=$(echo "${nombres[$i]}" | cut -d' ' -f3-)
-            echo "entro al segundo"
-            read
+            # echo "entro al segundo"
         fi
     done
     for i in "${_namef[@]}"
@@ -2032,8 +2029,9 @@ function Uptobox1()
 function MegaSerie()
 {
     unset MegaName; unset MEGAENLACES
-    i=1
+    # i=1
     MegaName=(`ls ${RD}/${R_CARPETA_SERIE}`)
+    msg -ama "CANTIDAD A SUBIR: ${#MegaName[@]}";
     mul; ProgressBar
     for (( i = 0; i < "${#MegaName[@]}"; i++ )); do
         subida_mega "${RD}/${R_CARPETA_SERIE}/${MegaName[$i]}" ".megallin.txt" "${MegaName[$i]}"
@@ -2041,7 +2039,7 @@ function MegaSerie()
         errorUP=$?
         MostarEnlaces "MEGA" ${MEGAENLACES[$i]} $errorUP "${MegaName[$i]}" 
         sleep 3
-        [[ $i -eq $b ]] && sleep 10 && mul
+        # [[ $i -eq $b ]] && sleep 10 && mul
     done
     kill $!
     for i in "${MEGAENLACES[@]}"; do echo $i; done
@@ -2220,9 +2218,9 @@ function subida_o_s_s_1080()
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD FREE\033[0m" 
         SubidaDriveFREE $RD $R_CARPETA_SERIE
 
-        # echo -e "\n"
-        # echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD VIP\033[0m"
-        # SubidaDriveVIP $RD $R_CARPETA_SERIE
+        echo -e "\n"
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD VIP\033[0m"
+        SubidaDriveVIP $RD $R_CARPETA_SERIE
 
         echo -e "\n"
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mMEGA\033[0m" 
@@ -2275,9 +2273,9 @@ function subida_o_s_s_720()
         SubidaDriveFREE $RD $R_CARPETA_SERIE
 
     # if [[ $ESTADODRIVEFREE == false && $ESTADODRIVEVIP == true ]];then
-    #     echo -e "\n"
-    #     echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD VIP\033[0m"
-    #     SubidaDriveVIP $RD $R_CARPETA_SERIE
+        echo -e "\n"
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD VIP\033[0m"
+        SubidaDriveVIP $RD $R_CARPETA_SERIE
     # fi
 
         echo -e "\n"

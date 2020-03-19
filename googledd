@@ -74,6 +74,7 @@ function limite2()
     link=$(rclone link drive5:/Movies/${FILENAME});
     link=$(echo $link | awk -F "=" '{print $2}')
     echo ${link};
+    rclone delete copi1:/
     rclone cleanup copi1:/
     cd $ruta;
 

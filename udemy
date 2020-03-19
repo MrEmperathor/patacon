@@ -26,7 +26,7 @@ do
         rm -rf "${NOMBRE_CURSO[$i]}" && mkdir "${NOMBRE_CURSO[$i]}" && mv *.rar "${NOMBRE_CURSO[$i]}"
 
         RUTA=$(pwd)
-        rclone copy "${RUTA}/${NOMBRE_CURSO[$i]}" midrive:/"${NOMBRE_CURSO[$i]}" -P
+        rclone copy "${RUTA}/${NOMBRE_CURSO[$i]}" drive5:/cursos/"${NOMBRE_CURSO[$i]}" -P
         rm -rf *
         clear
     fi
