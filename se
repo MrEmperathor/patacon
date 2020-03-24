@@ -3,7 +3,7 @@ BLANCOF='\033[47m'; RED='\033[0;31m'; REDCLARO='\033[1;31m'; AZUL='\033[0;34m'; 
 
 source $CONFIG
 PSW6=$PASSRAR
-
+. /usr/local/bin/function.sh
 
 function ActivarEnlaces()
 {
@@ -1986,6 +1986,7 @@ function netu()
     mul; ProgressBar
     for (( i = 0; i < "${#netuarray[@]}"; i++ )); do
         netuTV[$i]=$($SNetu ${RD}/${R_CARPETA_SERIE}/"${netuarray[$i]}" 2>/dev/null)
+        comprobarEstadoNetu "${RD}/${R_CARPETA_SERIE}/${netuarray[$i]}" "${netuTV[$i]}" "hqq.tv" "$SNetu" linkSalida; netuTV[$i]=${linkSalida}
         errornetu=$?
         MostarEnlaces "Netu" ${netuTV[$i]} $errornetu "${netuarray[$i]}" 
         sleep 3
@@ -2001,7 +2002,8 @@ function jetload()
     jetname=(`ls ${RD}/${R_CARPETA_SERIE}`)
     mul; ProgressBar
     for (( i = 0; i < "${#jetname[@]}"; i++ )); do
-        JetTV[$i]=$($SJetload ${R_CARPETA_SERIE}/"${jetname[$i]}")
+        JetTV[$i]=$($SJetload ${R_CARPETA_SERIE}/${jetname[$i]})
+        comprobarEstadoNetu "${R_CARPETA_SERIE}/${jetname[$i]}" "${JetTV[$i]}" "https://jetload.net" "$SJetload" linkSalida; JetTV[$i]=${linkSalida}
         errorJl=$?
         MostarEnlaces "Jetload" ${JetTV[$i]} $errorJl "${jetname[$i]}" 
         sleep 3
@@ -2018,6 +2020,7 @@ function Uptobox1()
     mul; ProgressBar
     for (( i = 0; i < "${#upName[@]}"; i++ )); do
         UptTV[$i]=$($Uptoboxx "${RD}/${R_CARPETA_SERIE}/${upName[$i]}")
+        comprobarEstadoNetu "${RD}/${R_CARPETA_SERIE}/${upName[$i]}" "${UptTV[$i]}" "https://uptobox.com" "$Uptoboxx" linkSalida; UptTV[$i]=${linkSalida}
         errorUP=$?
         MostarEnlaces "Uptobox" ${UptTV[$i]} $errorUP "${upName[$i]}" 
         sleep 3
@@ -2079,6 +2082,7 @@ function Gounlimited()
     mul; ProgressBar
     for (( i = 0; i < "${#upName[@]}"; i++ )); do
         gouTV[$i]=$($Sgoun "${R_CARPETA_SERIE}/${upName[$i]}")
+        comprobarEstadoNetu "$gouTV[$i]" "https://gounlimited.to" "$Sgoun" linkSalida; gouTV[$i]=${linkSalida}
         errorGu=$?
         MostarEnlaces "Gounlimited" ${gouTV[$i]} $errorUP "${upName[$i]}" 
         sleep 3

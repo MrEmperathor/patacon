@@ -55,10 +55,10 @@ opcion=7
 activarPlantilla=true #Activar la creacion de la plantilla en el panel web
 case "$CALIDA1" in
     1080) CALIDA1="(1080)"; 
-    drived; TArchivo; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_1080; IFS=$SAVEIFS; sudmenu 2>/dev/null 
+    drived; TArchivo; descompri; aguaMarca; EscogerAudio; addBd; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_1080; IFS=$SAVEIFS; sudmenu 2>/dev/null 
     ;;
     720) CALIDA1="(720)";
-    drived; TArchivo; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_720; IFS=$SAVEIFS; sudmenu 2>/dev/null
+    drived; TArchivo; descompri; aguaMarca; EscogerAudio; addBd; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_720; IFS=$SAVEIFS; sudmenu 2>/dev/null
     ;;
     *) echo default; exit
     ;;
