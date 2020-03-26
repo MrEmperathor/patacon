@@ -462,11 +462,13 @@ enlaces_pre6=$(/var/www/html/panel/inc/include/./serializar.php "${ENLACESOUO[@]
 enlaces_pre7=$(/var/www/html/panel/inc/include/./serializar.php "${ENLACESSHORT[@]}")
 enlaces_pre8=$(/var/www/html/panel/inc/include/./serializar.php "${gouTV[@]}")
 
+enlaces_backup=$(/var/www/html/panel/inc/include/./serializar.php "${enlaces_free_backup[@]}")
+
 
 
 cadena_array=$(/var/www/html/panel/inc/include/./serializar.php "$enlaces_pre" "$enlaces_pre1" "$enlaces_pre2" "$enlaces_pre3" "$enlaces_pre4" "$enlaces_pre5" "$enlaces_pre6" "$enlaces_pre7" "$enlaces_pre8")
 
-/var/www/html/panel/inc/xion/./insertarserie.php $IDSERIE "$FILEE" $NT $CALIDA1 $IDIOMA1 "$cadena_array"
+/var/www/html/panel/inc/xion/./insertarserie.php $IDSERIE "$FILEE" $NT $CALIDA1 $IDIOMA1 "$cadena_array" "${enlaces_backup}"
 }
 
 for MiPeli in `ls *.mp4 *.mkv *.avi *.mpg`; do
@@ -1986,6 +1988,7 @@ function netu()
     mul; ProgressBar
     for (( i = 0; i < "${#netuarray[@]}"; i++ )); do
         netuTV[$i]=$($SNetu ${RD}/${R_CARPETA_SERIE}/"${netuarray[$i]}" 2>/dev/null)
+        msg -ama "LO QUE PASO: ${netuTV[$i]}"
         comprobarEstadoNetu "${RD}/${R_CARPETA_SERIE}/${netuarray[$i]}" "${netuTV[$i]}" "hqq.tv" "$SNetu" linkSalida; netuTV[$i]=${linkSalida}
         errornetu=$?
         MostarEnlaces "Netu" ${netuTV[$i]} $errornetu "${netuarray[$i]}" 
@@ -2000,10 +2003,13 @@ function jetload()
     unset jetname; unset JetTV
     i=1
     jetname=(`ls ${RD}/${R_CARPETA_SERIE}`)
+    # msg -ama "RUTA QUE SE SUBIRA: ${RD}/${R_CARPETA_SERIE}"
     mul; ProgressBar
     for (( i = 0; i < "${#jetname[@]}"; i++ )); do
+        # msg -ama "ARCHIVO Y RUTA: ${RD}/${R_CARPETA_SERIE}/${jetname[$i]}"
         JetTV[$i]=$($SJetload ${R_CARPETA_SERIE}/${jetname[$i]})
-        comprobarEstadoNetu "${R_CARPETA_SERIE}/${jetname[$i]}" "${JetTV[$i]}" "https://jetload.net" "$SJetload" linkSalida; JetTV[$i]=${linkSalida}
+        msg -ama "LO QUE PASO: ${JetTV[$i]}"
+        comprobarEstadoNetu "${R_CARPETA_SERIE}/${jetname[$i]}" "${JetTV[$i]}" "jetload.net" "$SJetload" linkSalida; JetTV[$i]=${linkSalida}
         errorJl=$?
         MostarEnlaces "Jetload" ${JetTV[$i]} $errorJl "${jetname[$i]}" 
         sleep 3
@@ -2020,6 +2026,7 @@ function Uptobox1()
     mul; ProgressBar
     for (( i = 0; i < "${#upName[@]}"; i++ )); do
         UptTV[$i]=$($Uptoboxx "${RD}/${R_CARPETA_SERIE}/${upName[$i]}")
+        msg -ama "LO QUE PASO: ${UptTV[$i]}"
         comprobarEstadoNetu "${RD}/${R_CARPETA_SERIE}/${upName[$i]}" "${UptTV[$i]}" "https://uptobox.com" "$Uptoboxx" linkSalida; UptTV[$i]=${linkSalida}
         errorUP=$?
         MostarEnlaces "Uptobox" ${UptTV[$i]} $errorUP "${upName[$i]}" 
@@ -2028,6 +2035,24 @@ function Uptobox1()
     done
     kill $!
     for i in "${UptTV[@]}"; do echo $i; done
+}
+function Gounlimited()
+{
+    unset upName; unset gouTV
+    i=1; ruu=$(pwd)
+    upName=(`ls ${RD}/${R_CARPETA_SERIE}`)
+    mul; ProgressBar
+    for (( i = 0; i < "${#upName[@]}"; i++ )); do
+        gouTV[$i]=$($Sgoun "${R_CARPETA_SERIE}/${upName[$i]}")
+        msg -ama "LO QUE PASO: ${gouTV[$i]}"
+        comprobarEstadoNetu "${R_CARPETA_SERIE}/${upName[$i]}" "${gouTV[$i]}" "gounlimited.to" "$Sgoun" linkSalida; gouTV[$i]=${linkSalida}
+        errorGu=$?
+        MostarEnlaces "Gounlimited" ${gouTV[$i]} $errorGu "${upName[$i]}" 
+        sleep 3
+        [[ $i -eq $b ]] && sleep 10 && mul
+    done
+    kill $!
+    for i in "${gouTV[@]}"; do echo $i; done
 }
 function MegaSerie()
 {
@@ -2074,23 +2099,7 @@ function Acortadorr()
     done
 
 }
-function Gounlimited()
-{
-    unset upName; unset gouTV
-    i=1; ruu=$(pwd)
-    upName=(`ls ${RD}/${R_CARPETA_SERIE}`)
-    mul; ProgressBar
-    for (( i = 0; i < "${#upName[@]}"; i++ )); do
-        gouTV[$i]=$($Sgoun "${R_CARPETA_SERIE}/${upName[$i]}")
-        comprobarEstadoNetu "$gouTV[$i]" "https://gounlimited.to" "$Sgoun" linkSalida; gouTV[$i]=${linkSalida}
-        errorGu=$?
-        MostarEnlaces "Gounlimited" ${gouTV[$i]} $errorUP "${upName[$i]}" 
-        sleep 3
-        [[ $i -eq $b ]] && sleep 10 && mul
-    done
-    kill $!
-    for i in "${gouTV[@]}"; do echo $i; done
-}
+
 
 function EnlacesMostar()
 {
@@ -2148,7 +2157,7 @@ function subida_o_s_s()
         netu
         sleep 2
     fi
-
+    
     if [[ $ESTADOJETLOAD == true ]];then
         echo -e "\n"
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mJETLOAD\033[0m"
@@ -2172,6 +2181,7 @@ function subida_o_s_s()
     if [[ $ESTADODRIVEFREE = true ]];then
         echo -e "\n"
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD FREE\033[0m" 
+        respaldoDriveSeries $RD $R_CARPETA_SERIE
         SubidaDriveFREE $RD $R_CARPETA_SERIE
     fi
 
@@ -2220,6 +2230,7 @@ function subida_o_s_s_1080()
 
         echo -e "\n"
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD FREE\033[0m" 
+        respaldoDriveSeries $RD $R_CARPETA_SERIE
         SubidaDriveFREE $RD $R_CARPETA_SERIE
 
         echo -e "\n"
@@ -2274,6 +2285,7 @@ function subida_o_s_s_720()
 
         echo -e "\n"
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD FREE\033[0m" 
+        respaldoDriveSeries $RD $R_CARPETA_SERIE
         SubidaDriveFREE $RD $R_CARPETA_SERIE
 
     # if [[ $ESTADODRIVEFREE == false && $ESTADODRIVEVIP == true ]];then

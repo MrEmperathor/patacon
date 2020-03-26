@@ -2300,6 +2300,7 @@ function subida_o_s_s()
 
     if [[ $ESTADODRIVEFREE == true ]];then
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD FREE\033[0m" 
+        respaldoDrivePelis
         drive33
     fi
     if [[ $ESTADODRIVEFREE == true ]];then
@@ -2331,6 +2332,7 @@ function subida_o_s_s_1080()
     drive22
 
     echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD FREE\033[0m" 
+    respaldoDrivePelis
     drive33
 
     echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mMEGA\033[0m" 
@@ -2357,14 +2359,16 @@ function subida_o_s_s_720()
         Uptobox1 &
         sleep 2
 
-        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGOUNLIMITED\033[0m" 
-        Gounlimited &
-        sleep 2
+        echo -e "\033[1;36mEN MANTENIMIENTO \033[0m \033[1;33mGOUNLIMITED\033[0m" 
+        # echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGOUNLIMITED\033[0m" 
+        # Gounlimited &
+        # sleep 2
 
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD-VIP\033[0m"
         drive22
 
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD FREE\033[0m" 
+        respaldoDrivePelis
         drive33
     
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mMEGA\033[0m" 

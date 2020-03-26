@@ -1,0 +1,43 @@
+#!/bin/bash
+FILE_ID=${1}
+log_aria=".logAria"
+cookyes=".cookies.txt"
+terminar="(OK):download completed"
+error1="(ERR):error occurred."
+salida2="salida2"
+[[ -e $log_aria ]] && rm -rf $log_aria
+[[ -e $cookyes ]] && rm -rf $cookyes
+[[ -e $salida2 ]] && rm -rf $salida2 
+[[ -e `ls *.mp4 *.mkv *.avi *.mpg 2>/dev/null` ]] && rm *.mp4 *.mkv *.avi *.mpg 2>/dev/null
+
+wget -q --show-progress --save-cookies .cookies.txt --keep-session-cookies --no-check-certificate "https://drive.google.com/get_video_info?docid=${FILE_ID}" -O salida2
+
+FILENAME=$(wget -q --show-progress -O - "https://drive.google.com/file/d/${FILE_ID}/view" | sed -n -e 's!.*<title>\(.*\)\ \-\ Google\ Drive</title>.*!\1!p')
+
+echo " " > $log_aria
+texto=$(cat salida2);
+url=$(/var/www/html/panel/ggg/./api.php "${texto}");
+i=1
+if [[ $url != false ]];then
+    while true 
+    do
+        # aria2c -x16 -s16 --load-cookies .cookies.txt -c "${url}" -o "${FILENAME}" > ${log_aria} &
+        aria2c -x16 -s16 --load-cookies .cookies.txt -c "${url}" -o "${FILENAME}" &
+        jobs -l
+        sleep 5
+        kill %"${i}"
+        echo "VUELTA # $i"
+        if fgrep "$terminar" $log_aria ;then
+            break
+        elif fgrep "$error1" $log_aria ;then
+            break
+        fi
+        ((i++))
+    done
+else
+    echo "NO EXISTE LA URL"
+    echo $url
+    exit 1
+fi
+
+

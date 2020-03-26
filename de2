@@ -2302,7 +2302,8 @@ function subida_o_s_s()
     fi
 
     if [[ $ESTADODRIVEFREE == true ]];then
-        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD FREE\033[0m" 
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD FREE\033[0m"
+        respaldoDrivePelis
         drive33
     fi
     if [[ $ESTADODRIVEFREE == true ]];then
@@ -2334,6 +2335,7 @@ function subida_o_s_s_1080()
     drive22
 
     echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD FREE\033[0m" 
+    respaldoDrivePelis
     drive33
 
     echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mMEGA\033[0m" 
@@ -2360,14 +2362,15 @@ function subida_o_s_s_720()
         Uptobox1 &
         sleep 2
 
-        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGOUNLIMITED\033[0m" 
-        Gounlimited &
-        sleep 2
+        # echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGOUNLIMITED\033[0m" 
+        # Gounlimited &
+        # sleep 2
 
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD-VIP\033[0m"
         drive22
 
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD FREE\033[0m" 
+        respaldoDrivePelis
         drive33
     
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mMEGA\033[0m" 
@@ -3103,9 +3106,10 @@ ruta_drive=$(pwd)
 
 
                 enlaces_pre=$(${includeRuta}./serializar.php "${array[@]}")
+                backup_url=$(${includeRuta}./serializar.php "${backup_url}")
 
                 # /var/www/html/panel/inc/xion/./agregar.php $IDPELI "$nombresinespacio" $CALIDA2 $IDIOMA2 $enlaces_pre $descarga "$lvip" "$lfree" 
-                /var/www/html/panel/inc/xion/./agregar.php $enlaces_pre $bid "admin2"
+                /var/www/html/panel/inc/xion/./agregar.php $enlaces_pre $bid "admin2" "${backup_url}"
             }
             function enlacesMG(){
 
