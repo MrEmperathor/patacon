@@ -2362,9 +2362,9 @@ function subida_o_s_s_720()
         Uptobox1 &
         sleep 2
 
-        # echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGOUNLIMITED\033[0m" 
-        # Gounlimited &
-        # sleep 2
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGOUNLIMITED\033[0m" 
+        Gounlimited &
+        sleep 2
 
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD-VIP\033[0m"
         drive22

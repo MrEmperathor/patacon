@@ -1,12 +1,71 @@
 #!/bin/bash
 
+function elemeto1()
+{
+    if [[ "${FARRAY[0]}" =~ "drive.google.com" && ${EXTRAER_GDRIVE} == "720" || "${FARRAY[0]}" =~ "drive.google.com" && ${EXTRAER_GDRIVE} == "1080" || "${FARRAY[0]}" =~ "drive.google.com" && ${EXTRAER_GDRIVE} == "480" || "${FARRAY[0]}" =~ "drive.google.com" && ${EXTRAER_GDRIVE} == "360" ]];then
+        FILEIDD=$(php /var/www/html/panel/inc/comp/parse_url.php "${FARRAY[0]}")
+        opcion=7
+        activarPlantilla=true #Activar la creacion de la plantilla en el panel web
+        case "$CALIDA1" in
+            1080) CALIDA1="(1080)"; 
+            gooledd720 ${FILEIDD} "${EXTRAER_GDRIVE}p"; TArchivo; descompri; aguaMarca; EscogerAudio; addBd; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_1080; IFS=$SAVEIFS; sudmenu 2>/dev/null 
+            ;;
+            720) CALIDA1="(720)";
+            gooledd720 "${FILEIDD}" "${EXTRAER_GDRIVE}p"; TArchivo; descompri; aguaMarca; EscogerAudio; addBd; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_720; IFS=$SAVEIFS; sudmenu 2>/dev/null
+            ;;
+            480) CALIDA1="(480)";
+            gooledd720 "${FILEIDD}" "${EXTRAER_GDRIVE}p"; TArchivo; descompri; aguaMarca; EscogerAudio; addBd; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_720; IFS=$SAVEIFS; sudmenu 2>/dev/null
+            ;;
+            360) CALIDA1="(360)";
+            gooledd720 "${FILEIDD}" "${EXTRAER_GDRIVE}p"; TArchivo; descompri; aguaMarca; EscogerAudio; addBd; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_720; IFS=$SAVEIFS; sudmenu 2>/dev/null
+            ;;
+            *) echo default; exit
+            ;;
+        esac
+    else
+        # PARAMETRO DEFINIDO PARA PODER DESCARGAR
+        opcion=7
+        activarPlantilla=true #Activar la creacion de la plantilla en el panel web
+        case "$CALIDA1" in
+            1080) CALIDA1="(1080)"; 
+            drived; TArchivo; descompri; aguaMarca; EscogerAudio; addBd; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_1080; IFS=$SAVEIFS; sudmenu 2>/dev/null 
+            ;;
+            720) CALIDA1="(720)";
+            drived; TArchivo; descompri; aguaMarca; EscogerAudio; addBd; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_720; IFS=$SAVEIFS; sudmenu 2>/dev/null
+            ;;
+            *) echo default; exit
+            ;;
+        esac
+    fi
+}
+
+function Respaldo()
+{
+    local enlace
+
+    echo "este es el enlace que se enviara: ${FARRAY[0]}"
+    echo 
+    # enlace=$(respaldoBackup "${FARRAY[0]}")
+    respaldoBackup "${FARRAY[0]}" enlace
+    echo "lo qque se esperesa: ${enlace}"
+    agregarRespaldoBd "${ID_UNICO}" "${enlace}" "admin"
+}
+
 # echo "OPTIND inicia en $OPTIND"
 v=1
-while getopts "c:t:n:e:i:s:" optname
+while getopts "c:t:n:e:i:s:C:I:" optname
   do
     case "$optname" in
         "c")
             CALIDA1=$OPTARG;
+            # echo "Se ha especificado la opción $optname y su valor es $CALIDA1"
+            ;;
+        "C")
+            EXTRAER_GDRIVE=$OPTARG;
+            # echo "Se ha especificado la opción $optname y su valor es $CALIDA1"
+            ;;
+        "I")
+            ID_UNICO=${OPTARG};
             # echo "Se ha especificado la opción $optname y su valor es $CALIDA1"
             ;;
         "e")
@@ -49,36 +108,16 @@ while getopts "c:t:n:e:i:s:" optname
         # echo "OPTIND ahora es $OPTIND"
         # echo "----VUELTA # $v -------"
         # ((v++))
-  done
+done
 
-if [[ "${FARRAY[0]}" =~ "drive.google.com" ]];then
-    FILEIDD=$(php /var/www/html/panel/inc/comp/parse_url.php "${FARRAY[0]}")
-    opcion=7
-    activarPlantilla=true #Activar la creacion de la plantilla en el panel web
-    case "$CALIDA1" in
-        1080) CALIDA1="(1080)"; 
-        gooledd720 ${FILEIDD}; TArchivo; descompri; aguaMarca; EscogerAudio; addBd; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_1080; IFS=$SAVEIFS; sudmenu 2>/dev/null 
-        ;;
-        720) CALIDA1="(720)";
-        gooledd720 ${FILEIDD}; TArchivo; descompri; aguaMarca; EscogerAudio; addBd; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_720; IFS=$SAVEIFS; sudmenu 2>/dev/null
-        ;;
-        *) echo default; exit
-        ;;
-    esac
-else
-    # PARAMETRO DEFINIDO PARA PODER DESCARGAR
-    opcion=7
-    activarPlantilla=true #Activar la creacion de la plantilla en el panel web
-    case "$CALIDA1" in
-        1080) CALIDA1="(1080)"; 
-        drived; TArchivo; descompri; aguaMarca; EscogerAudio; addBd; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_1080; IFS=$SAVEIFS; sudmenu 2>/dev/null 
-        ;;
-        720) CALIDA1="(720)";
-        drived; TArchivo; descompri; aguaMarca; EscogerAudio; addBd; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_720; IFS=$SAVEIFS; sudmenu 2>/dev/null
-        ;;
-        *) echo default; exit
-        ;;
-    esac
-fi
+case ${EXTRAER_GDRIVE} in
+    "720") elemeto1
+    ;;
+    "respaldo") Respaldo
+    ;;
+    *) elemeto1
+    ;;
+esac
+exit
 
 

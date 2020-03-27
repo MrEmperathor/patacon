@@ -1,5 +1,6 @@
 #!/bin/bash
 FILE_ID=${1}
+BUSSCAR_CALIDAD=${2}
 log_aria=".logAria"
 cookyes=".cookies.txt"
 terminar="(OK):download completed"
@@ -16,13 +17,13 @@ FILENAME=$(wget -q --show-progress -O - "https://drive.google.com/file/d/${FILE_
 
 echo " " > $log_aria
 texto=$(cat salida2);
-url=$(/var/www/html/panel/ggg/./api.php "${texto}");
+url=$(/var/www/html/panel/ggg/./api.php "${texto}" "${BUSSCAR_CALIDAD}");
 i=1
 if [[ $url != false ]];then
     while true 
     do
-        # aria2c -x16 -s16 --load-cookies .cookies.txt -c "${url}" -o "${FILENAME}" > ${log_aria} &
-        aria2c -x16 -s16 --load-cookies .cookies.txt -c "${url}" -o "${FILENAME}" &
+        aria2c -x16 -s16 --load-cookies .cookies.txt -c "${url}" -o "${FILENAME}" > ${log_aria} &
+        # aria2c -x16 -s16 --load-cookies .cookies.txt -c "${url}" -o "${FILENAME}" &
         jobs -l
         sleep 5
         kill %"${i}"

@@ -1,0 +1,28 @@
+<pre>Array
+(
+    [0] => stdClass Object
+        (
+            [type] => video/mp4
+            [label] => 360
+            [file] => https://r5---sn-4g5e6nsy.c.docs.google.com/videoplayback?expire=1585338644&ei=0yB-XvDyPNO80AXK_YTYBg&ip=167.86.105.129&cp=QVNNV0RfV1ZSRVhOOnl0SDdBMTJPeE5Bc2s2cWpqaU1Ja2h3bnR1Y3A2eFJSVmRWZWdqXzA5cXY&id=f49cf8eec3c9bb15&itag=18&source=webdrive&requiressl=yes&mh=D7&mm=30&mn=sn-4g5e6nsy&ms=nxu&mv=m&mvi=4&pl=23&sc=yes&ttl=transient&susc=dr&driveid=1KxOJVDcwFZZI-ZNES_FmY7RB0zd8uOEg&app=explorer&mime=video/mp4&dur=5969.827&lmt=1585191560034396&mt=1585324159&sparams=expire%2Cei%2Cip%2Ccp%2Cid%2Citag%2Csource%2Crequiressl%2Cttl%2Csusc%2Cdriveid%2Capp%2Cmime%2Cdur%2Clmt&sig=AJpPlLswRQIhAMdvNdUh2YIVBfZ9X_Odx0XeM_LsnpCxjq1W5ndhEnlLAiAlBWetoZbqqrRBKPuKZ9ARWbLAxIKAYmfnICJLBPXbPA==&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Csc&lsig=ALrAebAwRAIgG9ymmp5VGMgn2CtgaBOdOGJQC7YiwAY79iBaVIApT6YCIBXf96l__EEgesuU0ri05tTJvCgA_UUx75MjCDpt2cwW&tile=360
+            [src] => https://r5---sn-4g5e6nsy.c.docs.google.com/videoplayback?expire=1585338644&ei=0yB-XvDyPNO80AXK_YTYBg&ip=167.86.105.129&cp=QVNNV0RfV1ZSRVhOOnl0SDdBMTJPeE5Bc2s2cWpqaU1Ja2h3bnR1Y3A2eFJSVmRWZWdqXzA5cXY&id=f49cf8eec3c9bb15&itag=18&source=webdrive&requiressl=yes&mh=D7&mm=30&mn=sn-4g5e6nsy&ms=nxu&mv=m&mvi=4&pl=23&sc=yes&ttl=transient&susc=dr&driveid=1KxOJVDcwFZZI-ZNES_FmY7RB0zd8uOEg&app=explorer&mime=video/mp4&dur=5969.827&lmt=1585191560034396&mt=1585324159&sparams=expire%2Cei%2Cip%2Ccp%2Cid%2Citag%2Csource%2Crequiressl%2Cttl%2Csusc%2Cdriveid%2Capp%2Cmime%2Cdur%2Clmt&sig=AJpPlLswRQIhAMdvNdUh2YIVBfZ9X_Odx0XeM_LsnpCxjq1W5ndhEnlLAiAlBWetoZbqqrRBKPuKZ9ARWbLAxIKAYmfnICJLBPXbPA==&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Csc&lsig=ALrAebAwRAIgG9ymmp5VGMgn2CtgaBOdOGJQC7YiwAY79iBaVIApT6YCIBXf96l__EEgesuU0ri05tTJvCgA_UUx75MjCDpt2cwW&tile=-360
+        )
+
+    [1] => stdClass Object
+        (
+            [type] => video/mp4
+            [label] => 720
+            [file] => https://r5---sn-4g5e6nsy.c.docs.google.com/videoplayback?expire=1585338644&ei=0yB-XvDyPNO80AXK_YTYBg&ip=167.86.105.129&cp=QVNNV0RfV1ZSRVhOOnl0SDdBMTJPeE5Bc2s2cWpqaU1Ja2h3bnR1Y3A2eFJSVmRWZWdqXzA5cXY&id=f49cf8eec3c9bb15&itag=22&source=webdrive&requiressl=yes&mh=D7&mm=30&mn=sn-4g5e6nsy&ms=nxu&mv=m&mvi=4&pl=23&sc=yes&ttl=transient&susc=dr&driveid=1KxOJVDcwFZZI-ZNES_FmY7RB0zd8uOEg&app=explorer&mime=video/mp4&dur=5969.827&lmt=1585188858803246&mt=1585324159&sparams=expire%2Cei%2Cip%2Ccp%2Cid%2Citag%2Csource%2Crequiressl%2Cttl%2Csusc%2Cdriveid%2Capp%2Cmime%2Cdur%2Clmt&sig=AJpPlLswRgIhAPvVORNKeVFeJwHGcj7oGKD77Sd-unSFrfT2NfVx9_LBAiEAuDNlxEYrm2MEYd2ejo_O80Me_VEjP4ETf7XUhuBvlCI=&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Csc&lsig=ALrAebAwRgIhAPfaG4PXi6Y6Y8y647WDo5QSPK2F327GVkP2hHuGzcwxAiEAx1pt9KRhmVnF8fEnmT3ReLiIEHVPlt68RE7aQAyrNuM=&tile=720
+            [src] => https://r5---sn-4g5e6nsy.c.docs.google.com/videoplayback?expire=1585338644&ei=0yB-XvDyPNO80AXK_YTYBg&ip=167.86.105.129&cp=QVNNV0RfV1ZSRVhOOnl0SDdBMTJPeE5Bc2s2cWpqaU1Ja2h3bnR1Y3A2eFJSVmRWZWdqXzA5cXY&id=f49cf8eec3c9bb15&itag=22&source=webdrive&requiressl=yes&mh=D7&mm=30&mn=sn-4g5e6nsy&ms=nxu&mv=m&mvi=4&pl=23&sc=yes&ttl=transient&susc=dr&driveid=1KxOJVDcwFZZI-ZNES_FmY7RB0zd8uOEg&app=explorer&mime=video/mp4&dur=5969.827&lmt=1585188858803246&mt=1585324159&sparams=expire%2Cei%2Cip%2Ccp%2Cid%2Citag%2Csource%2Crequiressl%2Cttl%2Csusc%2Cdriveid%2Capp%2Cmime%2Cdur%2Clmt&sig=AJpPlLswRgIhAPvVORNKeVFeJwHGcj7oGKD77Sd-unSFrfT2NfVx9_LBAiEAuDNlxEYrm2MEYd2ejo_O80Me_VEjP4ETf7XUhuBvlCI=&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Csc&lsig=ALrAebAwRgIhAPfaG4PXi6Y6Y8y647WDo5QSPK2F327GVkP2hHuGzcwxAiEAx1pt9KRhmVnF8fEnmT3ReLiIEHVPlt68RE7aQAyrNuM=&tile=-720
+        )
+
+    [2] => stdClass Object
+        (
+            [type] => video/mp4
+            [label] => 480
+            [file] => https://r5---sn-4g5e6nsy.c.docs.google.com/videoplayback?expire=1585338644&ei=0yB-XvDyPNO80AXK_YTYBg&ip=167.86.105.129&cp=QVNNV0RfV1ZSRVhOOnl0SDdBMTJPeE5Bc2s2cWpqaU1Ja2h3bnR1Y3A2eFJSVmRWZWdqXzA5cXY&id=f49cf8eec3c9bb15&itag=59&source=webdrive&requiressl=yes&mh=D7&mm=30&mn=sn-4g5e6nsy&ms=nxu&mv=m&mvi=4&pl=23&sc=yes&ttl=transient&susc=dr&driveid=1KxOJVDcwFZZI-ZNES_FmY7RB0zd8uOEg&app=explorer&mime=video/mp4&dur=5969.827&lmt=1585191775655846&mt=1585324159&sparams=expire%2Cei%2Cip%2Ccp%2Cid%2Citag%2Csource%2Crequiressl%2Cttl%2Csusc%2Cdriveid%2Capp%2Cmime%2Cdur%2Clmt&sig=AJpPlLswRAIgUdoqUK6d5JJvzNpkfM0Qj0I1uMQIpILLnYQXoQj3KFUCIAO3ao9dqQS0r5SUkR6wHhl8gA0WzAASpoCrVsXcvLZT&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Csc&lsig=ALrAebAwRQIgBXQb9-1YeF6DMsuPacsE5hrFhPQc26q4sUlOzrCUG0QCIQD6j0yB3r1z-1OkosE_FDk-AEJqwl46AA27xDJvvR0wpQ==&tile=480
+            [src] => https://r5---sn-4g5e6nsy.c.docs.google.com/videoplayback?expire=1585338644&ei=0yB-XvDyPNO80AXK_YTYBg&ip=167.86.105.129&cp=QVNNV0RfV1ZSRVhOOnl0SDdBMTJPeE5Bc2s2cWpqaU1Ja2h3bnR1Y3A2eFJSVmRWZWdqXzA5cXY&id=f49cf8eec3c9bb15&itag=59&source=webdrive&requiressl=yes&mh=D7&mm=30&mn=sn-4g5e6nsy&ms=nxu&mv=m&mvi=4&pl=23&sc=yes&ttl=transient&susc=dr&driveid=1KxOJVDcwFZZI-ZNES_FmY7RB0zd8uOEg&app=explorer&mime=video/mp4&dur=5969.827&lmt=1585191775655846&mt=1585324159&sparams=expire%2Cei%2Cip%2Ccp%2Cid%2Citag%2Csource%2Crequiressl%2Cttl%2Csusc%2Cdriveid%2Capp%2Cmime%2Cdur%2Clmt&sig=AJpPlLswRAIgUdoqUK6d5JJvzNpkfM0Qj0I1uMQIpILLnYQXoQj3KFUCIAO3ao9dqQS0r5SUkR6wHhl8gA0WzAASpoCrVsXcvLZT&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Csc&lsig=ALrAebAwRQIgBXQb9-1YeF6DMsuPacsE5hrFhPQc26q4sUlOzrCUG0QCIQD6j0yB3r1z-1OkosE_FDk-AEJqwl46AA27xDJvvR0wpQ==&tile=-480
+        )
+
+)
+</pre>  
