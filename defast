@@ -52,12 +52,16 @@ function Respaldo()
 }
 
 # echo "OPTIND inicia en $OPTIND"
-v=1
-while getopts "c:t:n:e:i:s:C:I:" optname
+v=0
+while getopts "c:t:n:e:i:s:C:I:K:" optname
   do
     case "$optname" in
         "c")
             CALIDA1=$OPTARG;
+            # echo "Se ha especificado la opción $optname y su valor es $CALIDA1"
+            ;;
+        "K")
+            SERVIDORES[$v]=$OPTARG;
             # echo "Se ha especificado la opción $optname y su valor es $CALIDA1"
             ;;
         "C")
