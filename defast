@@ -28,10 +28,13 @@ function elemeto1()
         activarPlantilla=true #Activar la creacion de la plantilla en el panel web
         case "$CALIDA1" in
             1080) CALIDA1="(1080)"; 
-            drived; TArchivo; descompri; aguaMarca; EscogerAudio; addBd; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_1080; IFS=$SAVEIFS; sudmenu 2>/dev/null 
+                drived; TArchivo; descompri; aguaMarca; EscogerAudio; addBd; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_1080; IFS=$SAVEIFS; sudmenu 2>/dev/null 
             ;;
             720) CALIDA1="(720)";
-            drived; TArchivo; descompri; aguaMarca; EscogerAudio; addBd; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_720; IFS=$SAVEIFS; sudmenu 2>/dev/null
+                drived; TArchivo; descompri; aguaMarca; EscogerAudio; addBd; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_720; IFS=$SAVEIFS; sudmenu 2>/dev/null
+            ;;
+            "720p") CALIDA1="(720)";
+                drived; TArchivo; descompri; aguaMarca; EscogerAudio; addBd; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_720p; IFS=$SAVEIFS; sudmenu 2>/dev/null
             ;;
             *) echo default; exit
             ;;
@@ -49,6 +52,19 @@ function Respaldo()
     respaldoBackup "${FARRAY[0]}" enlace
     echo "lo qque se esperesa: ${enlace}"
     agregarRespaldoBd "${ID_UNICO}" "${enlace}" "admin"
+}
+
+function obtenerLinkCalidad()
+{
+    local URL=$1
+    local CALIDAD=$2
+
+    FILEIDD=$(php /var/www/html/panel/inc/comp/parse_url.php "${URL}")
+    gooledd720 ${FILEIDD} "${CALIDAD}"
+
+    FILENAME=$(wget -q --show-progress -O - "https://drive.google.com/file/d/${FILEIDD}/view" | sed -n -e 's!.*<title>\(.*\)\ \-\ Google\ Drive</title>.*!\1!p')
+    rclone copy "${FILENAME}" drive7:/obt_calidades -P
+    rclone link drive7:/obt_calidades/"${FILENAME}"
 }
 
 # echo "OPTIND inicia en $OPTIND"
@@ -118,6 +134,8 @@ case ${EXTRAER_GDRIVE} in
     "720") elemeto1
     ;;
     "respaldo") Respaldo
+    ;;
+    "obt_1080") CALIDAD="1080p"; obtenerLinkCalidad ${FARRAY[0]} $CALIDAD
     ;;
     *) elemeto1
     ;;

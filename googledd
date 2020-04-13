@@ -67,10 +67,11 @@ function limite2()
 {
     ruta=$(pwd)
     id=${1}
-    mg -verm "SEGUNDO INTENTO"
-    cd /root/.Mydrive3 && drive copy -id ${id} peli;
+    msg -verm "SEGUNDO INTENTO"
+    # cd /root/.Mydrive3 && drive copy -id ${id} peli;
     FILENAME=$(wget -q --show-progress -O - "https://drive.google.com/file/d/${id}/view" | sed -n -e 's!.*<title>\(.*\)\ \-\ Google\ Drive</title>.*!\1!p')
-    rclone move copi1:/${FILENAME} drive5:/Movies/ -P
+    # rclone move copi1:/${FILENAME} drive5:/Movies/ -P
+    rclone copy midrivefull:/Filecopy/${FILENAME} drive5:/Movies/ -P
     link=$(rclone link drive5:/Movies/${FILENAME});
     link=$(echo $link | awk -F "=" '{print $2}')
     echo ${link};

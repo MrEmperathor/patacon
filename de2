@@ -553,23 +553,23 @@ function accion() {
 
     case $opcion in 
 
-        1) drived; descompri 2>/dev/null; EscogerAudio 2>/dev/null; PegarSubtitulos 2>/dev/null; renom; TArchivo; subida_o_s_s; IFS=$SAVEIFS; sudmenu ;; #openloadd
+        1) drived; descompri 2>/dev/null; EscogerAudio 2>/dev/null; PegarSubtitulos 2>/dev/null; addBd; renom; TArchivo; subida_o_s_s; IFS=$SAVEIFS; sudmenu ;; #openloadd
 
-        2) drived; TArchivo; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
+        2) drived; TArchivo; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; SAVEIFS=$IFS; addBd; renom; ConvertirPeli; subida_o_s_s; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
         # 2) drived; PegarSubtitulos; TArchivo; descompri; renom; ConvertirPeli; sudmenu ;;
         
-        3) drived; descompri; EscogerAudio; PegarSubtitulos; renom; TArchivo; subida_o_s_s; DriveRClone; subida_mega .megallin.txt; sudmenu ;; #megad
+        3) drived; descompri; EscogerAudio; PegarSubtitulos; addBd; renom; TArchivo; subida_o_s_s; DriveRClone; subida_mega .megallin.txt; sudmenu ;; #megad
 
-        4) drived; descompri; EscogerAudio; PegarSubtitulos; renom; ConvertirPeli; TArchivo; subida_o_s_s; DriveRClone; subida_mega .megallin.txt; sudmenu ;; #ariad
+        4) drived; descompri; EscogerAudio; PegarSubtitulos; addBd; renom; ConvertirPeli; TArchivo; subida_o_s_s; DriveRClone; subida_mega .megallin.txt; sudmenu ;; #ariad
 
-        5) subir720; TArchivo; descompri; EscogerAudio; PegarSubtitulos; renom; ConvertirPeli; subida_o_s_s; DriveRClone; subida_mega .megallin.txt; sudmenu ;; #d_todos ;;
+        5) subir720; TArchivo; descompri; EscogerAudio; PegarSubtitulos; addBd; renom; ConvertirPeli; subida_o_s_s; DriveRClone; subida_mega .megallin.txt; sudmenu ;; #d_todos ;;
 
-        6) drived; TArchivo; descompri; EscogerAudio; PegarSubtitulos; renom; SoloMega; ConvertirPeli; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
+        6) drived; TArchivo; descompri; EscogerAudio; PegarSubtitulos; addBd; renom; SoloMega; ConvertirPeli; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
         # 6) drived; TArchivo; descompri; EscogerAudio; PegarSubtitulos; renom; subida_mega .megallin.txt; EnlacesMostar; ConvertirPeli; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
 
-        7) drived; TArchivo; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_1080; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
+        7) drived; TArchivo; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; SAVEIFS=$IFS; addBd; renom; ConvertirPeli; subida_o_s_s_1080; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
 
-        8) drived; TArchivo; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_720; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
+        8) drived; TArchivo; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; SAVEIFS=$IFS; addBd; renom; ConvertirPeli; subida_o_s_s_720; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
 
         9) subida_mega; sudmenu ;;
 
@@ -581,9 +581,9 @@ function accion() {
 
         13) megals -e; sudmenu ;;
 
-        14) openloadd; TArchivo; renom; gdtxt; subida_mega; sudmenu ;;
+        14) openloadd; TArchivo; addBd; renom; gdtxt; subida_mega; sudmenu ;;
 
-        15) drived; TArchivo; renom; descompri; subida_mega; sudmenu ;;
+        15) drived; TArchivo; addBd; renom; descompri; subida_mega; sudmenu ;;
         *) echo "no es una opcion válida.";
         echo "Presiona una tecla para continuar...";
         read foo;;
@@ -702,7 +702,7 @@ function tst(){
     echo -e "\033[1;37m[\033[1;31m01\033[1;37m] • \033[1;33mOPENLOAD \033[1;37m                              [\033[1;31m16\033[1;37m] • \033[1;33mACTIVAR O DESACTIVAR SERVICIOS \033[1;37m
 [\033[1;31m02\033[1;37m] • \033[1;33mVERYSTREAM \033[1;37m                            [\033[1;31m17\033[1;37m] • \033[1;33mMARCA DE AGUA \033[1;37m
 [\033[1;31m03\033[1;37m] • \033[1;33mNETU \033[1;37m                                  [\033[1;31m18\033[1;37m] • \033[1;33mVENTANAS DE TRABAJO \033[1;37m
-[\033[1;31m04\033[1;37m] • \033[1;33mJETLOAD \033[1;37m
+[\033[1;31m04\033[1;37m] • \033[1;33mJETLOAD \033[1;37m                               [\033[1;31m19\033[1;37m] • \033[1;33mGOOGLE DRIVE \033[1;37m
 [\033[1;31m05\033[1;37m] • \033[1;33mUPTOBOX \033[1;37m
 [\033[1;31m06\033[1;37m] • \033[1;33mGOUNLIMITED \033[1;37m
 [\033[1;31m07\033[1;37m] • \033[1;33mFEMBED \033[1;37m
@@ -746,6 +746,7 @@ function tst(){
     [[ $TST1 = 16 ]] && ActivarEnlaces
     [[ $TST1 = 17 ]] && echo -e "$barraAzul" && validar_cuenta -marca
     [[ $TST1 = 18 ]] && echo -e "$barraAzul" && validar_cuenta -espacio_t
+    [[ $TST1 = 19 ]] && echo -e "$barraAzul" && source c_gd.sh
     
     
 }
@@ -2383,6 +2384,44 @@ function subida_o_s_s_720()
         Acortadorr $LGDPHP $SOUO LGDPHP1 "OUO"
     
 }
+function subida_o_s_s_720p() 
+{
+    definnirFifo
+    PP=1
+
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mNETU\033[0m"
+        netu &
+        sleep 2
+
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mJETLOAD\033[0m"
+        jetload &
+        sleep 2
+
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mUPTOBOX\033[0m"
+        Uptobox1 &
+        sleep 2
+
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGOUNLIMITED\033[0m" 
+        Gounlimited &
+        sleep 2
+
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD-VIP\033[0m"
+        drive22
+
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD FREE\033[0m" 
+        respaldoDrivePelis
+        drive33
+    
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mMEGA\033[0m" 
+        subida_mega .megallin.txt
+
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mOUO\033[0m" 
+        Acortadorr $MEGALPHP $SSHORT MEGALPHP1 "SHORT"
+
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mOUO\033[0m" 
+        Acortadorr $LGDPHP $SOUO LGDPHP1 "OUO"
+    
+}
 
 function SoloMega()
 {
@@ -2635,10 +2674,11 @@ function addBd()
 
     if [ "$pesodelarchi" -o "$pesodelarchi2" ]; then
         if [[ $V720 = 1 ]]; then
-                bid=$(/var/www/html/panel/inc/xion/./insertar.php "$IDPELI" "$nombresinespacio" "${CALIDA2}-720" $IDIOMA2)
+                bid=$(/usr/local/bin/php/./insertar.php "$IDPELI" "$nombresinespacio" "${CALIDA2}-720" $IDIOMA2)
         else
             if [[ $pesodelarchi || $pesodelarchi2 ]]; then
                     echo "creando platilla"
+                    # bid=$(/usr/local/bin/php/./insertar.php "$IDPELI" "$nombresinespacio" $CALIDA2 $IDIOMA2 "admin2")
                     bid=$(/var/www/html/panel/inc/xion/./insertar.php "$IDPELI" "$nombresinespacio" $CALIDA2 $IDIOMA2 "admin2")
             else
                 echo "no hay pelicula"
@@ -3109,6 +3149,7 @@ ruta_drive=$(pwd)
                 backup_url=$(${includeRuta}./serializar.php "${backup_url}")
 
                 # /var/www/html/panel/inc/xion/./agregar.php $IDPELI "$nombresinespacio" $CALIDA2 $IDIOMA2 $enlaces_pre $descarga "$lvip" "$lfree" 
+                # /usr/local/bin/php/./agregar.php $enlaces_pre $bid "admin2" "${backup_url}"
                 /var/www/html/panel/inc/xion/./agregar.php $enlaces_pre $bid "admin2" "${backup_url}"
             }
             function enlacesMG(){
