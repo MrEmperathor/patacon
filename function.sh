@@ -1,3 +1,30 @@
+function SubidaDriveFreeVip()
+{
+    local file=${1}
+    local __enlace_salida=${2}
+    local CUENTA=${3}
+
+    rclone copy "${file}" -P ${CUENTA}:/
+    link=$(rclone link ${CUENTA}:/"${file}")
+    ERRLINK=$?
+    if [[ $ERRLINK != 0 ]]; then
+        until [[ $ERRLINK = 0 ]]; do
+            msg -verd "Volviendo a intentar"
+            link=$(rclone link ${CUENTA}:/"${file}")
+            ERRLINK=$?
+            sleep 3
+        done
+    fi
+    [[ $link ]] && eval $__enlace_salida="'$link'"
+}
+
+function QuitarPermisos()
+{
+    local link=${1}
+    ID=$(echo $link | awk -F "=" '{printf $2}')
+    volerXd=$(pwd)
+    cd $RCOPY2 && drive pub -id "$ID"; drive unpub -id "$ID"; cd $volerXd
+}
 function obtenerIdGdrive()
 {
     local id
@@ -5,6 +32,7 @@ function obtenerIdGdrive()
     id=$(php /var/www/html/panel/inc/comp/parse_url.php "${1}")
     echo "${id}"
 }
+
 function comprobarEstadoNetu(){
     local file="${1}"
     local link="${2}"
@@ -13,15 +41,41 @@ function comprobarEstadoNetu(){
     local __salida=${5}
     local myresult
 
+
     local nm=1
-    until [[ $link =~ "$dato" ]]; do
-        myresult=$($script "$file" 2>/dev/null)
-        link=${myresult}
-        echo "intentado forzar subida. INTENTO # $nm"
-        ((nm++))
-        sleep 30
-        [[ $nm -gt 10 ]] && sleep 30;
-    done
+    if [[ $dato == "mega" ]];then
+        local file=".megallin.txt"
+        until [[ $link =~ "$dato" ]]; do
+            $script "$file" link 
+            echo "intentado forzar subida $dato. INTENTO # $nm"
+            ((nm++))
+            sleep 20
+            [[ $nm -gt 10 ]] && sleep 30;
+        done
+    elif [[ $dato == "gdfree" || $dato == "gdvip" ]];then
+        local cuenta=${DRIVE3}
+        local dato_a_encontrar="drive.google.com"
+        [[ $dato == "gdvip" ]] && local vip=true && local cuenta=${DRIVE2}
+        
+        
+        until [[ $link =~ "$dato_a_encontrar" ]]; do
+            $script "$file" link $cuenta
+            echo "intentado forzar subida $dato. INTENTO # $nm"
+            ((nm++))
+            sleep 20
+            [[ $nm -gt 10 ]] && sleep 30;
+        done
+        [[ $vip ]] && QuitarPermisos $link
+    else
+        until [[ $link =~ "$dato" ]]; do
+            myresult=$($script "$file" 2>/dev/null)
+            link=${myresult}
+            echo "intentado forzar subida $dato. INTENTO # $nm"
+            ((nm++))
+            sleep 30
+            [[ $nm -gt 10 ]] && sleep 30;
+        done
+    fi
     eval $__salida="'$link'"
 }
 respaldoDrivePelis()
@@ -89,6 +143,44 @@ function agregarRespaldoBd()
     echo "ruta donde se add: ${includeRuta}./serializar.php ${link}"
     backup_url=$(${includeRuta}./serializar.php "${link}")
     /usr/local/bin/php/./agregar.php "${id_unico}" "${backup_url}" "${admin}"
-    
-    
+}
+
+# SERVIDORES
+
+function ServidorAll()
+{
+    local file="${1}"
+    local link="${2}"
+    local dato="${3}"
+    local script=${4}
+    local ID_DB_PELI=${5}
+    local scriptDB="/usr/local/bin/php/funtions/./actualizarEnlacesDB.php"
+    case $script in
+        "hqq.tv") script=${SNetu}
+        ;;
+        "jetload") script=${SJetload}
+        ;;
+        "uptobox") script=${Uptoboxx}
+        ;;
+        "gounlimited") script=${Sgoun}
+        ;;
+        "mega") script=subida_mega
+        ;;
+        "gdfree"|"gdvip") script=SubidaDriveFreeVip
+        ;;
+        *) echo default
+        ;;
+    esac
+    # echo "file: $file"
+    # echo "link: $link"
+    # echo "dato: $dato"
+    # echo "script: $script"
+    # echo "ID_DB_PELI: $ID_DB_PELI"
+    # read -p "LISTOOOO"
+    comprobarEstadoNetu "$file" "$link" "$dato" "$script" linkSalida
+
+    [[ $linkSalida ]] && echo "Subido y actualizado correctamente --> $dato: $linkSalida"
+    [[ $linkSalida ]] && $scriptDB $ID_DB_PELI $linkSalida && rm "$MiPeli"
+
+
 }

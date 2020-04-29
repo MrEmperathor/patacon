@@ -1,5 +1,45 @@
 #!/bin/bash
 
+function elemento2()
+{
+    opcion=7
+    FILEIDD=$(php /var/www/html/panel/inc/comp/parse_url.php "${FARRAY[0]}")
+    [[ ! $ID_DB_PELI ]] && activarPlantilla=true
+    [[ ${EXTRAER_GDRIVE} == "1080" ]] && CALIDA1="(1080)" && gooledd720 ${FILEIDD} "${EXTRAER_GDRIVE}p"
+    [[ ${EXTRAER_GDRIVE} == "720" ]] && CALIDA1="(720)" && gooledd720 ${FILEIDD} "${EXTRAER_GDRIVE}p"
+    [[ ${EXTRAER_GDRIVE} == "480" ]] && CALIDA1="(480)" && gooledd720 ${FILEIDD} "${EXTRAER_GDRIVE}p"
+    [[ ${EXTRAER_GDRIVE} == "360" ]] && CALIDA1="(360)" && gooledd720 ${FILEIDD} "${EXTRAER_GDRIVE}p"
+    [[ ! ${EXTRAER_GDRIVE} ]] && drived
+    TArchivo; 
+    descompri;
+    aguaMarca; 
+    EscogerAudio; 
+    [[ ! $ID_DB_PELI ]] && addBd;
+    PegarSubtitulos; 
+    SAVEIFS=$IFS; 
+    renom; 
+    ConvertirPeli; 
+
+    for i in "${SERVIDORES[@]}"; do
+        case $i in
+            1080) subida_o_s_s_1080; IFS=$SAVEIFS; sudmenu 2>/dev/null
+            ;;
+            720) subida_o_s_s_720; IFS=$SAVEIFS; sudmenu 2>/dev/null
+            ;;
+            "720p") subida_o_s_s_720p; IFS=$SAVEIFS; sudmenu 2>/dev/null
+            ;;
+            "hqq.tv"|"jetload"|"uptobox"|"gounlimited"|"mega"|"gdfree"|"gdvip") SERVIDOR_A_BUSCAR="${i}"; 
+            ServidorAll "$MiPeli" " " "$SERVIDOR_A_BUSCAR" "$SERVIDOR_A_BUSCAR" "$ID_DB_PELI"
+            ;;
+            *) echo default
+            ;;
+        esac
+    done
+    # IFS=$SAVEIFS; 
+    # sudmenu 2>/dev/null
+
+}
+
 function elemeto1()
 {
     if [[ "${FARRAY[0]}" =~ "drive.google.com" && ${EXTRAER_GDRIVE} == "720" || "${FARRAY[0]}" =~ "drive.google.com" && ${EXTRAER_GDRIVE} == "1080" || "${FARRAY[0]}" =~ "drive.google.com" && ${EXTRAER_GDRIVE} == "480" || "${FARRAY[0]}" =~ "drive.google.com" && ${EXTRAER_GDRIVE} == "360" ]];then
@@ -22,8 +62,13 @@ function elemeto1()
             *) echo default; exit
             ;;
         esac
-    else
-        # PARAMETRO DEFINIDO PARA PODER DESCARGAR
+    fi
+    
+}
+
+function elemeto2_720p()
+{
+    # PARAMETRO DEFINIDO PARA PODER DESCARGAR
         opcion=7
         activarPlantilla=true #Activar la creacion de la plantilla en el panel web
         case "$CALIDA1" in
@@ -36,10 +81,12 @@ function elemeto1()
             "720p") CALIDA1="(720)";
                 drived; TArchivo; descompri; aguaMarca; EscogerAudio; addBd; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_720p; IFS=$SAVEIFS; sudmenu 2>/dev/null
             ;;
+            "hqq.tv"|"jetload"|"uptobox"|"gounlimited") 
+            SERVIDOR_A_BUSCAR=${CALIDA1}; drived; TArchivo; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; IFS=$SAVEIFS; ServidorAll "$MiPeli" " " "$SERVIDOR_A_BUSCAR" "$SERVIDOR_A_BUSCAR" "$ID_DB_PELI"
+            ;;
             *) echo default; exit
             ;;
         esac
-    fi
 }
 
 function Respaldo()
@@ -69,11 +116,16 @@ function obtenerLinkCalidad()
 
 # echo "OPTIND inicia en $OPTIND"
 v=0
-while getopts "c:t:n:e:i:s:C:I:K:" optname
+while getopts "c:t:n:e:i:s:a:C:I:K:" optname
   do
     case "$optname" in
+        "a")
+            ID_DB_PELI=$OPTARG;
+            # echo "Se ha especificado la opción $optname y su valor es $CALIDA1"
+            ;;
         "c")
-            CALIDA1=$OPTARG;
+            CALIDA1="($OPTARG)";
+            # [[ $CALIDA1 == "netu" ]] && CALIDA1="hqq.tv";
             # echo "Se ha especificado la opción $optname y su valor es $CALIDA1"
             ;;
         "K")
@@ -85,7 +137,7 @@ while getopts "c:t:n:e:i:s:C:I:K:" optname
             # echo "Se ha especificado la opción $optname y su valor es $CALIDA1"
             ;;
         "I")
-            ID_UNICO=${OPTARG};
+            ID_UNICO=${OPTARG}; ID_DB_PELI=$OPTARG;
             # echo "Se ha especificado la opción $optname y su valor es $CALIDA1"
             ;;
         "e")
@@ -130,16 +182,30 @@ while getopts "c:t:n:e:i:s:C:I:K:" optname
         # ((v++))
 done
 
-case ${EXTRAER_GDRIVE} in
-    "720") elemeto1
+
+case ${SERVIDORES[0]} in
+    "hqq.tv"|"jetload"|"uptobox"|"gounlimited"|"mega"|"gdfree"|"gdvip"|1080|720|720p) elemento2
     ;;
     "respaldo") Respaldo
     ;;
     "obt_1080") CALIDAD="1080p"; obtenerLinkCalidad ${FARRAY[0]} $CALIDAD
     ;;
-    *) elemeto1
+    *) echo default
     ;;
 esac
+
+# case ${EXTRAER_GDRIVE} in
+#     "extra_720") elemeto1
+#     ;;
+#     "respaldo") Respaldo
+#     ;;
+#     "obt_1080") CALIDAD="1080p"; obtenerLinkCalidad ${FARRAY[0]} $CALIDAD
+#     ;;
+#     "todo_720") elemeto2_720p
+#     ;;
+#     *) elemeto1
+#     ;;
+# esac
 exit
 
 
