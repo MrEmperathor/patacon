@@ -134,6 +134,24 @@ function ActivarEnlaces()
 }
 function validar_cuenta(){
 
+    function _sses_id()
+    {
+        VALLU=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"UptoboxSses\"\]" | cut -d "\"" -f4)
+        echo -e "\033[1;33mSESS_ID ACTUAL: \033[1;37m \033[1;35m${VALLU} \033[1;37m"; 
+        read -p "SESS_ID: " JET_KEY
+        if [[ $JET_KEY ]];then
+            sed -i "s/${VALLU}/${JET_KEY}/g" $CONFIGGLOBAL
+        fi
+    }
+
+    function _edit_token_upb()
+    {
+        [[ $TOKEN_UPT ]] && echo -e "\033[1;33mTOKEN ACTUAL: \033[1;37m \033[1;35m${TOKEN_UPT} \033[1;37m"; 
+        read -p "INGRESAR NUEVO TOKEN: " NEW_TOKEN
+        [[ $NEW_TOKEN ]] && sed -i "s/\"${NEW_TOKEN}\"/\"${NEW_TOKEN}\"/g" $CONFIG
+        source $CONFIG
+    }
+
     function postmenu()
     {
         raya="-------------------------"
@@ -193,12 +211,17 @@ function validar_cuenta(){
             fi
             ;;
         -uptobox)
-            VALLU=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"UptoboxSses\"\]" | cut -d "\"" -f4)
-            echo -e "\033[1;33mSESS_ID ACTUAL: \033[1;37m \033[1;35m${VALLU} \033[1;37m"; 
-            read -p "SESS_ID: " JET_KEY
-            if [[ $JET_KEY ]];then
-                sed -i "s/${VALLU}/${JET_KEY}/g" $CONFIGGLOBAL
-            fi
+            echo -e "\033[1;37m[\033[1;31m01\033[1;37m] • \033[1;33mEDITAR SSES_ID \033[1;37m
+[\033[1;31m02\033[1;37m] • \033[1;33mEDITAR TOKEN \033[1;37m"
+            read valor_upb
+            case $valor_upb in
+                1) _sses_id
+                ;;
+                2) _edit_token_upb
+                ;;
+                *) echo default
+                ;;
+            esac
             ;;
         -gounlimited)
             VALL=$(cat $CONFIGGLOBAL | grep "\$CONFIG\[\"Gounlimited\"\]" | cut -d "\"" -f4)
@@ -2572,7 +2595,7 @@ function descompri() {
         printf "${CYANCLARO}";
         echo "FICHEROS RAR DESCOMPRIMIDOS CON EXITO!!";;
         *zip)
-        unzip $RAR -y
+        unzip "${RAR}"
         error=$?
         comprobar1
         printf "${CYANCLARO}";

@@ -2371,15 +2371,14 @@ function drive3() {
     read -p "CALIDAD: " CALIDA1
         res=$(repetir $CALIDA1)
     echo -e "\033[1;31m---------------------------\033[0m"
-        if [[ $res ]]; then
-            CALIDA1=${res}
-        fi
+        [[ $res ]] && CALIDA1=${res}
+        
         if [[ $CALIDA1 = 1 ]]; then
-                CALIDA1="720"
+                CALIDA1="(720)"
             elif [[ $CALIDA1 = 2 ]]; then
-                CALIDA1="1080"
+                CALIDA1="(1080)"
             elif [[ $CALIDA1 = 3 ]]; then
-                CALIDA1="SD"
+                CALIDA1="(SD)"
         fi
     echo -e "\033[1;31m---------------------------\033[0m"
     echo "1-[Latino]"
@@ -2872,7 +2871,7 @@ function renom()
             [[ $NT = 10 ]] && unset cero2
 
             en=$(echo ${MiPeli##*.}); em=${MiPeli%.*}; eo=${em^^}
-            echo $MiPeli; mv "$MiPeli" "${NAMESERI^^} S${cero2}${NT}E${cero}${EPI}.${en}"
+            echo $MiPeli; mv "$MiPeli" "${NAMESERI^^} ${CALIDA2} S${cero2}${NT}E${cero}${EPI}.${en}"
 
             ((EPI++))
         done 2>/dev/null

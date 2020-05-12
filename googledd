@@ -17,6 +17,7 @@ port="$(echo $hostport | sed -e 's,^.*:,:,g' -e 's,.*:\([0-9]*\).*,\1,g' -e 's,[
 # extract the path (if any)
 path="$(echo $url | grep / | cut -d/ -f2-)"
 
+
 msg()
 {
     BRAN='\033[1;37m' && VERMELHO='\e[31m' && VERDE='\e[32m' && AMARELO='\e[33m'
@@ -382,6 +383,10 @@ if [[ $host == "drive.google.com" || $host == "docs.drive.com" ]]; then
 
 elif [[ $host == "www.mediafire.com" ]]; then
     deUniversal $1
+elif [[ $host == "mega.nz" ]]; then
+    megadl $1
+elif [[ $host == "uptobox.com" ]]; then
+    down_uptobox.sh $1
 else
-        wget "${1}"
+    wget "${1}"
 fi
