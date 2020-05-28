@@ -8,7 +8,7 @@ error1="(ERR):error occurred."
 salida2="salida2"
 [[ -e $log_aria ]] && rm -rf $log_aria
 [[ -e $cookyes ]] && rm -rf $cookyes
-[[ -e $salida2 ]] && rm -rf $salida2 
+[[ -e $salida2 ]] && rm -rf $salida2
 [[ -e `ls *.mp4 *.mkv *.avi *.mpg 2>/dev/null` ]] && rm *.mp4 *.mkv *.avi *.mpg 2>/dev/null
 
 wget -q --show-progress --save-cookies .cookies.txt --keep-session-cookies --no-check-certificate "https://drive.google.com/get_video_info?docid=${FILE_ID}" -O salida2
@@ -22,12 +22,16 @@ i=1
 if [[ $url != false ]];then
     while true 
     do
+        # aria2c -x16 -s16 --load-cookies .cookies.txt -c "${url}" -o "${FILENAME}"
         aria2c -x16 -s16 --load-cookies .cookies.txt -c "${url}" -o "${FILENAME}" > ${log_aria} &
         # aria2c -x16 -s16 --load-cookies .cookies.txt -c "${url}" -o "${FILENAME}" 2>&1 | tee ${log_aria} &
         jobs -l
         sleep 5
-        kill "${i}"
+        kill %"${i}"
         echo "VUELTA # $i"
+        echo "--------------"
+        cat $log_aria
+        
         if fgrep "$terminar" $log_aria ;then
             break
         elif fgrep "$error1" $log_aria ;then
@@ -35,10 +39,13 @@ if [[ $url != false ]];then
         fi
         ((i++))
     done
+    # find [path] -type f -not -name "${FILENAME}" -not -name 'backup.tar.gz' -delete
+    # find . -type f -not -name "${FILENAME}" -print0 | xargs -0 rm --
+    exit 0
 else
     echo "NO EXISTE LA URL"
     echo $url
-    exit 1
+    # exit
 fi
 
 

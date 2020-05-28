@@ -579,9 +579,9 @@ function accion() {
 
     case $opcion in 
 
-        1) drived; descompri 2>/dev/null; EscogerAudio 2>/dev/null; PegarSubtitulos 2>/dev/null; addBd; renom; TArchivo; subida_o_s_s; IFS=$SAVEIFS; sudmenu ;; #openloadd
+        1) drived; descompri 2>/dev/null; EscogerAudio 2>/dev/null; PegarSubtitulos 2>/dev/null; IFS=$(echo -en "\n\b"); addBd; renom; TArchivo; subida_o_s_s; IFS=$SAVEIFS; sudmenu ;; #openloadd
 
-        2) drived; TArchivo; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; SAVEIFS=$IFS; addBd; renom; ConvertirPeli; subida_o_s_s; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
+        2) drived; TArchivo; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; SAVEIFS=$IFS; IFS=$(echo -en "\n\b"); addBd; renom; ConvertirPeli; subida_o_s_s; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
         # 2) drived; PegarSubtitulos; TArchivo; descompri; renom; ConvertirPeli; sudmenu ;;
         
         3) drived; descompri; EscogerAudio; PegarSubtitulos; addBd; renom; TArchivo; subida_o_s_s; DriveRClone; subida_mega .megallin.txt; sudmenu ;; #megad
@@ -593,9 +593,9 @@ function accion() {
         6) drived; TArchivo; descompri; EscogerAudio; PegarSubtitulos; addBd; renom; SoloMega; ConvertirPeli; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
         # 6) drived; TArchivo; descompri; EscogerAudio; PegarSubtitulos; renom; subida_mega .megallin.txt; EnlacesMostar; ConvertirPeli; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
 
-        7) drived; TArchivo; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; SAVEIFS=$IFS; addBd; renom; ConvertirPeli; subida_o_s_s_1080; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
+        7) drived; TArchivo; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; SAVEIFS=$IFS; IFS=$(echo -en "\n\b"); addBd; renom; ConvertirPeli; subida_o_s_s_1080; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
 
-        8) drived; TArchivo; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; SAVEIFS=$IFS; addBd; renom; ConvertirPeli; subida_o_s_s_720; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
+        8) drived; TArchivo; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; SAVEIFS=$IFS; IFS=$(echo -en "\n\b"); addBd; renom; ConvertirPeli; subida_o_s_s_720; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
 
         9) subida_mega; sudmenu ;;
 
@@ -1300,27 +1300,36 @@ function drived() {
             else 
                 echo "Debe ingresar un enlace valido!."
             fi
-            NEWFILEN=`echo $FILE | sed 's/ /_/g'` ; mv "$FILE" $NEWFILEN > /dev/null 2>> /root/log.txt
-            echo $NEWFILEN
 
-            for e in `ls *.mp4 *.mkv *.avi *.mpg *.rar *.zip` ; do
-               echo "$e"    
-           done 2>/dev/null
+            # for i in * ; do mv -- "${i}" "${i//['][!”#$%&’()*+,/ :;<=>?@\^_`{\|}~-']/_}" ; done
+            for i in * ; do mv "${i}" $(echo "${i}" | sed -e 's/[^A-Za-z0-9._-]/_/g') ; done
+            format_suport=("flv" "avi" "rmvb" "mkv" "mp4" "wmv" "mpeg" "mpg" "mov" "divx" "3gp" "xvid" "asf" "rm" "dat" "m4v" "f4v" "webm" "ogv")
 
-           EXT=${e##*.}
+            arch=($(ls -S))
+            EXTENSION=$([[ "${arch[0]}" = *.* ]] && echo "${arch[0]##*.}")
 
-           if [[ ! $EXT ]]; then
-               EXT='mp4'
-           fi
+            [[ $(contiene "${format_suport[@]}" "$EXTENSION") != "y" ]] && mv "${arch[0]}" "${arch[0]}.mp4"
 
-           if [[ "${e##*.}" = "rar" || "${e##*.}" = "zip" ]]; then
-                echo "son rar"
-            else
-                for min2 in * ; do 
-                echo $min2 ; mv -- "$min2" "${NEWFILEN}_${CALIDA1}_$IDIOMA1.$EXT"
-                done 2>/dev/null
-           fi
-           for i in * ; do mv -- "${i}" "${i//['][!”#$%&’()*+,/ :;<=>?@\^_`{\|}~-']/_}" ; done
+            # if [[ $EXTENSION ]];then
+            #     for e in `ls *.mp4 *.mkv *.avi *.mpg *.rar *.zip` ; do
+            #     echo "$e"
+            #     done 2>/dev/null
+            # else
+            #     # EXT=${e##*.}
+            #     mv "${arch[0]}" "${arch[0]}.mp4"
+            # fi
+
+           
+
+
+        #    if [[ "${e##*.}" = "rar" || "${e##*.}" = "zip" ]]; then
+        #         echo "son rar"
+        #     else
+        #         for min2 in * ; do 
+        #         echo $min2 ; mv -- "$min2" "${NEWFILEN}_${CALIDA1}_$IDIOMA1.$EXT"
+        #         done 2>/dev/null
+        #    fi
+           
 
            
 }
@@ -1728,7 +1737,8 @@ function EscogerAudio(){
             fi
 
  done 2>/dev/null
-            cd $carpet
+            [[ -n `ls ${carpet}/` ]] && cd $carpet || rm -rf $carpet
+            
             msg -ama "audio extraido"
     fi
     
@@ -2045,7 +2055,7 @@ function drive_2_directo()
 }
 function drive22()
 {
-    rclone copy "${ruta_drive}/${MiPeli}" -P "${DRIVE2}":/
+    rclone copy "${ruta_drive}/${MiPeli}" "${DRIVE2}":/ -P
     errorG=$?
     LINK_DRIVE2=".linkgdVIP"
     ProgressBar
@@ -2492,9 +2502,13 @@ function LimiteM()
 
 
 function mostrar() {
+
+    MiPeliT=$(ls *.mp4 *.mkv *.mpg *.avi 2>/dev/null)
+    
     amaMiPeli=$(msg -ama "$MiPeli")
     amacanti=$(msg -ama "$canti")
     amaf=$(msg -ama "$f")
+    tamano=$(ls -alh "$MiPeliT" | awk -F " " '{printf $5}'); tamano=$(msg -ama "${tamano}")
     echo ------------------------------------
     echo "Tipo de archivo: $amaf "
     echo ------------------------------------
@@ -2505,6 +2519,10 @@ function mostrar() {
 
     echo ------------------------------------
     echo "Cantidad de archivos: $amacanti"
+    echo ------------------------------------
+    
+    echo ------------------------------------
+    echo "Tamaño: $tamano"
     echo ------------------------------------
 
 }
@@ -2952,7 +2970,6 @@ fi
         MiPeli=$(ls *.mp4 *.mkv *.avi *.mpg 2>/dev/null)
 
     # if [[ $menu_principall = 1 ]]; then
-        IFS=$(echo -en "\n\b")
 
         pelisinex=${MiPeli%.*}
         for f in * ; do mv "$f" "${f/"$pelisinex"/"${nombresinespacio} ${CALIDA2} $IDIOMA2"}" ; done > /dev/null 2>> /root/log.txt  
@@ -3226,7 +3243,7 @@ ruta_drive=$(pwd)
                 EnlacesMostar
                 echo $MiPeli
                 if [[ $ERRORM1 = 0 ]]; then
-                    rm -rf $MiPeli 2>/dev/null
+                    rm -rf * 2>/dev/null
                     echo "Eliminado"
                     SAVEIFS=$IFS
                     IFS=$(echo -en "\n\b")

@@ -72,12 +72,12 @@ function limite2()
     # cd /root/.Mydrive3 && drive copy -id ${id} peli;
     FILENAME=$(wget -q --show-progress -O - "https://drive.google.com/file/d/${id}/view" | sed -n -e 's!.*<title>\(.*\)\ \-\ Google\ Drive</title>.*!\1!p')
     # rclone move copi1:/${FILENAME} drive5:/Movies/ -P
-    rclone copy midrivefull:/Filecopy/${FILENAME} drive5:/Movies/ -P
-    link=$(rclone link drive5:/Movies/${FILENAME});
+    rclone copy ${MI_CUENTA_ILIMIADA}:/"Filecopy/${FILENAME}" ${RESPALDO_SEGUNDO}:/Movies/ -P
+    link=$(rclone link ${RESPALDO_SEGUNDO}:/"Movies/${FILENAME}");
     link=$(echo $link | awk -F "=" '{print $2}')
     echo ${link};
-    rclone delete copi1:/
-    rclone cleanup copi1:/
+    # rclone delete copi1:/
+    # rclone cleanup copi1:/
     cd $ruta;
 
 
@@ -386,6 +386,8 @@ elif [[ $host == "www.mediafire.com" ]]; then
 elif [[ $host == "mega.nz" ]]; then
     megadl $1
 elif [[ $host == "uptobox.com" ]]; then
+    down_uptobox.sh $1
+elif [[ $host == "uptostream.com" ]]; then
     down_uptobox.sh $1
 else
     wget "${1}"

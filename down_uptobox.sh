@@ -30,7 +30,9 @@ lienc="${1}"
         file_code=$(echo $lienc | awk -F '/' '{print $4}')
         url="https://uptobox.com/api/link?file_code=$file_code&token=$token"
         direct_dl_link=$(curl $url | jq -r '.data.dlLink')
-        wget -c -nc -P$destination $direct_dl_link
+        # wget -c -nc -P$destination $direct_dl_link
+        # aria2c -x16 -s16 "${url}" -o "${direct_dl_link}"
+        aria2c -x16 -s16 -c "${direct_dl_link}"
 # sleep 5
 # done < $PWD/wget.lis
 

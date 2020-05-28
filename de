@@ -3,7 +3,7 @@ BLANCOF='\033[47m'; RED='\033[0;31m'; REDCLARO='\033[1;31m'; AZUL='\033[0;34m'; 
 
 source $CONFIG
 PSW6=$PASSRAR
-
+. /usr/local/bin/function.sh
 function EspacioTrabajo(){
 
     echo " "
@@ -551,23 +551,23 @@ function accion() {
 
     case $opcion in 
 
-        1) drived; descompri 2>/dev/null; EscogerAudio 2>/dev/null; PegarSubtitulos 2>/dev/null; renom; TArchivo; subida_o_s_s; IFS=$SAVEIFS; sudmenu ;; #openloadd
+        1) drived; SAVEIFS=$IFS; IFS=$(echo -en "\n\b"); descompri 2>/dev/null; EscogerAudio 2>/dev/null; PegarSubtitulos 2>/dev/null; renom; TArchivo; subida_o_s_s; IFS=$SAVEIFS; sudmenu ;; #openloadd
 
-        2) drived; TArchivo; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
+        2) drived; SAVEIFS=$IFS; IFS=$(echo -en "\n\b"); TArchivo; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; addBd; renom; ConvertirPeli; subida_o_s_s; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
         # 2) drived; PegarSubtitulos; TArchivo; descompri; renom; ConvertirPeli; sudmenu ;;
         
-        3) drived; descompri; EscogerAudio; PegarSubtitulos; renom; TArchivo; subida_o_s_s; DriveRClone; subida_mega .megallin.txt; sudmenu ;; #megad
+        3) drived; descompri; EscogerAudio; PegarSubtitulos; addBd; renom; TArchivo; subida_o_s_s; DriveRClone; subida_mega .megallin.txt; sudmenu ;; #megad
 
-        4) drived; descompri; EscogerAudio; PegarSubtitulos; renom; ConvertirPeli; TArchivo; subida_o_s_s; DriveRClone; subida_mega .megallin.txt; sudmenu ;; #ariad
+        4) drived; descompri; EscogerAudio; PegarSubtitulos; addBd; renom; ConvertirPeli; TArchivo; subida_o_s_s; DriveRClone; subida_mega .megallin.txt; sudmenu ;; #ariad
 
-        5) subir720; TArchivo; descompri; EscogerAudio; PegarSubtitulos; renom; ConvertirPeli; subida_o_s_s; DriveRClone; subida_mega .megallin.txt; sudmenu ;; #d_todos ;;
+        5) subir720; TArchivo; descompri; EscogerAudio; PegarSubtitulos; addBd; renom; ConvertirPeli; subida_o_s_s; DriveRClone; subida_mega .megallin.txt; sudmenu ;; #d_todos ;;
 
-        6) drived; TArchivo; descompri; EscogerAudio; PegarSubtitulos; renom; SoloMega; ConvertirPeli; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
+        6) drived; SAVEIFS=$IFS; IFS=$(echo -en "\n\b"); TArchivo; descompri; EscogerAudio; PegarSubtitulos; addBd; renom; SoloMega; ConvertirPeli; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
         # 6) drived; TArchivo; descompri; EscogerAudio; PegarSubtitulos; renom; subida_mega .megallin.txt; EnlacesMostar; ConvertirPeli; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
 
-        7) drived; TArchivo; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_1080; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
+        7) drived; SAVEIFS=$IFS; IFS=$(echo -en "\n\b"); TArchivo; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; SAVEIFS=$IFS; addBd; renom; ConvertirPeli; subida_o_s_s_1080; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
 
-        8) drived; TArchivo; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_720; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
+        8) drived; SAVEIFS=$IFS; IFS=$(echo -en "\n\b"); TArchivo; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; addBd; renom; ConvertirPeli; subida_o_s_s_720; IFS=$SAVEIFS; sudmenu 2>/dev/null ;;
 
         9) subida_mega; sudmenu ;;
 
@@ -745,7 +745,6 @@ function tst(){
     [[ $TST1 = 17 ]] && echo -e "$barraAzul" && validar_cuenta -marca
     [[ $TST1 = 18 ]] && echo -e "$barraAzul" && validar_cuenta -espacio_t
     
-    
 }
 function AUD (){
 
@@ -789,11 +788,13 @@ function CrearCuentaMega(){
 }
 function TArchivo(){
     rr=$(pwd)
-    for i in * ; do mv -- "${i}" "${i//['][!”#$%&’()*+, /:;<=>?@\^`{\|}~-']/_}" ; done 2>/dev/null
-    for i in * ; do mv -- "${i}" "${i//"____"/_}" ; done 2>/dev/null
-    for i in * ; do mv -- "${i}" "${i//"___"/_}" ; done 2>/dev/null
-    for i in * ; do mv -- "${i}" "${i//"__"/_}" ; done 2>/dev/null
-    for i in * ; do mv -- "${i}" "${i//"_"/_}" ; done 2>/dev/null
+    for i in * ; do 
+        mv -- "${i}" "${i//['][!”#$%&’()*+, /:;<=>?@\^`{\|}~-']/_}"
+     done 2>/dev/null
+    # for i in * ; do mv -- "${i}" "${i//"____"/_}" ; done 2>/dev/null
+    # for i in * ; do mv -- "${i}" "${i//"___"/_}" ; done 2>/dev/null
+    # for i in * ; do mv -- "${i}" "${i//"__"/_}" ; done 2>/dev/null
+    # for i in * ; do mv -- "${i}" "${i//"_"/_}" ; done 2>/dev/null
     for TArchivo1 in `ls *` ; do
         echo -e "\033[1;36mTAMAÑO \033[1;35m$TArchivo1\033[0m \033[0m"
         ls -alh $TArchivo1 | awk -F " " '{printf $5}' ; echo
@@ -1276,29 +1277,24 @@ function drived() {
             else 
                 echo "Debe ingresar un enlace valido!."
             fi
-            NEWFILEN=`echo $FILE | sed 's/ /_/g'` ; mv "$FILE" $NEWFILEN > /dev/null 2>> /root/log.txt
-            echo $NEWFILEN
 
-            for e in `ls *.mp4 *.mkv *.avi *.mpg *.rar *.zip` ; do
-               echo "$e"    
-            done 2>/dev/null
+            # for i in * ; do mv -- "${i}" "${i//['][!”#$%&’()*+,/ :;<=>?@\^_`{\|}~-']/_}" ; done
+            for i in * ; do mv "${i}" $(echo "${i}" | sed -e 's/[^A-Za-z0-9._-]/_/g'); done
+            format_suport=("flv" "avi" "rmvb" "mkv" "mp4" "wmv" "mpeg" "mpg" "mov" "divx" "3gp" "xvid" "asf" "rm" "dat" "m4v" "f4v" "webm" "ogv")
 
-           EXT=${e##*.}
+            arch=($(ls -S))
+            EXTENSION=$([[ "${arch[0]}" = *.* ]] && echo "${arch[0]##*.}")
+            [[ $(contiene "${format_suport[@]}" "$EXTENSION") != "y" ]] && mv "${arch[0]}" "${arch[0]}.mp4"
+            # [[ ! $EXTENSION ]] && mv "${arch[0]}" "${arch[0]}.mp4"
 
-           if [[ ! $EXT ]]; then
-               EXT='mp4'
-           fi
-
-           if [[ "${e##*.}" = "rar" || "${e##*.}" = "zip" ]]; then
-                echo "son rar"
-            else
-                for min2 in * ; do 
-                echo $min2 ; mv -- "$min2" "${NEWFILEN}_${CALIDA1}_$IDIOMA1.$EXT"
-                done 2>/dev/null
-           fi
-           for i in * ; do mv -- "${i}" "${i//['][!”#$%&’()*+,/ :;<=>?@\^_`{\|}~-']/_}" ; done
-
-           
+            # if [[ $EXTENSION ]];then
+            #     for e in `ls *.mp4 *.mkv *.avi *.mpg *.rar *.zip` ; do
+            #     echo "$e"
+            #     done 2>/dev/null
+            # else
+            #     # EXT=${e##*.}
+            #     mv "${arch[0]}" "${arch[0]}.mp4"
+            # fi
 }
 
 function LimiteVIP_S() {
@@ -2604,6 +2600,7 @@ if [[ $AUDIO = 1 ]]; then
         # fi
 
     fi
+
 }
 
 function mp()
@@ -2613,29 +2610,34 @@ rename 's/.mkv//' *.mkv -v -n > /dev/null 2>> /root/log.txt
 rename 's/.avi//' *.avi -v -n > /dev/null 2>> /root/log.txt
 }
 
-function renom() {
-RD=$(pwd)
-nombresinespacio=${nameori}
-IDPELI=${IDPELICULA}
-IDIOMA2=${IDIOMA1}
-CALIDA2=${CALIDA1}
-RUTA2="/var/www/html/de/.enlaces"
+function addBd()
+{
+    RD=$(pwd)
+    nombresinespacio=${nameori}
+    IDPELI=${IDPELICULA}
+    IDIOMA2=${IDIOMA1}
+    CALIDA2=${CALIDA1}
+    RUTA2="/var/www/html/de/.enlaces"
 
-MiPeli=$(ls *.mp4 *.mkv *.avi *.mpg 2>/dev/null)
 
-# if [[ $menu_principall = 1 ]]; then
+    # SAVEIFS=$IFS
+    # IFS=$(echo -en "\n\b")
+    # MiPelii=($(ls -S))
+    # MiPeli="${MiPelii[0]}"
+    MiPeli=$(ls *.mp4 *.mkv *.avi *.mpg 2>/dev/null)
 
-        pesodelarchi=$(ls -alh "$MiPeli"| awk '{print $5}' | grep "G")
-        pesodelarchi2=$(ls -alh "$MiPeli"| awk '{print $5}' | grep "M")
-        echo $pesodelarchi
-        echo $pesodelarchi2
+    pesodelarchi=$(ls -alh "$MiPeli"| awk '{print $5}' | grep "G")
+    pesodelarchi2=$(ls -alh "$MiPeli"| awk '{print $5}' | grep "M")
+    echo $pesodelarchi
+    echo $pesodelarchi2
 
     if [ "$pesodelarchi" -o "$pesodelarchi2" ]; then
         if [[ $V720 = 1 ]]; then
-                bid=$(/var/www/html/panel/inc/xion/./insertar.php "$IDPELI" "$nombresinespacio" "${CALIDA2}-720" $IDIOMA2)
+                bid=$(/usr/local/bin/php/./insertar.php "$IDPELI" "$nombresinespacio" "${CALIDA2}-720" $IDIOMA2)
         else
             if [[ $pesodelarchi || $pesodelarchi2 ]]; then
                     echo "creando platilla"
+                    # bid=$(/usr/local/bin/php/./insertar.php "$IDPELI" "$nombresinespacio" $CALIDA2 $IDIOMA2 "admin2")
                     bid=$(/var/www/html/panel/inc/xion/./insertar.php "$IDPELI" "$nombresinespacio" $CALIDA2 $IDIOMA2)
             else
                 echo "no hay pelicula"
@@ -2645,6 +2647,41 @@ MiPeli=$(ls *.mp4 *.mkv *.avi *.mpg 2>/dev/null)
         echo "EL ARCHIVO ESTA DAÑADO!"
         exit
     fi
+    IFS=$SAVEIFS
+}
+
+function renom() {
+# RD=$(pwd)
+# nombresinespacio=${nameori}
+# IDPELI=${IDPELICULA}
+# IDIOMA2=${IDIOMA1}
+# CALIDA2=${CALIDA1}
+# RUTA2="/var/www/html/de/.enlaces"
+
+# MiPeli=$(ls *.mp4 *.mkv *.avi *.mpg 2>/dev/null)
+
+# # if [[ $menu_principall = 1 ]]; then
+
+#         pesodelarchi=$(ls -alh "$MiPeli"| awk '{print $5}' | grep "G")
+#         pesodelarchi2=$(ls -alh "$MiPeli"| awk '{print $5}' | grep "M")
+#         echo $pesodelarchi
+#         echo $pesodelarchi2
+
+#     if [ "$pesodelarchi" -o "$pesodelarchi2" ]; then
+#         if [[ $V720 = 1 ]]; then
+#                 bid=$(/var/www/html/panel/inc/xion/./insertar.php "$IDPELI" "$nombresinespacio" "${CALIDA2}-720" $IDIOMA2)
+#         else
+#             if [[ $pesodelarchi || $pesodelarchi2 ]]; then
+#                     echo "creando platilla"
+#                     bid=$(/var/www/html/panel/inc/xion/./insertar.php "$IDPELI" "$nombresinespacio" $CALIDA2 $IDIOMA2)
+#             else
+#                 echo "no hay pelicula"
+#             fi
+#         fi
+#     else
+#         echo "EL ARCHIVO ESTA DAÑADO!"
+#         exit
+#     fi
 # fi
 for TPE in `ls -alh $MiPeli | awk -F " " '{print $5}'` ; do TPE1=`echo $TPE | sed 's/G/ Gigas/g' | sed 's/M/ Megas/g'` ; mv "$TPE" $TPE1 ; done 2>/dev/null
 
@@ -3122,7 +3159,7 @@ ruta_drive=$(pwd)
                 EnlacesMostar
                 echo $MiPeli
                 if [[ $ERRORM1 = 0 ]]; then
-                    
+                    rm -rf *
                     echo "Eliminado"
                     SAVEIFS=$IFS
                     IFS=$(echo -en "\n\b")

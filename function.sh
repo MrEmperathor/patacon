@@ -17,6 +17,19 @@ function SubidaDriveFreeVip()
     fi
     [[ $link ]] && eval $__enlace_salida="'$link'"
 }
+function Acort()
+{
+    local link_r=${1}
+    local script=${2}
+    local _embase=${3}
+    local buscar_pat=${4}
+    local link=""
+
+    until [[ $link_s =~ $buscar_pat ]]; do
+        link_s=$($script $link_r)
+    done
+    [[ $link_s ]] && eval $_embase="'$link_s'"
+}
 
 function QuitarPermisos()
 {
@@ -40,43 +53,48 @@ function comprobarEstadoNetu(){
     local script=${4}
     local __salida=${5}
     local myresult
-
-
     local nm=1
-    if [[ $dato == "mega" ]];then
-        local file=".megallin.txt"
-        until [[ $link =~ "$dato" ]]; do
-            $script "$file" link 
-            echo "intentado forzar subida $dato. INTENTO # $nm"
-            ((nm++))
-            sleep 20
-            [[ $nm -gt 10 ]] && sleep 30;
-        done
-    elif [[ $dato == "gdfree" || $dato == "gdvip" ]];then
-        local cuenta=${DRIVE3}
-        local dato_a_encontrar="drive.google.com"
-        [[ $dato == "gdvip" ]] && local vip=true && local cuenta=${DRIVE2}
-        
-        
-        until [[ $link =~ "$dato_a_encontrar" ]]; do
-            $script "$file" link $cuenta
-            echo "intentado forzar subida $dato. INTENTO # $nm"
-            ((nm++))
-            sleep 20
-            [[ $nm -gt 10 ]] && sleep 30;
-        done
-        [[ $vip ]] && QuitarPermisos $link
+
+    if [[ -f $file ]];then
+        if [[ $dato == "mega" ]];then
+            local file=".megallin.txt"
+            until [[ $link =~ "$dato" ]]; do
+                $script "$file" link 
+                echo "intentado forzar subida $dato. INTENTO # $nm"
+                ((nm++))
+                sleep 5
+                [[ $nm -gt 10 ]] && sleep 30;
+            done
+        elif [[ $dato == "gdfree" || $dato == "gdvip" ]];then
+            local cuenta=${DRIVE3}
+            local dato_a_encontrar="drive.google.com"
+            local vipfree=true
+            [[ $dato == "gdvip" ]] && local vip=true && local cuenta=${DRIVE2} && local vipfree=false
+            
+            
+            until [[ $link =~ "$dato_a_encontrar" ]]; do
+                $script "$file" link $cuenta
+                echo "intentado forzar subida $dato. INTENTO # $nm"
+                ((nm++))
+                sleep 5
+                [[ $nm -gt 10 ]] && sleep 30;
+            done
+            [[ $vipfree == true ]] && id_link=$(echo $link | awk -F "=" '{printf $2}') && link="https://drive.google.com/uc?id=${id_link}&export=download"
+            [[ $vip ]] && QuitarPermisos $link
+        else
+            until [[ $link =~ "$dato" ]]; do
+                myresult=$($script "$file" 2>/dev/null)
+                link=${myresult}
+                echo "intentado forzar subida $dato. INTENTO # $nm"
+                ((nm++))
+                sleep 5
+                [[ $nm -gt 10 ]] && sleep 30;
+            done
+        fi
+        eval $__salida="'$link'"
     else
-        until [[ $link =~ "$dato" ]]; do
-            myresult=$($script "$file" 2>/dev/null)
-            link=${myresult}
-            echo "intentado forzar subida $dato. INTENTO # $nm"
-            ((nm++))
-            sleep 30
-            [[ $nm -gt 10 ]] && sleep 30;
-        done
+        echo "La pelicula no existe!"
     fi
-    eval $__salida="'$link'"
 }
 respaldoDrivePelis()
 {
@@ -177,10 +195,26 @@ function ServidorAll()
     # echo "script: $script"
     # echo "ID_DB_PELI: $ID_DB_PELI"
     # read -p "LISTOOOO"
+    # Acortadorr $MEGALPHP $SSHORT MEGALPHP1 "SHORT" https://short.pe/ccakQ
     comprobarEstadoNetu "$file" "$link" "$dato" "$script" linkSalida
+    [[ $dato == "mega" ]] && Acort $linkSalida $SSHORT link_acortado_short "short.pe" && echo "Enlace acortado: $link_acortado_short" && $scriptDB $ID_DB_PELI $link_acortado_short
+    [[ $dato == "gdfree" ]] && Acort $linkSalida $SOUO link_acortado_ouo "ouo.io" && echo "Enlace acortado: $link_acortado_ouo" && $scriptDB $ID_DB_PELI $link_acortado_ouo
 
     [[ $linkSalida ]] && echo "Subido y actualizado correctamente --> $dato: $linkSalida"
-    [[ $linkSalida ]] && $scriptDB $ID_DB_PELI $linkSalida && rm "$MiPeli"
+    [[ $linkSalida ]] && $scriptDB $ID_DB_PELI $linkSalida
 
 
+}
+
+function contiene() {
+    local n=$#
+    local value=${!n}
+    for ((i=1;i < $#;i++)) {
+        if [ "${!i}" == "${value}" ]; then
+            echo "y"
+            return 0
+        fi
+    }
+    echo "n"
+    return 1
 }
