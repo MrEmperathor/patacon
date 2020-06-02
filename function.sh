@@ -1,3 +1,4 @@
+format_suport=("flv" "avi" "rmvb" "mkv" "mp4" "wmv" "mpeg" "mpg" "mov" "divx" "3gp" "xvid" "asf" "rm" "dat" "m4v" "f4v" "webm" "ogv" "rar" "zip")
 function SubidaDriveFreeVip()
 {
     local file=${1}

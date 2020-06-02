@@ -33,7 +33,7 @@ function elemento2()
             "hqq.tv"|"jetload"|"uptobox"|"gounlimited"|"mega"|"gdfree"|"gdvip") SERVIDOR_A_BUSCAR="${i}"; 
             ServidorAll "$MiPeli" " " "$SERVIDOR_A_BUSCAR" "$SERVIDOR_A_BUSCAR" "$ID_DB_PELI"
             ;;
-            *) echo default
+            *) echo "default 2"
             ;;
         esac
     done
@@ -126,12 +126,16 @@ function _quitar_audio()
     
 }
 # echo "OPTIND inicia en $OPTIND"
-v=0
-while getopts "c:t:n:e:i:s:a:L:F:C:I:K:" optname
+v=0; n=0
+while getopts "c:t:n:e:i:s:a:p:L:F:C:I:K:" optname
   do
     case "$optname" in
         "a")
             ID_DB_PELI=$OPTARG;
+            # echo "Se ha especificado la opción $optname y su valor es $CALIDA1"
+            ;;
+        "p")
+            PSW6=$OPTARG;
             # echo "Se ha especificado la opción $optname y su valor es $CALIDA1"
             ;;
         "c")
@@ -153,7 +157,8 @@ while getopts "c:t:n:e:i:s:a:L:F:C:I:K:" optname
             # echo "Se ha especificado la opción $optname y su valor es $CALIDA1"
             ;;
         "e")
-            FARRAY[0]=$OPTARG
+            FARRAY[$n]=$OPTARG
+            ((n++))
             # echo "La opción $optname tiene el valor ${FARRAY[0]}"
             ;;
         "n")
@@ -197,7 +202,6 @@ while getopts "c:t:n:e:i:s:a:L:F:C:I:K:" optname
         esac
         # echo "OPTIND ahora es $OPTIND"
         # echo "----VUELTA # $v -------"
-        
 done
 
 case ${SERVIDORES[0]} in
@@ -207,7 +211,7 @@ case ${SERVIDORES[0]} in
     ;;
     "obt_1080") CALIDAD="1080p"; obtenerLinkCalidad ${FARRAY[0]} $CALIDAD
     ;;
-    *) echo default
+    *) echo "default 1"
     ;;
 esac
 

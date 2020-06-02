@@ -371,7 +371,7 @@ function subida_mega() {
     if [[ -f $FICHERO_mega ]]; then
         echo -e "\033[1;31m=================================================\033[0m"
         #megaput $FICHERO_mega 2>&1 | tee .megalog; sed '1d' .megalog > .megalog1; MEGALOG=$(cat .megalog1.txt)
-        megaput $FICHERO_mega --debug 2>&1 | tee $RUTAMEGA/.megalog
+        megaput $FICHERO_mega --debug=cache 2>&1 | tee $RUTAMEGA/.megalog
         LinkMegaDOWN
         ERRORM1=$?
         MEGALOG=$(grep "EOVERQUOTA" $RUTAMEGA/.megalog)
@@ -416,7 +416,7 @@ function subida_mega() {
                             sleep 3
                             CMEGA=$(cat /root/.megarc | sed -n '2p' | awk -F " " '{printf $3}')
                             PMEGA=$(cat /root/.megarc | sed -n '3p' | awk -F " " '{printf $3}')
-                            megaput $FICHERO_mega --debug 2>&1 | tee .megalog; MEGALOG=$(grep "EOVERQUOTA" $RUTAMEGA/.megalog)
+                            megaput $FICHERO_mega --debug=cache 2>&1 | tee .megalog; MEGALOG=$(grep "EOVERQUOTA" $RUTAMEGA/.megalog)
                             LinkMegaDOWN
                             ERRORM1=$?
                             ERRORM=$(cat .megalog | grep "Uploaded" | wc -l)
@@ -427,7 +427,7 @@ function subida_mega() {
         until [[ $SUBIDO = $MEGASUB ]]; do
             CMEGA=$(cat /root/.megarc | sed -n '2p' | awk -F " " '{printf $3}')
             PMEGA=$(cat /root/.megarc | sed -n '3p' | awk -F " " '{printf $3}')
-            megaput $FICHERO_mega --debug 2>&1 | tee $RUTAMEGA/.megalog
+            megaput $FICHERO_mega --debug=cache 2>&1 | tee $RUTAMEGA/.megalog
             LinkMegaDOWN
             if fgrep "$SUBIDO" $RUTAMEGA/.megalog ;then
                     MEGASUB=${SUBIDO}
@@ -445,7 +445,7 @@ function subida_mega() {
         until [[ $SUBIDO = $MEGASUB ]]; do
             CMEGA=$(cat /root/.megarc | sed -n '2p' | awk -F " " '{printf $3}')
             PMEGA=$(cat /root/.megarc | sed -n '3p' | awk -F " " '{printf $3}')
-            megaput $FICHERO_mega --debug 2>&1 | tee $RUTAMEGA/.megalog
+            megaput $FICHERO_mega --debug=cache 2>&1 | tee $RUTAMEGA/.megalog
             LinkMegaDOWN
             if fgrep "$SUBIDO" $RUTAMEGA/.megalog ;then
                     MEGASUB=${SUBIDO}
@@ -476,7 +476,7 @@ function subida_mega() {
             echo -e "\033[1;36mPERFECTO LA CUENTA \033[1;31m$CUENTAMEGA\033[0m ESTA DISPONIBLE!\033[0m"
                 if [[ $MEGAESP = "Total:" ]]; then  
                     while true ; do
-                        megaput $FICHERO_mega --debug 2>&1 | tee .megalog
+                        megaput $FICHERO_mega --debug=cache 2>&1 | tee .megalog
                         sleep 2s
                         COMPROBAR=$(megals -e /Root/$FICHERO_mega | awk '{print $2}')
                         if [[ $COMPROBAR = "/Root/$FICHERO_mega" ]]; then
@@ -1303,11 +1303,10 @@ function drived() {
 
             # for i in * ; do mv -- "${i}" "${i//['][!”#$%&’()*+,/ :;<=>?@\^_`{\|}~-']/_}" ; done
             for i in * ; do mv "${i}" $(echo "${i}" | sed -e 's/[^A-Za-z0-9._-]/_/g') ; done
-            format_suport=("flv" "avi" "rmvb" "mkv" "mp4" "wmv" "mpeg" "mpg" "mov" "divx" "3gp" "xvid" "asf" "rm" "dat" "m4v" "f4v" "webm" "ogv")
+            
 
             arch=($(ls -S))
             EXTENSION=$([[ "${arch[0]}" = *.* ]] && echo "${arch[0]##*.}")
-
             [[ $(contiene "${format_suport[@]}" "$EXTENSION") != "y" ]] && mv "${arch[0]}" "${arch[0]}.mp4"
 
             # if [[ $EXTENSION ]];then
