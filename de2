@@ -1119,7 +1119,7 @@ function subir720(){
         for i in "${FARRAY[@]}" ; do
                 # ----------------------------------->DESCARGAR DE GOOGLE DRVIE <------------------------------ 
             # dess download --recursive $i
-            googledd $i
+            googledd "${i}"
             Err1=$?
             LiimiteGD
             printf "${PURPURAC}";
@@ -1129,14 +1129,14 @@ function subir720(){
     elif [[ $opcion2 = 4 ]]; then
             # ----------------------------------->DESCARGAR DE ARIA2 <------------------------------ 
             for i in "${FARRAY[@]}" ; do
-                wget "$i"
+                wget "${i}"
                 printf "${PURPURAC}";
                 printf "ARCHIVO "; printf $i ; printf "  DESCARGADO \n";
             done
         elif [[ $opcion2 = 3 ]]; then
             # ----------------------------------->DESCARGAR DE MEGA <------------------------------ 
             for i in "${FARRAY[@]}" ; do
-                megadl $i
+                megadl "${i}"
                 printf "${PURPURAC}";
                 printf "ARCHIVO "; printf $i ; printf "  DESCARGADO \n";
             done
@@ -1208,7 +1208,7 @@ function subir720(){
             echo -e "\033[0;36mENTRANDO AL BUCLE\033[0m"
             until [[ $Err1 -ne 1 ]]; do
                 # dess download --recursive $i --force
-                googledd $i
+                googledd "${i}"
                 Err1=$?
                 sleep 2
             done
@@ -1238,7 +1238,7 @@ function drived() {
         for i in "${FARRAY[@]}" ; do
                     # ----------------------------------->DESCARGAR DE GOOGLE DRVIE <------------------------------ 
                 # dess download --recursive $i
-                googledd $i
+                googledd "${i}"
                 Err1=$?
                 # LiimiteGD
                 printf "${PURPURAC}";
@@ -1249,21 +1249,21 @@ function drived() {
                 # ----------------------------------->DESCARGAR DE ARIA2 <------------------------------ 
                 for i in "${FARRAY[@]}" ; do
                     # wget "$i"
-                    aria2c "$i"
+                    aria2c "${i}"
                     printf "${PURPURAC}";
                     printf "ARCHIVO "; printf $i ; printf "  DESCARGADO \n";
                 done
             elif [[ $opcion = 3 ]]; then
                 # ----------------------------------->DESCARGAR DE MEGA <------------------------------ 
                 for i in "${FARRAY[@]}" ; do
-                    megadl $i
+                    megadl "${i}"
                     printf "${PURPURAC}";
                     printf "ARCHIVO "; printf $i ; printf "  DESCARGADO \n";
                 done
             elif [[ $opcion = 1 ]]; then
                 # ----------------------------------->DESCARGAR DE VERYSTREAM, STREMANGO, YOUTUBE... ETC <------------------------------ 
                 for i in "${FARRAY[@]}" ; do
-                    youtube-dl $i
+                    youtube-dl "${i}"
                     printf "${PURPURAC}";
                     printf "ARCHIVO "; printf $i ; printf "  DESCARGADO \n";
                 done
@@ -1271,7 +1271,7 @@ function drived() {
                     for i in "${FARRAY[@]}" ; do
                     # ----------------------------------->DESCARGAR DE GOOGLE DRVIE <------------------------------ 
                         # dess download --recursive $i
-                        googledd $i
+                        googledd "${i}"
                         Err1=$?
                         # LiimiteGD
                         printf "${PURPURAC}";
@@ -1281,7 +1281,7 @@ function drived() {
                     for i in "${FARRAY[@]}" ; do
                     # ----------------------------------->DESCARGAR DE GOOGLE DRVIE <------------------------------ 
                         # dess download --recursive $i
-                        googledd $i
+                        googledd "${i}"
                         Err1=$?
                         # LiimiteGD
                         printf "${PURPURAC}";
@@ -1291,7 +1291,7 @@ function drived() {
                     for i in "${FARRAY[@]}" ; do
                     # ----------------------------------->DESCARGAR DE GOOGLE DRVIE <------------------------------ 
                         # dess download --recursive $i
-                        googledd $i
+                        googledd "${i}"
                         Err1=$?
                         # LiimiteGD
                         printf "${PURPURAC}";
@@ -2360,29 +2360,54 @@ function subida_o_s_s()
 }
 function subida_o_s_s_1080() 
 {
+    omitir=$1
     definnirFifo
     PP=1
     
-    echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mNETU\033[0m"
-    netu &
-    sleep 2
+    if [[ $omitir == 'netu' ]];then
+        echo -e "\033[1;36mNETU \033[0m \033[1;33mOMITIDO\033[0m"
+    else
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mNETU\033[0m"
+        netu &
+        sleep 2
+    fi
 
-    echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD-VIP\033[0m"
-    drive22
+    if [[ $omitir == 'gdvip' ]];then
+        echo -e "\033[1;36mGD-VIP \033[0m \033[1;33mOMITIDO\033[0m"
+    else
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD-VIP\033[0m"
+        drive22
+    fi
 
-    echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD FREE\033[0m" 
-    respaldoDrivePelis
-    drive33
+    if [[ $omitir == 'gdfree' ]];then
+        echo -e "\033[1;36mGD FREE \033[0m \033[1;33mOMITIDO\033[0m"
+    else
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD FREE\033[0m" 
+        respaldoDrivePelis
+        drive33
+    fi
 
-    echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mMEGA\033[0m" 
-    subida_mega .megallin.txt
+    if [[ $omitir == 'mega' ]];then
+        echo -e "\033[1;36mMEGA \033[0m \033[1;33mOMITIDO\033[0m"
+    else
+        echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mMEGA\033[0m" 
+        subida_mega .megallin.txt
+    fi
 
-    echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mSHORT\033[0m" 
-    Acortadorr $MEGALPHP $SSHORT MEGALPHP1 "SHORT"
+    if [[ $omitir == 'short' ]];then
+        echo -e "\033[1;36mSHORT \033[0m \033[1;33mOMITIDO\033[0m"
+    else
+        echo -e "\033[1;36mACORTANDO \033[0m \033[1;33mSHORT\033[0m" 
+        Acortadorr $MEGALPHP $SSHORT MEGALPHP1 "SHORT"
+    fi
 
-    echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mOUO\033[0m" 
-    Acortadorr $LGDPHP $SOUO LGDPHP1 "OUO"
-    Acortadorr $LGDPHP1 $SOUO LGDPHP1 "OUO"
+    if [[ $omitir == 'ouo' ]];then
+        echo -e "\033[1;36mOUO \033[0m \033[1;33mOMITIDO\033[0m"
+    else
+        echo -e "\033[1;36mACORTANDO \033[0m \033[1;33mOUO\033[0m" 
+        Acortadorr $LGDPHP $SOUO LGDPHP1 "OUO"
+        Acortadorr $LGDPHP1 $SOUO LGDPHP1 "OUO"
+    fi
     
 }
 function subida_o_s_s_720() 
@@ -2565,7 +2590,7 @@ function comprobar1() {
 
         if [[ $menu_principall = 2 ]]; then
             msg -azu "Reitentando descargar el archivo"
-            googledd $K
+            googledd "${K}"
             descompri
         fi
         

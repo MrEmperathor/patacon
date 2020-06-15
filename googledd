@@ -1,5 +1,6 @@
 #!/bin/bash
 source /usr/local/bin/config.ini
+
 # source /usr/local/bin/configS.ini
 datosDescarga=".datosdescarga.log"
 # extract the protocol
@@ -16,7 +17,6 @@ host="$(echo $hostport | sed -e 's,:.*,,g')"
 port="$(echo $hostport | sed -e 's,^.*:,:,g' -e 's,.*:\([0-9]*\).*,\1,g' -e 's,[^0-9],,g')"
 # extract the path (if any)
 path="$(echo $url | grep / | cut -d/ -f2-)"
-
 
 msg()
 {
@@ -35,6 +35,7 @@ msg()
     -bar) cor="${AZUL}${NEGRITO}========================================" && echo -e "${cor}${SEMCOR}";;
     esac
 }
+
 function QuitarLimite()
 {
     FILEID="${id}"
@@ -71,6 +72,7 @@ function limite2()
     msg -verm "SEGUNDO INTENTO"
     # cd /root/.Mydrive3 && drive copy -id ${id} peli;
     FILENAME=$(wget -q --show-progress -O - "https://drive.google.com/file/d/${id}/view" | sed -n -e 's!.*<title>\(.*\)\ \-\ Google\ Drive</title>.*!\1!p')
+    echo "nombre de la peli $FILENAME"
     # rclone move copi1:/${FILENAME} drive5:/Movies/ -P
     rclone copy ${MI_CUENTA_ILIMIADA}:/"Filecopy/${FILENAME}" ${RESPALDO_SEGUNDO}:/Movies/ -P
     link=$(rclone link ${RESPALDO_SEGUNDO}:/"Movies/${FILENAME}");
@@ -353,14 +355,6 @@ function GoogleDriveDescarga()
     cd $RD1
 }
 
-
-
-
-
-
-
-
-
 if [[ $host == "drive.google.com" || $host == "docs.drive.com" ]]; then
     id=$(php /var/www/html/panel/inc/comp/parse_url.php "${1}")
     # GoogleDriveDescarga $id
@@ -389,6 +383,11 @@ elif [[ $host == "uptobox.com" ]]; then
     down_uptobox.sh $1
 elif [[ $host == "uptostream.com" ]]; then
     down_uptobox.sh $1
-else
+elif [[ $proto == "https://" || $proto == "http://" ]]; then
     wget "${1}"
+else
+    . /usr/local/bin/function.sh
+
+    ComprobarRuta "$1" ruta_final
+    echo $ruta_final
 fi

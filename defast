@@ -24,7 +24,7 @@ function elemento2()
     ConvertirPeli; 
     for i in "${SERVIDORES[@]}"; do
         case $i in
-            1080) subida_o_s_s_1080; IFS=$SAVEIFS; sudmenu 2>/dev/null
+            1080) subida_o_s_s_1080 $OMITIR; IFS=$SAVEIFS; sudmenu 2>/dev/null
             ;;
             720) subida_o_s_s_720; IFS=$SAVEIFS; sudmenu 2>/dev/null
             ;;
@@ -127,13 +127,29 @@ function _quitar_audio()
 }
 # echo "OPTIND inicia en $OPTIND"
 v=0; n=0
-while getopts "c:t:n:e:i:s:a:p:L:F:C:I:K:" optname
+while getopts "c:t:n:e:i:s:a:p:o:L:F:C:I:K:" optname
   do
     case "$optname" in
         "a")
             ID_DB_PELI=$OPTARG;
             # echo "Se ha especificado la opción $optname y su valor es $CALIDA1"
             ;;
+        "o")
+            OMITIR=$OPTARG;
+            # echo "Se ha especificado la opción $optname y su valor es $CALIDA1"
+            ;;
+        "s")
+            if [[ $OPTARG == 'sub-rar' ]];then
+                SUBRAR=true
+            elif [[ $OPTARG == 'sub-mkv' ]]; then
+                EXTRASUB=true
+            else
+                LSUB=$OPTARG
+            fi
+            
+            
+        # echo "Se ha especificado la opción $optname y su valor es $CALIDA1"
+        ;;
         "p")
             PSW6=$OPTARG;
             # echo "Se ha especificado la opción $optname y su valor es $CALIDA1"
@@ -157,7 +173,7 @@ while getopts "c:t:n:e:i:s:a:p:L:F:C:I:K:" optname
             # echo "Se ha especificado la opción $optname y su valor es $CALIDA1"
             ;;
         "e")
-            FARRAY[$n]=$OPTARG
+            FARRAY[$n]="${OPTARG}"
             ((n++))
             # echo "La opción $optname tiene el valor ${FARRAY[0]}"
             ;;
@@ -174,15 +190,15 @@ while getopts "c:t:n:e:i:s:a:p:L:F:C:I:K:" optname
             [[ $IDIOMA1 == "INGLES" ]] && IDIOMA1="SUB";
             # echo "La opción $optname tiene el valor $IDIOMA1"
             ;;
-        "s")
-            if [[ $OPTARG == "mkv" ]];then
-                EXTRASUB=true
-            else
-                LSUB="${OPTARG}"
-                CSUB=1
-            fi
-            # echo "La opción $optname tiene el valor $IDIOMA1"
-            ;;
+        # "s")
+        #     if [[ $OPTARG == "mkv" ]];then
+        #         EXTRASUB=true
+        #     else
+        #         LSUB="${OPTARG}"
+        #         CSUB=1
+        #     fi
+        #     # echo "La opción $optname tiene el valor $IDIOMA1"
+        #     ;;
         "L")
             ACTIVARAUDIO=$OPTARG
             ;;

@@ -1,4 +1,44 @@
 format_suport=("flv" "avi" "rmvb" "mkv" "mp4" "wmv" "mpeg" "mpg" "mov" "divx" "3gp" "xvid" "asf" "rm" "dat" "m4v" "f4v" "webm" "ogv" "rar" "zip")
+function ComprobarRuta()
+{
+    local name="${1}"
+    local salida="${2}"
+    local vipt="/var/local/vipt.txt"
+    local freet="/var/local/freet.txt"
+    local teamt="/var/local/teamt.txt"
+    local devolver_ruta=$(pwd)
+
+    [[ $name ]] && local ruta=$(cat $vipt | grep "${name}" | head -n 1) && remote="vip_kolitas_todas"
+    [[ ! $ruta ]] && local ruta=$(cat $freet | grep "${name}" | head -n 1) && remote="free_nike90al_todas"
+    [[ ! $ruta ]] && local ruta=$(cat $teamt | grep "${name}" | head -n 1) && remote="team_vip_todas" && team_r=true
+    
+    echo $ruta;
+    if [[ ${ruta::1} == ' ' ]];then
+        local rta=$(echo $ruta | cut -d' ' -f2-);
+    elif [[ $team_r ]];then
+        local rta=$(echo $ruta);
+    else
+        local rta=$(echo $ruta | cut -d' ' -f2-);
+    fi
+
+
+    rclone copy -P ${remote}:/"${rta}" Result
+    cd Result; mv * ${devolver_ruta}; cd "${devolver_ruta}"; rm -rf Result
+
+    eval $salida="'$rta'"
+
+
+
+    #  local id=${1}
+    # local salida=${2}
+    # local ruta=4(pwd)
+
+    
+    # cd /root/.Mydrive && local idu=$(drive pub -id "$id");
+    # [[ ${idu} ~= 'Error 404' ]] && cd /root/.Mydrive && local idu=$(drive pub -id "$id");
+
+}
+
 function SubidaDriveFreeVip()
 {
     local file=${1}
@@ -90,6 +130,7 @@ function comprobarEstadoNetu(){
                 ((nm++))
                 sleep 5
                 [[ $nm -gt 10 ]] && sleep 30;
+                [[ $nm -eq 50 ]] && exit;
             done
         fi
         eval $__salida="'$link'"
@@ -197,6 +238,7 @@ function ServidorAll()
     # echo "ID_DB_PELI: $ID_DB_PELI"
     # read -p "LISTOOOO"
     # Acortadorr $MEGALPHP $SSHORT MEGALPHP1 "SHORT" https://short.pe/ccakQ
+    echo "Subiendo a $dato"
     comprobarEstadoNetu "$file" "$link" "$dato" "$script" linkSalida
     [[ $dato == "mega" ]] && Acort $linkSalida $SSHORT link_acortado_short "short.pe" && echo "Enlace acortado: $link_acortado_short" && $scriptDB $ID_DB_PELI $link_acortado_short
     [[ $dato == "gdfree" ]] && Acort $linkSalida $SOUO link_acortado_ouo "ouo.io" && echo "Enlace acortado: $link_acortado_ouo" && $scriptDB $ID_DB_PELI $link_acortado_ouo
