@@ -1917,12 +1917,12 @@ function SubidaDriveFREE()
         enlaces_free[$a]=$(rclone link ${DRIVER}:/"${FOLDER_SERIE}/${R_SERIE}/${i}")
         ID[$a]=$(echo ${enlaces_free[$a]} | awk -F "=" '{printf $2}')
 
-            if [[ $ESTADODRIVEFREE == true && $ESTADODRIVEVIP == true ]];then
-                echo "Subiendo vip # $i"; echo ${FOLDER_SERIE_VIP}/${R_SERIE}/
-                cd $RCOPY2 && drive copy -id "${ID[$a]}" "${FOLDER_SERIE_VIP}/${R_SERIE}/";
-                enlaces_vip[$a]=$(drive pub "${FOLDER_SERIE_VIP}/${R_SERIE}/${i}" | awk  -F "published on " '{print $2}')
-                ID_VIP[$a]=$(echo ${enlaces_vip[$a]} | awk -F "=" '{printf $2}'); drive unpub -id "${ID_VIP[$a]}"
-            fi
+            # if [[ $ESTADODRIVEFREE == true && $ESTADODRIVEVIP == true ]];then
+            #     echo "Subiendo vip # $i"; echo ${FOLDER_SERIE_VIP}/${R_SERIE}/
+            #     cd $RCOPY2 && drive copy -id "${ID[$a]}" "${FOLDER_SERIE_VIP}/${R_SERIE}/";
+            #     enlaces_vip[$a]=$(drive pub "${FOLDER_SERIE_VIP}/${R_SERIE}/${i}" | awk  -F "published on " '{print $2}')
+            #     ID_VIP[$a]=$(echo ${enlaces_vip[$a]} | awk -F "=" '{printf $2}'); drive unpub -id "${ID_VIP[$a]}"
+            # fi
         ((a++))
     done
     cd $RD
@@ -2185,7 +2185,7 @@ function subida_o_s_s()
         SubidaDriveFREE $RD $R_CARPETA_SERIE
     fi
 
-    if [[ $ESTADODRIVEFREE == false && $ESTADODRIVEVIP == true ]];then
+    if [[ $ESTADODRIVEVIP == true ]];then
         echo -e "\n"
         echo -e "\033[1;36mSUBIENDO \033[0m \033[1;33mGD VIP\033[0m"
         SubidaDriveVIP $RD $R_CARPETA_SERIE
@@ -2506,6 +2506,19 @@ function LiimiteGD() {
     fi
 }
 
+pausaParaElBug ()
+{
+    
+    times=$1
+    echo "PAUSA NECESARIA ${times}seg."
+    echo
+    for ((i = 1; i < $times; i++)); do
+        printf " "; echo -en "$i" "\r"
+        sleep 1
+    done
+    
+}
+
 #2>&1 | tee $ruta/.Dlog
     for (( iii=1; iii<=cant; iii++ ))
     do 
@@ -2517,6 +2530,8 @@ function LiimiteGD() {
                 # dess download --recursive $K
 
                 googledd $K
+                [[ $opcion1 == 4 ]] && pausaParaElBug 15
+                [[ $opcion1 == 3 ]] && pausaParaElBug 30
                 # drivego $K
                 Err1=$?
                 if [[ $K != "1" ]]; then

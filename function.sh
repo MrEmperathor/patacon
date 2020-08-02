@@ -214,7 +214,7 @@ function ServidorAll()
     local dato="${3}"
     local script=${4}
     local ID_DB_PELI=${5}
-    local scriptDB="/usr/local/bin/php/funtions/./actualizarEnlacesDB.php"
+    local scriptDB="/usr/local/bin/php/./actualizarEnlacesDB.php"
     case $script in
         "hqq.tv") script=${SNetu}
         ;;
@@ -240,11 +240,11 @@ function ServidorAll()
     # Acortadorr $MEGALPHP $SSHORT MEGALPHP1 "SHORT" https://short.pe/ccakQ
     echo "Subiendo a $dato"
     comprobarEstadoNetu "$file" "$link" "$dato" "$script" linkSalida
-    [[ $dato == "mega" ]] && Acort $linkSalida $SSHORT link_acortado_short "short.pe" && echo "Enlace acortado: $link_acortado_short" && $scriptDB $ID_DB_PELI $link_acortado_short
-    [[ $dato == "gdfree" ]] && Acort $linkSalida $SOUO link_acortado_ouo "ouo.io" && echo "Enlace acortado: $link_acortado_ouo" && $scriptDB $ID_DB_PELI $link_acortado_ouo
+    [[ $dato == "mega" ]] && Acort $linkSalida $SSHORT link_acortado_short "short.pe" && echo "Enlace acortado: $link_acortado_short" && $scriptDB $ID_DB_PELI $link_acortado_short "short.pe" 2>/dev/null
+    [[ $dato == "gdfree" ]] && Acort $linkSalida $SOUO link_acortado_ouo "ouo.io" && echo "Enlace acortado: $link_acortado_ouo" && $scriptDB $ID_DB_PELI $link_acortado_ouo "ouo.io" 2>/dev/null
 
     [[ $linkSalida ]] && echo "Subido y actualizado correctamente --> $dato: $linkSalida"
-    [[ $linkSalida ]] && $scriptDB $ID_DB_PELI $linkSalida
+    [[ $linkSalida ]] && $scriptDB $ID_DB_PELI $linkSalida $dato 2>/dev/null
 
 
 }
