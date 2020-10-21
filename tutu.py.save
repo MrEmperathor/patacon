@@ -1,0 +1,13 @@
+mport tus
+
+FILE_PATH = 'example.bin'
+TUS_ENDPOINT = 'https://upload.example.com/files/'
+HEADERS = {'Authorization': 'token foo'}
+CHUNK_SIZE = 256000
+
+with open(FILE_PATH, 'rb') as f:
+    tus.upload(
+    	f,
+        TUS_ENDPOINT,
+        headers=headers,
+        chunk_size=CHUNK_SIZE)

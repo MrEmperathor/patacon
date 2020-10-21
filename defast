@@ -30,7 +30,7 @@ function elemento2()
             ;;
             "720p") subida_o_s_s_720p; IFS=$SAVEIFS; sudmenu 2>/dev/null
             ;;
-            "hqq.tv"|"jetload"|"uptobox"|"gounlimited"|"mega"|"gdfree"|"gdvip") SERVIDOR_A_BUSCAR="${i}"; 
+            "hqq.to"|"jetload"|"uptobox"|"gounlimited"|"mega"|"gdfree"|"gdvip"|"mystream"|"fembed") SERVIDOR_A_BUSCAR="${i}"; 
             ServidorAll "$MiPeli" " " "$SERVIDOR_A_BUSCAR" "$SERVIDOR_A_BUSCAR" "$ID_DB_PELI"
             ;;
             *) echo "default 2"
@@ -84,7 +84,7 @@ function elemeto2_720p()
             "720p") CALIDA1="(720)";
                 drived; TArchivo; descompri; aguaMarca; EscogerAudio; addBd; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; subida_o_s_s_720p; IFS=$SAVEIFS; sudmenu 2>/dev/null
             ;;
-            "hqq.tv"|"jetload"|"uptobox"|"gounlimited") 
+            "hqq.to"|"jetload"|"uptobox"|"gounlimited"|"mystream"|"fembed") 
             SERVIDOR_A_BUSCAR=${CALIDA1}; drived; TArchivo; descompri; aguaMarca; EscogerAudio; PegarSubtitulos; SAVEIFS=$IFS; renom; ConvertirPeli; IFS=$SAVEIFS; ServidorAll "$MiPeli" " " "$SERVIDOR_A_BUSCAR" "$SERVIDOR_A_BUSCAR" "$ID_DB_PELI"
             ;;
             *) echo default; exit
@@ -119,8 +119,8 @@ function obtenerLinkCalidad()
 function _quitar_audio()
 {
     if [[ $ACTIVARAUDIO ]];then
-        [[ $IDIOMA1 == "LATINO" ]] && ELEGIRAUDIO=1
-        [[ $IDIOMA1 == "CASTELLANO" ]] && ELEGIRAUDIO=2
+        [[ $IDIOMA1 == "LAT" ]] && ELEGIRAUDIO=1
+        [[ $IDIOMA1 == "ESP" ]] && ELEGIRAUDIO=2
         [[ $IDIOMA1 == "SUB" ]] && ELEGIRAUDIO=3
     fi
     
@@ -188,6 +188,8 @@ while getopts "c:t:n:e:i:s:a:p:o:L:F:C:I:K:" optname
         "i")
             IDIOMA1=${OPTARG^^}
             [[ $IDIOMA1 == "INGLES" ]] && IDIOMA1="SUB";
+            [[ $IDIOMA1 == "LATINO" ]] && IDIOMA1="LAT";
+            [[ $IDIOMA1 == "CASTELLANO" ]] && IDIOMA1="ESP";
             # echo "La opción $optname tiene el valor $IDIOMA1"
             ;;
         # "s")
@@ -221,7 +223,7 @@ while getopts "c:t:n:e:i:s:a:p:o:L:F:C:I:K:" optname
 done
 
 case ${SERVIDORES[0]} in
-    "hqq.tv"|"jetload"|"uptobox"|"gounlimited"|"mega"|"gdfree"|"gdvip"|1080|720|720p) elemento2
+    "hqq.to"|"jetload"|"uptobox"|"gounlimited"|"mega"|"gdfree"|"gdvip"|1080|720|720p) elemento2
     ;;
     "respaldo") Respaldo
     ;;

@@ -36,10 +36,17 @@ msg()
     esac
 }
 
+viki_download ()
+{
+    local url_viki="$1"
+    youtube-dl --add-header "x-viki-app-ver: 2.2.5.1428709186" --add-header "x-viki-as-id: 100005a" --write-sub --sub-lang es --sub-format srt --username "$VIKI_USER" --password "$VIKI_PASS" $url_viki
+}
+
 function QuitarLimite()
 {
     FILEID="${id}"
-    if grep -q "Permission denied" "$datosDescarga"; then
+    # if grep -q "Permission denied" "$datosDescarga"; then
+    if grep -q "Too many users have viewed or downloaded this file recently" "$datosDescarga"; then
         echo -e "\n"
         echo -e "\033[1;31mEnlace descargado demaciadas veces (Quota Exceeded)\033[0m"
         echo -e "\n"
@@ -366,7 +373,7 @@ if [[ $host == "drive.google.com" || $host == "docs.drive.com" ]]; then
         msg -verd "Nuevo enlace generado: " && msg -pur "https://drive.google.com/open?id=$newlinkID" && rm $datosDescarga
         gdown --id $newlinkID 2>&1 | tee $datosDescarga
 
-        if grep -q "Permission denied" "$datosDescarga"; then
+        if grep -q "Too many users have viewed or downloaded this file recently" "$datosDescarga"; then
             msg -red "ENLACE CON LIMTE!!... NO SE PUEDE DESCARGAR"
             limite2 ${newlinkID};
             gdown --id ${link} 2>&1 | tee $datosDescarga
@@ -378,16 +385,23 @@ if [[ $host == "drive.google.com" || $host == "docs.drive.com" ]]; then
 elif [[ $host == "www.mediafire.com" ]]; then
     deUniversal $1
 elif [[ $host == "mega.nz" ]]; then
-    megadl $1
+    # megadl $1
+    mega-get "$1"
 elif [[ $host == "uptobox.com" ]]; then
     down_uptobox.sh $1
 elif [[ $host == "uptostream.com" ]]; then
     down_uptobox.sh $1
+elif [[ $host == "www.viki.com" || $host == "viki.com" ]]; then
+    . /usr/local/bin/function.sh
+    viki_download $1
+    editar_sub "Viki" "cine24h"
 elif [[ $proto == "https://" || $proto == "http://" ]]; then
     wget "${1}"
 else
     . /usr/local/bin/function.sh
 
-    ComprobarRuta "$1" ruta_final
-    echo $ruta_final
+    # ComprobarRuta "$1" ruta_final
+    # echo $ruta_final
+    descargarDeFolderGoogleDrive "${1}"
 fi
+

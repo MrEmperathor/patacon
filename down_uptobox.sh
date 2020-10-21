@@ -39,6 +39,8 @@ lienc="${1}"
 
 
         aria2c -x16 -s16 -c "${direct_dl_link}"
+        # aria2c -c "${direct_dl_link}"
+
 # sleep 5
 # done < $PWD/wget.lis
 
